@@ -18,12 +18,12 @@ import { OrderSuccessComponent } from './shopping/components/order-success/order
 import { ProductsComponent } from './shopping/components/products/products.component';
 import { ShippingFormComponent } from './shopping/components/shipping-form/shipping-form.component';
 import { ShoppingCartSummaryComponent } from './shopping/components/shopping-cart-summary/shopping-cart-summary.component';
-import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
-import { AdminProductsComponent } from './admin/admin-products/admin-products.component';
-import { ProductFormComponent } from './admin/product-form/product-form.component';
 import { LoginComponent } from './core/components/login/login.component';
 import { ProductCardComponent } from './shared/components/product-card/product-card.component';
 import { ProductQuantityComponent } from './shared/components/product-quantity/product-quantity.component';
+import { AdminOrdersComponent } from './admin/components/admin-orders/admin-orders.component';
+import { AdminProductsComponent } from './admin/components/admin-products/admin-products.component';
+import { ProductFormComponent } from './admin/components/product-form/product-form.component';
 
 @NgModule({
   declarations: [
