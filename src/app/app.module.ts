@@ -22,8 +22,8 @@ import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.componen
 import { AdminProductsComponent } from './admin/admin-products/admin-products.component';
 import { ProductFormComponent } from './admin/product-form/product-form.component';
 import { LoginComponent } from './core/components/login/login.component';
-import { ProductCardComponent } from './shared/product-card/product-card.component';
-import { ProductQuantityComponent } from './shared/product-quantity/product-quantity.component';
+import { ProductCardComponent } from './shared/components/product-card/product-card.component';
+import { ProductQuantityComponent } from './shared/components/product-quantity/product-quantity.component';
 
 @NgModule({
   declarations: [
