@@ -9,10 +9,16 @@ import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { BsNavbarComponent } from './core/components/bs-navbar/bs-navbar.component';
+import { HomeComponent } from './core/components/home/home.component';
+import { ShoppingCartComponent } from './shopping/components/shopping-cart/shopping-cart.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    BsNavbarComponent,
+    HomeComponent,
+    ShoppingCartComponent
   ],
   imports: [
     BrowserModule,
