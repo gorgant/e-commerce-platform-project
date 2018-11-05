@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'login',
@@ -7,9 +9,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public auth: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+    ) { }
 
   ngOnInit() {
+  }
+
+  signIn() {
+    this.auth.googleLogin()
+      .then(() => {
+        if (this.auth.user$) {
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+          this.router.navigate([returnUrl || '/']);
+        }
+      });
   }
 
 }

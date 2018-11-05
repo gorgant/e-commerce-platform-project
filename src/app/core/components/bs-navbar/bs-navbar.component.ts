@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'bs-navbar',
@@ -9,7 +10,7 @@ export class BsNavbarComponent implements OnInit {
 
   isNavbarCollapsed = true;
 
-  constructor() { }
+  constructor(public auth: AuthService) { }
 
   ngOnInit() {
   }
