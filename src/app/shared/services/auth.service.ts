@@ -38,12 +38,29 @@ export class AuthService {
     const provider = new auth.GoogleAuthProvider();
     return this.oAuthLogin(provider);
   }
+  // // This is the popup version
+  // private oAuthLogin(provider) {
+  //   return this.afAuth.auth.signInWithPopup(provider)
+  //     .then((credentials) => {
+  //       this.userService.storeUserData(credentials.user);
+  //     });
+  // }
 
   private oAuthLogin(provider) {
-    return this.afAuth.auth.signInWithPopup(provider)
-      .then((credentials) => {
-        this.userService.storeUserData(credentials.user);
+    return this.afAuth.auth.signInWithRedirect(provider)
+      .then(() => {
+        return this.afAuth.auth.getRedirectResult();
+      }).then( result => {
+        this.userService.storeUserData(result.user);
       });
+  }
+
+  redirectIfAuthorized(redirectFunc: () => void) {
+    this.afAuth.auth.getRedirectResult().then(result => {
+      if (result.user) {
+        redirectFunc();
+      }
+    });
   }
 
   signOut() {

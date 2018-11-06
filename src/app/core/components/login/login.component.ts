@@ -16,16 +16,14 @@ export class LoginComponent implements OnInit {
     ) { }
 
   ngOnInit() {
+    this.auth.redirectIfAuthorized(() => {
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+      this.router.navigate([returnUrl]);
+    });
   }
 
   signIn() {
-    this.auth.googleLogin()
-      .then(() => {
-        if (this.auth.user$) {
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-          this.router.navigate([returnUrl || '/']);
-        }
-      });
+    this.auth.googleLogin();
   }
 
 }
