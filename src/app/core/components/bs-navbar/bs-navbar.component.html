@@ -8,16 +8,18 @@
       <li class="nav-item">
         <a routerLink="/shopping-cart" class="nav-link" >Shopping Cart</a>
       </li>
-      <div *ngIf="auth.user$ | async; then authenticated else guest">
+      <div *ngIf="auth.appUser$ | async; then authenticated else guest">
         <!-- template will replace this div -->
       </div>
       <ng-template #authenticated>
-        <li class="nav-item dropdown" ngbDropdown *ngIf="auth.user$ | async as user">
+        <li class="nav-item dropdown" ngbDropdown *ngIf="auth.appUser$ | async as user">
           <a class="nav-link dropdown-toggle" id="id01" ngbDropdownToggle>{{ user.displayName }}</a>
           <div class="dropdown-menu" aria-labelledby="id01" ngbDropdownMenu>
             <a class="dropdown-item" routerLink="/my-orders">My Orders</a>
-            <a class="dropdown-item" routerLink="/admin/orders" *ngIf="user.isAdmin" >Manage Orders</a>
-            <a class="dropdown-item" routerLink="/admin/products" *ngIf="user.isAdmin">Manage Products</a>
+            <ng-container *ngIf="user.isAdmin">
+              <a class="dropdown-item" routerLink="/admin/orders">Manage Orders</a>
+              <a class="dropdown-item" routerLink="/admin/products">Manage Products</a>
+            </ng-container>
             <a class="dropdown-item" routerLink="/" (click)="auth.signOut()">Log Out</a>
           </div>
         </li>
