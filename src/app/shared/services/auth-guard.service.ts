@@ -8,7 +8,7 @@ import { SharedModule } from '../shared.module';
 @Injectable({
   providedIn: SharedModule
 })
-export class AuthGuardService {
+export class AuthGuardService implements CanActivate {
 
   constructor(private auth: AuthService, private router: Router) { }
 

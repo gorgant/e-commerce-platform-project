@@ -8,7 +8,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 @Injectable({
   providedIn: 'root'
 })
-export class AdminAuthGuardService {
+export class AdminAuthGuardService implements CanActivate {
 
   constructor(private auth: AuthService, private router: Router) { }
 
