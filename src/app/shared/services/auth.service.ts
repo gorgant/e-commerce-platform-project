@@ -38,7 +38,7 @@ export class AuthService {
     const provider = new auth.GoogleAuthProvider();
     return this.oAuthLogin(provider);
   }
-  // // This is the popup version
+  // // This is the popup version (database details get updated automatically upon sign in)
   // private oAuthLogin(provider) {
   //   return this.afAuth.auth.signInWithPopup(provider)
   //     .then((credentials) => {
@@ -46,19 +46,18 @@ export class AuthService {
   //     });
   // }
 
+  // This is the redirect version (database details don't get updated automatically)
+  // Any promises here will get canceled when page redirects, so those promises need
+  // to be inserted in the helper function below it with getRedirectResult
   private oAuthLogin(provider) {
-    return this.afAuth.auth.signInWithRedirect(provider)
-      .then(() => {
-        return this.afAuth.auth.getRedirectResult();
-      }).then( result => {
-        this.userService.storeUserData(result.user);
-      });
+    return this.afAuth.auth.signInWithRedirect(provider);
   }
 
   // This is based on a comment on section 20 lecutre 293
   redirectIfAuthorized(redirectFunc: () => void) {
     this.afAuth.auth.getRedirectResult().then(result => {
       if (result.user) {
+        this.userService.storeUserData(result.user);
         redirectFunc();
       }
     });

@@ -27,7 +27,11 @@ export class LoginComponent implements OnInit {
   }
 
   signIn() {
-    this.auth.googleLogin();
+    this.auth.googleLogin()
+      .then(() => {
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        this.router.navigate([returnUrl]);
+      });
   }
 
 }

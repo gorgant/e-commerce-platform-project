@@ -27,7 +27,7 @@ export class UserService {
     const data: User = {
       uid: user.uid,
       email: user.email,
-      isAdmin: false, // Temporarily set to true
+      isAdmin: true, // Temporarily set to true
       displayName: user.displayName,
       photoURL: user.photoURL
     };
