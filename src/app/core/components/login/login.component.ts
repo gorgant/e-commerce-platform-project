@@ -18,7 +18,11 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.auth.redirectIfAuthorized(() => {
       const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-      this.router.navigate([returnUrl]);
+      if (returnUrl) {
+        this.router.navigate([returnUrl]);
+      } else {
+        this.router.navigate(['/']);
+      }
     });
   }
 

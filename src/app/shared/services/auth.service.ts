@@ -55,6 +55,7 @@ export class AuthService {
       });
   }
 
+  // This is based on a comment on section 20 lecutre 293
   redirectIfAuthorized(redirectFunc: () => void) {
     this.afAuth.auth.getRedirectResult().then(result => {
       if (result.user) {
