@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataImporterService } from 'src/app/shared/services/data-importer.service';
 
 @Component({
   selector: 'admin-products',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminProductsComponent implements OnInit {
 
-  constructor() { }
+  constructor(public importer: DataImporterService) { }
 
   ngOnInit() {
   }
+
+
 
 }
