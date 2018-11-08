@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-sm">
        <!-- Product Form -->
-      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <form *ngIf="product$ | async; else loading" [formGroup]="productForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="title">Title</label>
           <input formControlName="title" type="text" class="form-control" id="title" placeholder="Product title here">
@@ -14,13 +14,13 @@
             <div class="input-group-prepend">
               <span class="input-group-text">$</span>
             </div>
-            <input formControlName="price" type="text" class="form-control" id="price" aria-label="Price">
+            <input formControlName="price" type="number" class="form-control" id="price" aria-label="Price">
           </div>
         </div>
         <div class="form-group">
           <label for="category">Category</label>
-          <select formControlName="category" class="form-control" id="category">
-            <option *ngFor="let category of productCategories | async"
+          <select formControlName="categoryId" class="form-control" id="category">
+            <option *ngFor="let category of productService.productCategories$ | async"
             [value]="category.id">{{ category.name }}</option>
           </select>
         </div>
@@ -32,10 +32,13 @@
         <button class="btn btn-danger">Delete</button>
       </form>
     </div>
+    <ng-template #loading>
+        Loading User...
+    </ng-template>
     <!-- Product Display -->
     <div class="col-sm">
       <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="https://loremflickr.com/286/180" alt="Card image cap">
+        <img class="card-img-top" [src]="productForm.get('imageUrl').value" alt="Card image cap">
         <div class="card-body">
           <h5 class="card-title">{{ productForm.get('title').value }}</h5>
           <p class="card-text">{{ productForm.get('price').value | currency }}</p>

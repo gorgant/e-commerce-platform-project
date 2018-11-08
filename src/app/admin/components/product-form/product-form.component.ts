@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/shared/models/product';
-import { AngularFirestoreCollection, AngularFirestore } from '@angular/fire/firestore';
-import { ProductCategory } from 'src/app/shared/models/product-category';
-import { Observable, from, of } from 'rxjs';
-import { FormBuilder } from '@angular/forms';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { ProductService } from 'src/app/shared/services/product.service';
+import { ActivatedRoute } from '@angular/router';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'product-form',
@@ -13,52 +13,46 @@ import { map } from 'rxjs/operators';
 })
 export class ProductFormComponent implements OnInit {
 
-  private productCategoryCollection: AngularFirestoreCollection<ProductCategory>;
-  productCategories: Observable<ProductCategory[]>;
-
   product$: Observable<Product>;
+  productId: string;
 
-  productForm = this.fb.group({
-    title: [''],
-    price: [''],
-    category: [''],
-    imageUrl: ['']
-  });
+  productForm: FormGroup;
 
-  constructor(private readonly afs: AngularFirestore, private fb: FormBuilder) {
-    this.productCategoryCollection = afs.collection('categories', ref => ref.orderBy('name'));
-    this.productCategories = this.productCategoryCollection.valueChanges();
-
-    this.product$ = of(
-      {
-        $key: 'string',
-        title: 'Whole milk',
-        price: 3,
-        category: '4taxaNxPiaud9ag7OA1R',
-        imageUrl: 'https://loremflickr.com/286/180'
-      }
-    );
+  constructor(
+    private fb: FormBuilder,
+    public productService: ProductService,
+    private route: ActivatedRoute
+    ) {
   }
 
   ngOnInit() {
-    if (this.product$) {
-      console.log(this.product$);
-      this.loadProductData();
-    }
+    this.loadProductCategories();
+
+    this.productForm = this.fb.group({
+      title: [''],
+      price: [''],
+      category: [''],
+      categoryId: [''],
+      imageUrl: ['']
+    });
+
+    this.product$ = this.route.paramMap.pipe(
+      switchMap(params => {
+        this.productId = params.get('id');
+        return this.productService.getSingleProduct(this.productId);
+      }),
+      tap(product => this.productForm.patchValue({
+        title: product.title,
+        price: product.price,
+        category: product.category,
+        categoryId: product.categoryId,
+        imageUrl: product.imageUrl
+      }))
+    );
   }
 
-  loadProductData() {
-    let currentProduct: Product;
-    this.product$.subscribe( data => {
-      currentProduct = data;
-    });
-    console.log(currentProduct);
-    this.productForm.setValue({
-      title: currentProduct.title,
-      price: currentProduct.price,
-      category: currentProduct.category,
-      imageUrl: currentProduct.imageUrl
-    });
+  loadProductCategories() {
+    this.productService.refreshProductCategories();
   }
 
   onSubmit() {
