@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataImporterService } from 'src/app/shared/services/data-importer.service';
-import { MatTableDataSource, MatSort } from '@angular/material';
+import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
 import { ProductService } from 'src/app/shared/services/product.service';
+import { Router, Route, ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'admin-products',
@@ -17,10 +19,12 @@ export class AdminProductsComponent implements OnInit {
 
   constructor(
     public importer: DataImporterService,
-    private productService: ProductService) {
+    private productService: ProductService,
+    private router: Router) {
   }
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
     this.initializeDataTable();
@@ -34,6 +38,9 @@ export class AdminProductsComponent implements OnInit {
 
         // Sort cannot be applied until table data is loaded
         this.sortData();
+
+        // Pagination cannot be applied until table data is loaded
+        this.dataSource.paginator = this.paginator;
       }
     );
   }

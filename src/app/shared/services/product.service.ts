@@ -3,6 +3,7 @@ import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument 
 import { Product } from '../models/product';
 import { Observable } from 'rxjs';
 import { ProductCategory } from '../models/product-category';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,28 @@ export class ProductService {
   refreshProductCategories() {
     this.productCategoryCollection = this.afs.collection<ProductCategory>('categories', ref => ref.orderBy('name'));
     this.productCategories$ = this.productCategoryCollection.valueChanges();
+  }
+
+  get productCategories() {
+    this.productCategoryCollection = this.afs.collection<ProductCategory>('categories', ref => ref.orderBy('name'));
+    this.productCategories$ = this.productCategoryCollection.valueChanges();
+    return this.productCategories$;
+  }
+
+  saveProduct(product: Product) {
+    this.productDoc.update(product);
+  }
+
+  createProduct(product: Product) {
+    const autoId = this.afs.createId();
+    product.id = autoId;
+    this.productsCollection = this.afs.collection<Product>('products');
+    this.productsCollection.doc(autoId).set(product);
+  }
+
+  deleteProduct(productId: string) {
+    this.productsCollection = this.afs.collection<Product>('products');
+    this.productsCollection.doc(productId).delete();
   }
 
 }
