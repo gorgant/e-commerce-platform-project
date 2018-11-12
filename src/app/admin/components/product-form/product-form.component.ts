@@ -96,7 +96,10 @@ export class ProductFormComponent implements OnInit {
   }
 
   onDelete() {
-    this.productService.deleteProduct(this.productId);
+    if (confirm('Are you sure you want to delete this product?')) {
+      this.productService.deleteProduct(this.productId);
+      this.router.navigate(['/admin/products']);
+    }
   }
 
   // This fires when the Category select field is changed, pulling the object category vs the value

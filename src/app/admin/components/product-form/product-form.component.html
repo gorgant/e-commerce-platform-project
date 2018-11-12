@@ -55,7 +55,7 @@
           </div>
         </div>
         <button [disabled]="!productForm.valid" type="submit" class="btn btn-primary">Save</button>
-        <a *ngIf="!newProduct" [routerLink]="['/admin/products']" class="btn btn-danger" (click)="onDelete()">Delete</a>
+        <button *ngIf="!newProduct" type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
         <a [routerLink]="['/admin/products']" class="btn btn-link">Cancel</a>
       </form>
       <ng-template #loading>
