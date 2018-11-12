@@ -133,7 +133,7 @@
     <!-- Product Display -->
     <div class="col-sm">
       <div class="card" style="width: 18rem;">
-        <img class="card-img-top" [src]="productForm.get('imageUrl').value" alt="Card image cap">
+        <img *ngIf="imageUrl.value" class="card-img-top" [src]="imageUrl.value" alt="Card image cap">
         <div class="card-body">
           <h5 class="card-title">{{ productForm.get('title').value }}</h5>
           <p class="card-text">{{ productForm.get('price').value | currency }}</p>
