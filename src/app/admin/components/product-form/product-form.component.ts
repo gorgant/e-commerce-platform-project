@@ -22,6 +22,8 @@ export class ProductFormComponent implements OnInit {
 
   newProduct: boolean;
 
+  validationPattern: RegExp = /^(ftp|http|https):\/\/[^ "]+$/;
+
   constructor(
     private fb: FormBuilder,
     public productService: ProductService,
@@ -38,10 +40,10 @@ export class ProductFormComponent implements OnInit {
     this.productForm = this.fb.group({
       productId: [''],
       title: ['', Validators.required],
-      price: ['', Validators.required],
+      price: ['', [Validators.required, Validators.min(0.01)]],
       categoryId: ['', Validators.required],
       category: [''],
-      imageUrl: ['', Validators.required]
+      imageUrl: ['', [Validators.required, Validators.pattern(this.validationPattern)]]
     });
 
     if (this.router.url !== '/admin/products/new') {

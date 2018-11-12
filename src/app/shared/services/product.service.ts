@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Product } from '../models/product';
 import { Observable } from 'rxjs';
-import { ProductCategory } from '../models/product-category';
 import { SharedModule } from '../shared.module';
 
 @Injectable({

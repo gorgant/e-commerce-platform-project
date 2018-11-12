@@ -31,6 +31,9 @@
               <div *ngIf="price.errors['required']">
                 Price is required.
               </div>
+              <div *ngIf="price.errors['min']">
+                Price must be greater than zero.
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -91,6 +94,9 @@
               <div *ngIf="price.errors['required']">
                 Price is required.
               </div>
+              <div *ngIf="price.errors['min']">
+                Price must be greater than zero.
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -113,6 +119,9 @@
                   class="alert alert-danger">
               <div *ngIf="imageUrl.errors['required']">
                 Image is required.
+              </div>
+              <div *ngIf="imageUrl.errors['pattern']">
+                Must be valid url.
               </div>
             </div>
           </div>
