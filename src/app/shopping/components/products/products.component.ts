@@ -11,10 +11,7 @@ import { ProductCategory } from 'src/app/shared/models/product-category';
 })
 export class ProductsComponent implements OnInit {
 
-  productList: Product[];
-  filteredList: Product[];
-
-  constructor(private productService: ProductService) { }
+  constructor(public productService: ProductService) { }
 
   ngOnInit() {
     this.productService.getProducts();
