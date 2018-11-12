@@ -1,108 +1,40 @@
-
 <div class="container">
   <div class="row">
     <div class="col-sm">
-      <div *ngIf="newProduct; then newProductForm else editProductForm">
-        template content loads here...
-      </div>
-      <!-- Edit Product Form -->
-      <ng-template #editProductForm>
-        <form *ngIf="product$ | async; else loading" [formGroup]="productForm" (ngSubmit)="onSave()">
-          <div class="form-group">
-            <label for="title">Title</label>
-            <input formControlName="title" type="text" class="form-control" id="title" placeholder="Product title here">
-            <div *ngIf="title.invalid && (title.dirty || title.touched)"
-                  class="alert alert-danger">
-              <div *ngIf="title.errors['required']">
-                Name is required.
-              </div>
+      <form *ngIf="product$ | async; else loading" [formGroup]="productForm" (ngSubmit)="onSave()">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input formControlName="title" type="text" class="form-control" id="title" placeholder="Product title here">
+          <div *ngIf="title.invalid && (title.dirty || title.touched)"
+                class="alert alert-danger">
+            <div *ngIf="title.errors['required']">
+              Name is required.
             </div>
           </div>
-          <div class="form-group">
-            <label for="price">Price</label>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text">$</span>
-              </div>
-              <input formControlName="price" type="number" class="form-control" id="price" aria-label="Price">
+        </div>
+        <div class="form-group">
+          <label for="price">Price</label>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">$</span>
             </div>
-            <div *ngIf="price.invalid && (price.dirty || price.touched)"
-                  class="alert alert-danger">
-              <div *ngIf="price.errors['required']">
-                Price is required.
-              </div>
-              <div *ngIf="price.errors['min']">
-                Price must be greater than zero.
-              </div>
+            <input formControlName="price" type="number" class="form-control" id="price" aria-label="Price">
+          </div>
+          <div *ngIf="price.invalid && (price.dirty || price.touched)"
+                class="alert alert-danger">
+            <div *ngIf="price.errors['required']">
+              Price is required.
+            </div>
+            <div *ngIf="price.errors['min']">
+              Price must be greater than zero.
             </div>
           </div>
-          <div class="form-group">
-            <label for="category">Category</label>
-            <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory()">
-              <option 
-                *ngFor="let category of categoryService.productCategories$ | async"
-                [value]="category.id">{{ category.name }}</option>
-              </select>
-              <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"
-                    class="alert alert-danger">
-                <div *ngIf="categoryId.errors['required']">
-                  Category is required.
-                </div>
-              </div>
-          </div>
-          <div class="form-group">
-            <label for="imageUrl">Image URL</label>
-            <input formControlName="imageUrl" type="text" class="form-control" id="imageUrl" placeholder="Input image url">
-            <div *ngIf="imageUrl.invalid && (imageUrl.dirty || imageUrl.touched)"
-                  class="alert alert-danger">
-              <div *ngIf="imageUrl.errors['required']">
-                Image is required.
-              </div>
-            </div>
-          </div>
-          <button [disabled]="!productForm.valid" type="submit" class="btn btn-primary">Save</button>
-          <a [routerLink]="['/admin/products']" class="btn btn-danger" (click)="onDelete()">Delete</a>
-          <a [routerLink]="['/admin/products']" class="btn btn-link">Cancel</a>
-        </form>
-        <ng-template #loading>
-            Loading User...
-        </ng-template>
-      </ng-template>
-      <!-- New Product Form -->
-      <ng-template #newProductForm>
-        <form [formGroup]="productForm" (ngSubmit)="onSave()">
-          <div class="form-group">
-            <label for="title">Title</label>
-            <input formControlName="title" type="text" class="form-control" id="title" placeholder="Product title here">
-            <div *ngIf="title.invalid && (title.dirty || title.touched)"
-                  class="alert alert-danger">
-              <div *ngIf="title.errors['required']">
-                Name is required.
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="price">Price</label>
-            <div class="input-group mb-3">
-              <div class="input-group-prepend">
-                <span class="input-group-text">$</span>
-              </div>
-              <input formControlName="price" type="number" class="form-control" id="price" aria-label="Price">
-            </div>
-            <div *ngIf="price.invalid && (price.dirty || price.touched)"
-                  class="alert alert-danger">
-              <div *ngIf="price.errors['required']">
-                Price is required.
-              </div>
-              <div *ngIf="price.errors['min']">
-                Price must be greater than zero.
-              </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="category">Category</label>
-            <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory()">
-              <option *ngFor="let category of categoryService.productCategories$ | async"
+        </div>
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory()">
+            <option 
+              *ngFor="let category of categoryService.productCategories$ | async"
               [value]="category.id">{{ category.name }}</option>
             </select>
             <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"
@@ -111,23 +43,23 @@
                 Category is required.
               </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label for="imageUrl">Image URL</label>
-            <input formControlName="imageUrl" type="text" class="form-control" id="imageUrl" placeholder="Input image url">
-            <div *ngIf="imageUrl.invalid && (imageUrl.dirty || imageUrl.touched)"
-                  class="alert alert-danger">
-              <div *ngIf="imageUrl.errors['required']">
-                Image is required.
-              </div>
-              <div *ngIf="imageUrl.errors['pattern']">
-                Must be valid url.
-              </div>
+        </div>
+        <div class="form-group">
+          <label for="imageUrl">Image URL</label>
+          <input formControlName="imageUrl" type="text" class="form-control" id="imageUrl" placeholder="Input image url">
+          <div *ngIf="imageUrl.invalid && (imageUrl.dirty || imageUrl.touched)"
+                class="alert alert-danger">
+            <div *ngIf="imageUrl.errors['required']">
+              Image is required.
             </div>
           </div>
-          <button [disabled]="!productForm.valid" type="submit" class="btn btn-primary">Save</button>
-          <a [routerLink]="['/admin/products']" class="btn btn-link">Cancel</a>
-        </form>
+        </div>
+        <button [disabled]="!productForm.valid" type="submit" class="btn btn-primary">Save</button>
+        <a *ngIf="!newProduct" [routerLink]="['/admin/products']" class="btn btn-danger" (click)="onDelete()">Delete</a>
+        <a [routerLink]="['/admin/products']" class="btn btn-link">Cancel</a>
+      </form>
+      <ng-template #loading>
+          Loading User...
       </ng-template>
     </div>
     <!-- Product Display -->

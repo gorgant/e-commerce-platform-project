@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/shared/models/product';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,7 +14,17 @@ import { CategoryService } from 'src/app/shared/services/category.service';
 })
 export class ProductFormComponent implements OnInit {
 
-  product$: Observable<Product>;
+  // This prevents an error when "loading" a new product
+  emptyProduct: Product = {
+    id: '',
+    title: '',
+    price: 0,
+    categoryId: '',
+    category: '',
+    imageUrl: ''
+  };
+
+  product$: Observable<Product> = of(this.emptyProduct);
   productId: string;
 
   productForm: FormGroup;
@@ -35,7 +45,7 @@ export class ProductFormComponent implements OnInit {
   ngOnInit() {
     this.loadProductCategories();
 
-    this.newProduct = true;
+    // this.newProduct = true;
 
     this.productForm = this.fb.group({
       productId: [''],
@@ -63,6 +73,8 @@ export class ProductFormComponent implements OnInit {
           imageUrl: product.imageUrl
         }))
       );
+    } else {
+      this.newProduct = true;
     }
   }
 
