@@ -45,7 +45,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit() {
-    this.loadProductCategories();
+    this.categoryService.refreshProductCategories();
 
     // this.newProduct = true;
 
@@ -78,10 +78,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     } else {
       this.newProduct = true;
     }
-  }
-
-  loadProductCategories() {
-    this.categoryService.refreshProductCategories();
   }
 
   onSave() {
@@ -117,6 +113,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       });
   }
 
+  // These getters are used for easy access in the HTML template
   get title() { return this.productForm.get('title'); }
   get price() { return this.productForm.get('price'); }
   get categoryId() { return this.productForm.get('categoryId'); }

@@ -3,6 +3,8 @@ import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument 
 import { Product } from '../models/product';
 import { Observable } from 'rxjs';
 import { SharedModule } from '../shared.module';
+import { ProductCategory } from '../models/product-category';
+import { switchMap, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: SharedModule
@@ -14,6 +16,8 @@ export class ProductService {
 
   private productsCollection: AngularFirestoreCollection<Product>;
   products$: Observable<Product[]>;
+
+  filteredProductList$: Observable<Product[]>;
 
   constructor(private readonly afs: AngularFirestore) {
   }
@@ -27,6 +31,7 @@ export class ProductService {
   getProducts(): Observable<Product[]> {
     this.productsCollection = this.afs.collection<Product>('products');
     this.products$ = this.productsCollection.valueChanges();
+    this.filteredProductList$ = this.products$;
     return this.products$;
   }
 
@@ -46,4 +51,12 @@ export class ProductService {
     this.productsCollection.doc(productId).delete();
   }
 
+  applyCategoryFilter(productCategory: ProductCategory) {
+    this.filteredProductList$ = this.products$.pipe(
+      map(products => {
+        return products.filter(product => {
+          return product.category === productCategory.category;
+        });
+    }));
+  }
 }

@@ -12,7 +12,6 @@ import { AdminModule } from './admin/admin.module';
 import { CoreModule } from './core/core.module';
 import { ShoppingModule } from './shopping/shopping.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { MatComponentsModule } from './shared/mat-components.module';
 
 
 @NgModule({
@@ -22,12 +21,12 @@ import { MatComponentsModule } from './shared/mat-components.module';
   imports: [
     BrowserModule,
     NgbModule,
-    AngularFireModule.initializeApp(environment.firebase),
     BrowserAnimationsModule,
     SharedModule,
-    CoreModule,
     AdminModule,
     ShoppingModule,
+    CoreModule,
+    AngularFireModule.initializeApp(environment.firebase),
     AppRoutingModule,
   ],
   providers: [

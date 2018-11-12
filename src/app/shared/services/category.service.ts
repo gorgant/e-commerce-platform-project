@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SharedModule } from '../shared.module';
-import { AngularFirestoreCollection, AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { ProductCategory } from '../models/product-category';
 
@@ -8,6 +8,9 @@ import { ProductCategory } from '../models/product-category';
   providedIn: SharedModule
 })
 export class CategoryService {
+
+  private categoryDoc: AngularFirestoreDocument<ProductCategory>;
+  singleCategory$: Observable<ProductCategory>;
 
   private productCategoryCollection: AngularFirestoreCollection<ProductCategory>;
   productCategories$: Observable<ProductCategory[]>;
@@ -19,9 +22,16 @@ export class CategoryService {
     this.productCategories$ = this.productCategoryCollection.valueChanges();
   }
 
+  getSingleProductCategory(categoryId: string) {
+    this.categoryDoc = this.afs.doc<ProductCategory>(`categories/${categoryId}`);
+    this.singleCategory$ = this.categoryDoc.valueChanges();
+    return this.singleCategory$;
+  }
+
   get productCategories() {
-    this.productCategoryCollection = this.afs.collection<ProductCategory>('categories', ref => ref.orderBy('name'));
-    this.productCategories$ = this.productCategoryCollection.valueChanges();
+    this.refreshProductCategories();
     return this.productCategories$;
   }
+
+
 }

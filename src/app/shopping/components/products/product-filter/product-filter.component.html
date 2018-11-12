@@ -1,0 +1,14 @@
+<ul class="list-group">
+  <li 
+      class="list-group-item"
+      (click)="clearCategoryFilters()"
+      [class.active]="allCategories">
+        All Categories</li>
+  <li 
+      *ngFor="let category of categoryService.productCategories$ | async" 
+      class="list-group-item"
+      [class.active]="category === selectedCategory"
+      (click)="onSelect(category)">
+        {{ category.name }}
+  </li>
+</ul>

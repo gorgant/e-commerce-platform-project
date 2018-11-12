@@ -10,6 +10,7 @@ import { OrderSuccessComponent } from './components/order-success/order-success.
 import { MyOrdersComponent } from './components/my-orders/my-orders.component';
 import { ShoppingCartSummaryComponent } from './components/shopping-cart-summary/shopping-cart-summary.component';
 import { ShippingFormComponent } from './components/shipping-form/shipping-form.component';
+import { ProductFilterComponent } from './components/products/product-filter/product-filter.component';
 
 @NgModule({
   declarations: [
@@ -18,8 +19,9 @@ import { ShippingFormComponent } from './components/shipping-form/shipping-form.
     CheckOutComponent,
     OrderSuccessComponent,
     MyOrdersComponent,
+    ProductFilterComponent,
     ShoppingCartSummaryComponent,
-    ShippingFormComponent
+    ShippingFormComponent,
   ],
   imports: [
     CommonModule,
