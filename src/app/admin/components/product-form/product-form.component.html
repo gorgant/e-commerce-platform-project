@@ -64,7 +64,7 @@
       </ng-template>
     </div>
     <!-- Product Display -->
-    <div class="col-sm">
+    <div *ngIf="title.value" class="col-sm">
       <div class="card" style="width: 18rem;">
         <img *ngIf="imageUrl.value" class="card-img-top" [src]="imageUrl.value" alt="Card image cap">
         <div class="card-body">
