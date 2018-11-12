@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap, tap, take } from 'rxjs/operators';
+import { CategoryService } from 'src/app/shared/services/category.service';
 
 @Component({
   selector: 'product-form',
@@ -24,6 +25,7 @@ export class ProductFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     public productService: ProductService,
+    public categoryService: CategoryService,
     private route: ActivatedRoute,
     private router: Router
     ) { }
@@ -63,7 +65,7 @@ export class ProductFormComponent implements OnInit {
   }
 
   loadProductCategories() {
-    this.productService.refreshProductCategories();
+    this.categoryService.refreshProductCategories();
   }
 
   onSave() {
@@ -86,7 +88,7 @@ export class ProductFormComponent implements OnInit {
   // This fires when the Category select field is changed, pulling the object category vs the value
   setCategory() {
     const categoryId = this.productForm.value.categoryId;
-    this.productService.productCategories
+    this.categoryService.productCategories
       .subscribe( prodCat => {
         const filteredCats = prodCat.filter(cat => cat.id === categoryId);
         this.categoryText = (filteredCats.length > 0) ? filteredCats[0].category : null;

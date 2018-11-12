@@ -3,8 +3,7 @@ import { DataImporterService } from 'src/app/shared/services/data-importer.servi
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
 import { ProductService } from 'src/app/shared/services/product.service';
-import { Router, Route, ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'admin-products',
@@ -19,8 +18,7 @@ export class AdminProductsComponent implements OnInit {
 
   constructor(
     public importer: DataImporterService,
-    private productService: ProductService,
-    private router: Router) {
+    private productService: ProductService) {
   }
 
   @ViewChild(MatSort) sort: MatSort;

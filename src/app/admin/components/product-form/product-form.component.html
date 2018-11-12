@@ -37,7 +37,7 @@
             <label for="category">Category</label>
             <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory()">
               <option 
-                *ngFor="let category of productService.productCategories$ | async"
+                *ngFor="let category of categoryService.productCategories$ | async"
                 [value]="category.id">{{ category.name }}</option>
               </select>
               <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"
@@ -96,7 +96,7 @@
           <div class="form-group">
             <label for="category">Category</label>
             <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory()">
-              <option *ngFor="let category of productService.productCategories$ | async"
+              <option *ngFor="let category of categoryService.productCategories$ | async"
               [value]="category.id">{{ category.name }}</option>
             </select>
             <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"
