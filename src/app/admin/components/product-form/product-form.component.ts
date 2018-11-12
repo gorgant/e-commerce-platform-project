@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Product } from 'src/app/shared/models/product';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,13 +12,13 @@ import { CategoryService } from 'src/app/shared/services/category.service';
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss']
 })
-export class ProductFormComponent implements OnInit {
+export class ProductFormComponent implements OnInit, OnDestroy {
 
   // This prevents an error when "loading" a new product
   emptyProduct: Product = {
     id: '',
     title: '',
-    price: 0,
+    price: null,
     categoryId: '',
     category: '',
     imageUrl: ''
@@ -26,6 +26,8 @@ export class ProductFormComponent implements OnInit {
 
   product$: Observable<Product> = of(this.emptyProduct);
   productId: string;
+
+  categorySubscription: Subscription;
 
   productForm: FormGroup;
   categoryText: string;
@@ -105,7 +107,7 @@ export class ProductFormComponent implements OnInit {
   // This fires when the Category select field is changed, pulling the object category vs the value
   setCategory() {
     const categoryId = this.productForm.value.categoryId;
-    this.categoryService.productCategories
+    this.categorySubscription = this.categoryService.productCategories
       .subscribe( prodCat => {
         const filteredCats = prodCat.filter(cat => cat.id === categoryId);
         this.categoryText = (filteredCats.length > 0) ? filteredCats[0].category : null;
@@ -119,5 +121,11 @@ export class ProductFormComponent implements OnInit {
   get price() { return this.productForm.get('price'); }
   get categoryId() { return this.productForm.get('categoryId'); }
   get imageUrl() { return this.productForm.get('imageUrl'); }
+
+  ngOnDestroy() {
+    if (this.categorySubscription) {
+      this.categorySubscription.unsubscribe();
+    }
+  }
 
 }

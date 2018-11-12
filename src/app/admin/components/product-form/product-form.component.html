@@ -1,6 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm">
+      <!-- Form Section -->
       <form *ngIf="product$ | async; else loading" [formGroup]="productForm" (ngSubmit)="onSave()">
         <div class="form-group">
           <label for="title">Title</label>

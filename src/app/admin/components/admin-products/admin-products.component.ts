@@ -1,20 +1,22 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { DataImporterService } from 'src/app/shared/services/data-importer.service';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'admin-products',
   templateUrl: './admin-products.component.html',
   styleUrls: ['./admin-products.component.scss']
 })
-export class AdminProductsComponent implements OnInit {
+export class AdminProductsComponent implements OnInit, OnDestroy {
 
   displayedColumns: string[] = ['itemNo', 'title', 'price', 'edit'];
   dataSource: MatTableDataSource<Product>;
   data: Product[] = [];
+  productSubscription: Subscription;
 
   constructor(
     public importer: DataImporterService,
@@ -29,7 +31,7 @@ export class AdminProductsComponent implements OnInit {
   }
 
   initializeDataTable() {
-    this.productService.getProducts().subscribe(
+    this.productSubscription = this.productService.getProducts().subscribe(
       data => {
         this.data = data;
         this.dataSource = new MatTableDataSource(this.data);
@@ -49,6 +51,10 @@ export class AdminProductsComponent implements OnInit {
 
   sortData() {
     this.dataSource.sort = this.sort;
+  }
+
+  ngOnDestroy() {
+    this.productSubscription.unsubscribe();
   }
 }
 
