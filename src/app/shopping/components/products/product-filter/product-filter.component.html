@@ -1,17 +1,18 @@
 <ul class="list-group">
   <a 
     routerLink="/"
-    class="list-group-item"
+    class="list-group-item list-group-item-action"
     (click)="clearCategoryFilters()"
     [class.active]="allCategories">
       All Categories</a>
   <a 
-    routerLink="/"  
     *ngFor="let category of categoryService.productCategories$ | async" 
-    class="list-group-item"
+    routerLink="/"
+    [queryParams]="{ category: category.name, categoryId: category.id }"
+    class="list-group-item list-group-item-action"
     [class.active]="category.category === selectedCategory?.category"
-    (click)="onSelect(category)">
-      <!-- Somehow this 'safe traversal' (?.) above makes this async validation check work -->
+    >
+      <!-- Somehow this 'safe traversal' (?.) above makes this 'async' [class.active] validation check work -->
       {{ category.name }}
   </a>
 </ul>

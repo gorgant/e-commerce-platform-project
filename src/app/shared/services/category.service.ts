@@ -20,6 +20,7 @@ export class CategoryService {
   refreshProductCategories() {
     this.productCategoryCollection = this.afs.collection<ProductCategory>('categories', ref => ref.orderBy('name'));
     this.productCategories$ = this.productCategoryCollection.valueChanges();
+    return this.productCategories$;
   }
 
   getSingleProductCategory(categoryId: string) {
