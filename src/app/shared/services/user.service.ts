@@ -8,9 +8,12 @@ import { AppUser } from '../models/app-user';
 })
 export class UserService {
 
+  currentUserId: string;
+
   constructor(private afs: AngularFirestore) { }
 
   retrieveUserData(user) {
+    this.currentUserId = user.uid;
     return this.afs.doc<AppUser>(`users/${user.uid}`).valueChanges();
   }
 

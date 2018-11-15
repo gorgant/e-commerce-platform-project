@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ShoppingCartService } from 'src/app/shared/services/shopping-cart.service';
 
 @Component({
   selector: 'shopping-cart',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ShoppingCartComponent implements OnInit {
 
-  constructor() { }
+  // shoppingCartItems$: Observable<ShoppingCartItem[]>;
+
+  constructor(
+    public shoppingCartService: ShoppingCartService) { }
 
   ngOnInit() {
+    this.shoppingCartService.retrieveCartItems();
   }
 
 }
