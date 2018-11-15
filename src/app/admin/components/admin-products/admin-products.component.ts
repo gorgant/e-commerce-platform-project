@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
 import { DataImporterService } from 'src/app/shared/services/data-importer.service';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
@@ -36,8 +36,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
         this.data = data;
         this.dataSource = new MatTableDataSource(this.data);
 
-        // Sort cannot be applied until table data is loaded
-        this.sortData();
+        // Sort cannot be applied until table data is loaded, and for some reason also requires this timeout
+        setTimeout(() => this.dataSource.sort = this.sort);
 
         // Pagination cannot be applied until table data is loaded
         this.dataSource.paginator = this.paginator;
@@ -47,10 +47,6 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
-
-  sortData() {
-    this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy() {

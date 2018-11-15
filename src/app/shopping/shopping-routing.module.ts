@@ -8,15 +8,21 @@ import { AuthGuardService } from '../shared/services/auth-guard.service';
 import { CheckOutComponent } from './components/check-out/check-out.component';
 
 const routes: Routes = [
-  {path: 'products', component: ProductsComponent},
-  {path: 'shopping-cart', component: ShoppingCartComponent},
+  {
+    path: 'products',
+    component: ProductsComponent
+  },
+  {
+    path: 'shopping-cart',
+    component: ShoppingCartComponent
+  },
   {
     path: 'check-out',
     component: CheckOutComponent,
     canActivate: [AuthGuardService]
   },
   {
-    path: 'order-success',
+    path: 'order-success/:id',
     component: OrderSuccessComponent,
     canActivate: [AuthGuardService]
   },
