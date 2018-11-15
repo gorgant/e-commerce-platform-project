@@ -1,18 +1,20 @@
-<ul class="list-group position-sticky">
-  <a 
-    routerLink="/"
-    class="list-group-item list-group-item-action"
-    (click)="clearCategoryFilters()"
-    [class.active]="allCategories">
-      All Categories</a>
-  <a 
-    *ngFor="let category of categoryService.productCategories$ | async" 
-    routerLink="/"
-    [queryParams]="{ category: category.name, categoryId: category.id }"
-    class="list-group-item list-group-item-action"
-    [class.active]="category.category === selectedCategory?.category"
-    >
-      <!-- Somehow this 'safe traversal' (?.) above makes this 'async' [class.active] validation check work -->
-      {{ category.name }}
-  </a>
-</ul>
+<div class="sticky-top">
+  <div class="list-group">
+    <a 
+      routerLink="/"
+      class="list-group-item list-group-item-action"
+      (click)="clearCategoryFilters()"
+      [class.active]="allCategories">
+        All Categories</a>
+    <a 
+      *ngFor="let category of categoryService.productCategories$ | async" 
+      routerLink="/"
+      [queryParams]="{ category: category.name, categoryId: category.id }"
+      class="list-group-item list-group-item-action"
+      [class.active]="category.category === selectedCategory?.category"
+      >
+        <!-- Somehow this 'safe traversal' (?.) above makes this 'async' [class.active] validation check work -->
+        {{ category.name }}
+    </a>
+  </div>
+</div>
