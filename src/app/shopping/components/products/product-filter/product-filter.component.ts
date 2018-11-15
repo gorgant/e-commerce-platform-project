@@ -45,6 +45,7 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
           this.catServiceSubscription = this.categoryService.getSingleProductCategory(this.paramsId)
             .subscribe( prodCat => {
               this.selectedCategory = prodCat;
+              this.productService.getProducts();
               this.productService.applyCategoryFilter(this.selectedCategory);
             });
         }
