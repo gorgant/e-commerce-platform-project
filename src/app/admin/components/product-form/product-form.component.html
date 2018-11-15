@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-sm">
+    <div class="col-sm-6">
       <!-- Form Section -->
       <form *ngIf="product$ | async; else loading" [formGroup]="productForm" (ngSubmit)="onSave()">
         <div class="form-group">
@@ -60,18 +60,14 @@
         <a [routerLink]="['/admin/products']" class="btn btn-link">Cancel</a>
       </form>
       <ng-template #loading>
-          Loading User...
+          Loading Product...
       </ng-template>
     </div>
-    <!-- Product Display -->
-    <div *ngIf="title.value" class="col-sm">
-      <div class="card" style="width: 18rem;">
-        <img *ngIf="imageUrl.value" class="card-img-top" [src]="imageUrl.value" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">{{ productForm.get('title').value }}</h5>
-          <p class="card-text">{{ productForm.get('price').value | currency }}</p>
-        </div>
-      </div>
+    <!-- Product Card -->
+    <div class="col-sm-6">
+      <ng-container>
+        <product-card [productForm]="productForm"></product-card>
+      </ng-container>
     </div>
   </div>
 </div>

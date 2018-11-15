@@ -5,7 +5,6 @@ import { AdminProductsComponent } from './components/admin-products/admin-produc
 import { ProductFormComponent } from './components/product-form/product-form.component';
 import { AdminRoutingModule } from './admin-routing.module';
 import { SharedModule } from '../shared/shared.module';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatComponentsModule } from '../shared/mat-components.module';
 
 @NgModule({
@@ -18,7 +17,6 @@ import { MatComponentsModule } from '../shared/mat-components.module';
     CommonModule,
     MatComponentsModule,
     SharedModule,
-    ReactiveFormsModule,
     AdminRoutingModule
   ]
 })

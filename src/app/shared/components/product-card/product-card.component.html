@@ -1,3 +1,25 @@
-<p>
-  product-card works!
-</p>
+
+<div *ngIf="product; then productCatalogue else productForm">
+  content here..
+</div>
+<!-- Use this template for the product catalogue -->
+<ng-template #productCatalogue>
+  <div class="card card-container">
+    <img class="card-img-top" [src]="product.imageUrl" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title">{{product.title}}</h5>
+      <p class="card-text">{{product.price | currency: 'USD'}}</p>
+    </div>
+    <a href="#" class="btn btn-primary">Add to Cart</a>
+  </div>
+</ng-template>
+<!-- Use this template for the product form -->
+<ng-template #productForm>
+    <div *ngIf='title.value' class="card card-container"  >
+      <img *ngIf='imageUrl.value' class="card-img-top" [src]="imageUrl.value" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">{{title.value}}</h5>
+        <p class="card-text">{{price.value | currency: 'USD'}}</p>
+      </div>
+    </div>
+</ng-template>

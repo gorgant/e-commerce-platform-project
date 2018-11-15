@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Product } from '../models/product';
 import { Observable } from 'rxjs';
-import { SharedModule } from '../shared.module';
 import { ProductCategory } from '../models/product-category';
-import { switchMap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
-@Injectable({
-  providedIn: SharedModule
-})
+// This is provided in the Shared module provider array bc if provided
+// here it causes a circular dependency with product card
+@Injectable()
 export class ProductService {
 
   private productDoc: AngularFirestoreDocument<Product>;

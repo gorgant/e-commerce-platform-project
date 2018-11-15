@@ -4,11 +4,12 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AuthService } from './services/auth.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProductCardComponent } from './components/product-card/product-card.component';
 import { ProductQuantityComponent } from './components/product-quantity/product-quantity.component';
 import { AuthGuardService } from './services/auth-guard.service';
+import { ProductService } from './services/product.service';
 
 @NgModule({
   declarations: [
@@ -17,22 +18,23 @@ import { AuthGuardService } from './services/auth-guard.service';
   ],
   imports: [
     CommonModule,
-    FormsModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
-    NgbModule
+    NgbModule,
+    ReactiveFormsModule
   ],
   exports: [
     ProductCardComponent,
     ProductQuantityComponent,
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
     NgbModule
   ],
   providers: [
+    ProductService
   ]
 })
 export class SharedModule { }

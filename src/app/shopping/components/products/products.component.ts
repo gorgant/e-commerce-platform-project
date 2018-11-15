@@ -1,8 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Product } from 'src/app/shared/models/product';
+import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/shared/services/product.service';
-import { Subscription } from 'rxjs';
-import { ProductCategory } from 'src/app/shared/models/product-category';
 
 @Component({
   selector: 'products',
@@ -14,6 +11,6 @@ export class ProductsComponent implements OnInit {
   constructor(public productService: ProductService) { }
 
   ngOnInit() {
-    this.productService.getProducts();
+
   }
 }

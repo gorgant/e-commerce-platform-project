@@ -47,8 +47,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.categoryService.refreshProductCategories();
 
-    // this.newProduct = true;
-
     this.productForm = this.fb.group({
       productId: [''],
       title: ['', Validators.required],
@@ -66,14 +64,16 @@ export class ProductFormComponent implements OnInit, OnDestroy {
           return this.productService.getSingleProduct(this.productId);
         }),
         take(1),
-        tap(product => this.productForm.patchValue({
-          productId: product.id,
-          title: product.title,
-          price: product.price,
-          categoryId: product.categoryId,
-          category: product.category,
-          imageUrl: product.imageUrl
-        }))
+        tap(product => {
+          this.productForm.patchValue({
+           productId: product.id,
+           title: product.title,
+           price: product.price,
+           categoryId: product.categoryId,
+           category: product.category,
+           imageUrl: product.imageUrl
+         });
+        })
       );
     } else {
       this.newProduct = true;
