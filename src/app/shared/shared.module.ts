@@ -10,6 +10,8 @@ import { ProductCardComponent } from './components/product-card/product-card.com
 import { ProductQuantityComponent } from './components/product-quantity/product-quantity.component';
 import { AuthGuardService } from './services/auth-guard.service';
 import { ProductService } from './services/product.service';
+import { ShoppingCartService } from './services/shopping-cart.service';
+import { UserService } from './services/user.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,11 @@ import { ProductService } from './services/product.service';
     NgbModule
   ],
   providers: [
-    ProductService
+    ProductService,
+    ShoppingCartService,
+    AuthService,
+    AuthGuardService,
+    UserService
   ]
 })
 export class SharedModule { }

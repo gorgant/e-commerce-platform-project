@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ShoppingCartService } from 'src/app/shared/services/shopping-cart.service';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'shopping-cart',
@@ -14,7 +15,8 @@ export class ShoppingCartComponent implements OnInit {
     public shoppingCartService: ShoppingCartService) { }
 
   ngOnInit() {
-    this.shoppingCartService.retrieveCartItems();
+    // this.shoppingCartService.retrieveCartItems();
+    this.shoppingCartService.loadCartProducts();
   }
 
 }

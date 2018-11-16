@@ -3,11 +3,9 @@ import { AuthService } from './auth.service';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { take, tap, map } from 'rxjs/operators';
-import { SharedModule } from '../shared.module';
 
-@Injectable({
-  providedIn: SharedModule
-})
+// Provided in shared module to prevent circular dependencies
+@Injectable()
 export class AuthGuardService implements CanActivate {
 
   constructor(private auth: AuthService, private router: Router) { }

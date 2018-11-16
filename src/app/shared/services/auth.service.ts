@@ -4,14 +4,11 @@ import { Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { auth } from 'firebase';
-import { SharedModule } from '../shared.module';
 import { UserService } from './user.service';
 import { AppUser } from '../models/app-user';
 
-
-@Injectable({
-  providedIn: SharedModule
-})
+// Provided in shared module to prevent circular dependencies
+@Injectable()
 export class AuthService {
 
   appUser$: Observable<AppUser>;
