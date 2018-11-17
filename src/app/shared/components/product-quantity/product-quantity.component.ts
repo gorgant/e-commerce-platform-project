@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ShoppingCartService } from '../../services/shopping-cart.service';
+import { ShoppingCartItem } from '../../models/shopping-cart-item';
 
 @Component({
   selector: 'product-quantity',
@@ -7,9 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductQuantityComponent implements OnInit {
 
-  constructor() { }
+  @Input('currentItem') currentItem: ShoppingCartItem;
+
+  constructor(private shoppingCartService: ShoppingCartService) { }
 
   ngOnInit() {
+  }
+
+  onAdd(item: ShoppingCartItem) {
+    console.log('Adding item with id ', item.id);
+    this.shoppingCartService.addToCart(item.id);
+  }
+
+  onSubtract(item: ShoppingCartItem) {
+    console.log('Removing item with id ', item.id);
+    this.shoppingCartService.removeFromCart(item);
   }
 
 }

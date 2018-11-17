@@ -8,6 +8,7 @@ import { ProductService } from './product.service';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AppUser } from '../models/app-user';
 
 // Provided in shared module to prevent circular dependency
 @Injectable()
@@ -33,44 +34,18 @@ export class ShoppingCartService implements OnDestroy {
     private userService: UserService,
     private readonly afs: AngularFirestore) { }
 
-  // retrieveCartItems() {
-  //   this.shoppingCartItems$ = this.authService.appUser$.pipe(
-  //     switchMap(user => {
-  //       this.shoppingCartItems = [];
-  //       return user.shoppingCart.cartItems;
-  //     }),
-  //     map(item => {
-  //       this.productService.getSingleProduct(item.productId)
-  //         .subscribe(product => {
-  //           this.shoppingCartItems.push({
-  //             id: Math.random() + 'a',
-  //             productId: item.productId,
-  //             quantity: item.quantity,
-  //             product: product
-  //           });
-  //           console.log(this.shoppingCartItems);
-  //         });
-  //       return this.shoppingCartItems;
-  //     })
-  //   );
-  // }
 
-  clearShoppingCart() {
-    this.shoppingCartItems = [];
-  }
-
-  // New Version
 
   initializeCart() {
+    console.log('initializing cart');
     const userDoc = this.userService.userDoc;
-    console.log(userDoc);
     this.shoppingCartCollection = userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
     return this.shoppingCartItems$;
   }
 
   loadCartProducts() {
-    // this.initializeCart();
+    console.log('loading cart products');
     this.shoppingCartItems$ = this.initializeCart().pipe(
       switchMap(cartItems => {
         this.shoppingCartItems = [];
@@ -80,12 +55,11 @@ export class ShoppingCartService implements OnDestroy {
         this.productServiceSubscription = this.productService.getSingleProduct(item.productId)
           .subscribe(product => {
             this.shoppingCartItems.push({
-              id: Math.random() + 'a',
+              id: item.id,
               productId: item.productId,
               quantity: item.quantity,
               product: product
             });
-            console.log(this.shoppingCartItems);
           });
         return this.shoppingCartItems;
       })
@@ -94,15 +68,11 @@ export class ShoppingCartService implements OnDestroy {
 
   getSingleCartItem(cartItemId: string) {
     this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItemId);
-    console.log(this.shoppingCartDoc);
     this.singleShoppingCartItem$ = this.shoppingCartDoc.valueChanges();
     return this.singleShoppingCartItem$;
   }
 
   addToCart(productId: string) {
-    // Loads data into this component
-    this.initializeCart();
-
     this.getSingleCartItem(productId).pipe(
       take(1)
       ).subscribe(cartItem => {
@@ -128,17 +98,38 @@ export class ShoppingCartService implements OnDestroy {
   }
 
   removeFromCart(cartItem: ShoppingCartItem) {
-    this.initializeCart();
+    console.log('Removal request recieved');
     if (cartItem.quantity > 1) {
       const updatedItem: ShoppingCartItem = {
-        id: cartItem.id,
-        productId: cartItem.productId,
-        quantity: cartItem.quantity - 1
-      };
+            id: cartItem.id,
+            productId: cartItem.productId,
+            quantity: cartItem.quantity - 1
+          };
       this.shoppingCartCollection.doc(cartItem.id).update(updatedItem);
     } else {
       this.shoppingCartCollection.doc(cartItem.id).delete();
     }
+  }
+
+  // Removes from view, does not delete from database (used for logout)
+  clearShoppingCart() {
+    this.shoppingCartItems = null;
+    this.shoppingCartItems$ = null;
+  }
+
+  async deleteAllCartItems() {
+    console.log('alternate delete fired');
+    const qry: firebase.firestore.QuerySnapshot = await this.shoppingCartCollection.ref.get();
+    const batch = this.afs.firestore.batch();
+
+    qry.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+
+    batch.commit();
+
+    this.clearShoppingCart();
+
   }
 
   ngOnDestroy() {

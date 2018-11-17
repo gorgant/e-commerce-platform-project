@@ -16,10 +16,10 @@
       </td>
       <td>{{ item?.product.title }}</td>
       <td>
-        <product-quantity></product-quantity>
+        <product-quantity [currentItem]="item"></product-quantity>
       </td>
-      <td>{{ item.quantity }}</td>
+      <td>{{ item.product.price*item.quantity | currency: 'USD' }}</td>
     </tr>
   </tbody>
 </table>
-<button class="btn btn-danger">Clear Shopping Cart</button>
+<button (click)="emptyCart()" class="btn btn-danger">Empty Shopping Cart</button>

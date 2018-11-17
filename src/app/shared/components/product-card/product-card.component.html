@@ -11,7 +11,7 @@
       <p class="card-text">{{product.price | currency: 'USD'}}</p>
     </div>
     <div class="card-footer">
-      <a (click)="addToCart(product.id)" href="#" class="btn btn-primary btn-block">Add to Cart</a>
+      <button (click)="addToCart(product.id)" class="btn btn-primary btn-block">Add to Cart</button>
     </div>
   </div>
 </ng-template>
