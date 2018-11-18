@@ -1,5 +1,7 @@
 <h2>Shopping Cart</h2>
-<p>You have [XX] items in your shopping cart</p>
+<p *ngIf="(shoppingCartService.itemQuantity$ | async) as itemQty">
+  You have {{ itemQty }} items in your shopping cart
+</p>
 <table class="table">
   <thead>
     <tr>

@@ -25,6 +25,7 @@ export class ShoppingCartService implements OnDestroy {
 
   private shoppingCartCollection: AngularFirestoreCollection<ShoppingCartItem>;
   shoppingCartItems$: Observable<ShoppingCartItem[]>;
+  itemQuantity$: Observable<number>;
 
   private productServiceSubscription: Subscription;
 
@@ -61,6 +62,7 @@ export class ShoppingCartService implements OnDestroy {
               product: product
             });
           });
+        // this.calculateCartItemsQuantity();
         return this.shoppingCartItems;
       })
     );
@@ -132,6 +134,18 @@ export class ShoppingCartService implements OnDestroy {
 
   }
 
+  calculateCartItemsQuantity() {
+    let qty = 0;
+    this.itemQuantity$ = this.shoppingCartItems$.pipe(
+      switchMap( cartItems => {
+        return cartItems;
+      }),
+      map(item => {
+        qty += item.quantity;
+        return qty;
+      })
+    );
+  }
   ngOnDestroy() {
     if (this.productServiceSubscription) {
       this.productServiceSubscription.unsubscribe();

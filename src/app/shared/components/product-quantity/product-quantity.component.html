@@ -1,10 +1,29 @@
+<div *ngIf="currentProduct; then cataloguePage else cartPage">
+  template here...
+</div>
+<ng-template #cataloguePage>
+  <button *ngIf="!addToCartClicked" (click)="onAdd(currentProduct.id)" class="btn btn-secondary btn-block">Add to Cart</button>
+  <div *ngIf="addToCartClicked && (currentItem$ | async) as cartItem ">
+    <div class="row no-gutters">
+      <div class="col-2">
+        <button (click)="onSubtract(cartItem)" class="btn btn-secondary btn-block">-</button>
+      </div>
+      <div class="col text-center quantity">{{ cartItem?.quantity }} in cart</div>
+      <div class="col-2">
+        <button (click)="onAdd(currentProduct.id)" class="btn btn-secondary btn-block">+</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #cartPage>
   <div class="row no-gutters">
     <div class="col-2">
       <button (click)="onSubtract(currentItem)" class="btn btn-secondary btn-block">-</button>
     </div>
     <div class="col text-center quantity">{{ currentItem.quantity }} in cart</div>
     <div class="col-2">
-      <button (click)="onAdd(currentItem)" class="btn btn-secondary btn-block">+</button>
+      <button (click)="onAdd(currentItem.id)" class="btn btn-secondary btn-block">+</button>
     </div>
     <div class="col"></div>
   </div>
+</ng-template>
