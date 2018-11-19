@@ -12,6 +12,9 @@ import { AdminModule } from './admin/admin.module';
 import { CoreModule } from './core/core.module';
 import { ShoppingModule } from './shopping/shopping.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
 @NgModule({
@@ -28,6 +31,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     CoreModule,
     AngularFireModule.initializeApp(environment.firebase),
     AppRoutingModule,
+    StoreModule.forRoot(reducers, { metaReducers }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
   providers: [
   ],

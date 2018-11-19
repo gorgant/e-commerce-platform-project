@@ -26,10 +26,10 @@ export class ProductQuantityComponent implements OnInit {
       this.currentItem$ = this.shoppingCartItem;
       this.currentItem$.subscribe( item => {
         if (item && item.quantity > 0) {
-          console.log('initializing with quantity showing');
+          // console.log('initializing with quantity showing');
           this.addToCartClicked = true;
-          console.log(this.addToCartClicked);
-          console.log(item);
+          // console.log(this.addToCartClicked);
+          // console.log(item);
         } else {
           this.addToCartClicked = false;
         }
@@ -51,7 +51,7 @@ export class ProductQuantityComponent implements OnInit {
   }
 
   get shoppingCartItem() {
-    console.log('retrieving item info for product', this.currentProduct);
+    // console.log('retrieving item info for product', this.currentProduct);
     return this.shoppingCartService.getSingleCartItem(this.currentProduct.id);
   }
 

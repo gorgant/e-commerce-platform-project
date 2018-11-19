@@ -135,5 +135,8 @@
       }
     }
   },
-  "defaultProject": "organic-shop"
+  "defaultProject": "organic-shop",
+  "cli": {
+    "defaultCollection": "@ngrx/schematics"
+  }
 }

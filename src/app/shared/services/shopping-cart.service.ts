@@ -1,5 +1,4 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ShoppingCart } from '../models/shopping-cart';
 import { Observable, Subscription } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
@@ -15,7 +14,7 @@ import { AppUser } from '../models/app-user';
 
 export class ShoppingCartService implements OnDestroy {
 
-  shoppingCart$: Observable<ShoppingCart>;
+  // shoppingCart$: Observable<ShoppingCart>;
   shoppingCartItems: ShoppingCartItem[] = [];
   shoppingCartProducts: Product[] = [];
 

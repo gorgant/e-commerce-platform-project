@@ -19,9 +19,9 @@ export class ProductsComponent implements OnInit {
     private authService: AuthService) { }
 
   ngOnInit() {
-    this.authSubscription = this.authService.appUser$.subscribe( user => {
-        this.shoppingCartService.loadCartProducts();
-        console.log('Logged in, cart loaded');
-    });
+    // this.authSubscription = this.authService.appUser$.subscribe( user => {
+    //     this.shoppingCartService.loadCartProducts();
+    //     console.log('Logged in, cart loaded');
+    // });
   }
 }

@@ -1,4 +1,3 @@
-import { ShoppingCart } from './shopping-cart';
 
 export interface AppUser {
   uid: string;
@@ -6,5 +5,4 @@ export interface AppUser {
   isAdmin: boolean;
   photoURL?: string;
   displayName?: string;
-  shoppingCart?: ShoppingCart;
 }
