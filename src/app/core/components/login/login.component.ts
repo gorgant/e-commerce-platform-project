@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { Login } from '../../auth.actions';
+import { Login, Logout } from '../../auth.actions';
 import { from, noop } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -23,56 +23,35 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.auth.redirectIfAuthorized(() => {
-      this.auth.retreiveAppUser()
-        .pipe(
-          tap(user => {
-            console.log('Dispatching to store');
-            this.store.dispatch(new Login({user}));
-            const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-            if (returnUrl) {
-              this.router.navigate([returnUrl]);
-            } else {
-              this.router.navigate(['/']);
-            }
-          })
-        )
-        .subscribe(
-          noop,
-          () => alert('Login Failed')
-        );
+      console.log('redirectFunction fires');
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        if (returnUrl) {
+          this.router.navigate([returnUrl]);
+        } else {
+          this.router.navigate(['/login']);
+        }
     });
+    this.auth.retreiveAppUser()
+    .pipe(
+      tap(user => {
+        if (user) {
+          console.log('Dispatching Login to store');
+          this.store.dispatch(new Login({user}));
+        }
+      })
+    )
+    .subscribe(
+      noop,
+      () => alert('Login Failed')
+    );
   }
 
   signIn() {
     this.auth.googleLogin();
-      // .then(() => {
-      //   console.log('Next is retreiveAppUser');
-      //   this.auth.retreiveAppUser()
-      //     .pipe(
-      //       tap(user => {
-      //         console.log('Dispatching to store');
-      //         this.store.dispatch(new Login({user}));
-      //         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-      //         this.router.navigate([returnUrl]);
-      //       })
-      //     )
-      //     .subscribe(
-      //       noop,
-      //       () => alert('Login Failed')
-      //     );
-      // });
-    // from(this.auth.googleLogin())
-    //   .pipe(
-    //     tap(user => {
-    //       this.store.dispatch(new Login({user}));
-    //       const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-    //       this.router.navigate([returnUrl]);
-    //     })
-    //   )
-    //   .subscribe(
-    //     noop,
-    //     () => alert('Login Failed')
-    //   );
+  }
+
+  signOut() {
+    this.store.dispatch(new Logout());
   }
 
 }

@@ -36,7 +36,7 @@ export class ShoppingCartService implements OnDestroy {
 
 
 
-  initializeCart() {
+    initializeCart() {
     console.log('initializing cart');
     const userDoc = this.userService.userDoc;
     this.shoppingCartCollection = userDoc.collection<ShoppingCartItem>('shoppingCartCol');

@@ -3,7 +3,7 @@ import { AppUser } from '../shared/models/app-user';
 
 export enum AuthActionTypes {
   LoginAction = '[Login] Login',
-  LogoutAction = '[Logout] Logout'
+  LogoutAction = '[BS Navbar] Logout'
 }
 
 export class Login implements Action {
@@ -14,4 +14,8 @@ export class Login implements Action {
   }
 }
 
-export type AuthActions = Login;
+export class Logout implements Action {
+  readonly type = AuthActionTypes.LogoutAction;
+}
+
+export type AuthActions = Login | Logout;
