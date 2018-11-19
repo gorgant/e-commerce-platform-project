@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable, of } from 'rxjs';
-import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { auth } from 'firebase';
 import { UserService } from './user.service';
@@ -15,7 +14,6 @@ export class AuthService {
 
   constructor(
     private afAuth: AngularFireAuth,
-    private router: Router,
     private userService: UserService
     ) {
       this.appUser$ = this.retreiveAppUser();
