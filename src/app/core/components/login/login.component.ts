@@ -22,15 +22,6 @@ export class LoginComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.auth.redirectIfAuthorized(() => {
-      console.log('redirectFunction fires');
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        if (returnUrl) {
-          this.router.navigate([returnUrl]);
-        } else {
-          this.router.navigate(['/login']);
-        }
-    });
     this.auth.retreiveAppUser()
     .pipe(
       tap(user => {
@@ -38,6 +29,16 @@ export class LoginComponent implements OnInit {
           console.log('Dispatching Login to store');
           this.store.dispatch(new Login({user}));
         }
+        // This redirects the user to their original destination
+        this.auth.redirectIfAuthorized(() => {
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+            if (returnUrl) {
+              console.log('navigating to return url: ', returnUrl);
+              this.router.navigate([returnUrl]);
+            } else {
+              this.router.navigate(['/login']);
+            }
+        });
       })
     )
     .subscribe(
@@ -49,9 +50,4 @@ export class LoginComponent implements OnInit {
   signIn() {
     this.auth.googleLogin();
   }
-
-  signOut() {
-    this.store.dispatch(new Logout());
-  }
-
 }

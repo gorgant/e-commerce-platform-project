@@ -5,6 +5,7 @@ import { Store, select } from '@ngrx/store';
 import { Logout } from '../../auth.actions';
 import { Observable } from 'rxjs';
 import { isLoggedIn, isLoggedOut } from '../../auth.selectors';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'bs-navbar',
@@ -20,7 +21,8 @@ export class BsNavbarComponent implements OnInit {
 
   constructor(
     public auth: AuthService,
-    private store: Store<AppState>) { }
+    private store: Store<AppState>,
+    private router: Router) { }
 
     ngOnInit() {
       // These select functions ensure observable only emits on actual changes to auth (vs other state changes)
@@ -38,7 +40,9 @@ export class BsNavbarComponent implements OnInit {
 
   logout() {
     console.log('Dispatching Logout to store');
+    this.auth.signOut();
     this.store.dispatch(new Logout());
+    this.router.navigate(['/login']);
   }
 
 }
