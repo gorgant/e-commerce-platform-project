@@ -6,6 +6,8 @@ import { Logout } from '../../auth.actions';
 import { Observable } from 'rxjs';
 import { isLoggedIn, isLoggedOut } from '../../auth.selectors';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/shared/services/user.service';
+import { AppUser } from 'src/app/shared/models/app-user';
 
 @Component({
   selector: 'bs-navbar',
@@ -22,21 +24,26 @@ export class BsNavbarComponent implements OnInit {
   constructor(
     public auth: AuthService,
     private store: Store<AppState>,
-    private router: Router) { }
+    private router: Router,
+    public userService: UserService) { }
 
-    ngOnInit() {
-      // These select functions ensure observable only emits on actual changes to auth (vs other state changes)
-      this.isLoggedIn$ = this.store
-      .pipe(
-        select(isLoggedIn)
-      );
+  ngOnInit() {
+    // These select functions ensure observable only emits on actual changes to auth (vs other state changes)
+    this.isLoggedIn$ = this.store
+    .pipe(
+      select(isLoggedIn)
+    );
 
-      this.isLoggedOut$ = this.store
-      .pipe(
-        select(isLoggedOut)
-      );
+    this.isLoggedOut$ = this.store
+    .pipe(
+      select(isLoggedOut)
+    );
 
-    }
+  }
+
+  get localUser(): AppUser {
+    return this.userService.localStorageUserData;
+  }
 
   logout() {
     console.log('Dispatching Logout to store');

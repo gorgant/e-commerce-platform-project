@@ -12,19 +12,17 @@
         <!-- template will replace this div -->
       </div>
       <ng-template #authenticated>
-        <ng-container *ngIf="auth.appUser$ | async as user" >
           <li class="nav-item dropdown" ngbDropdown *ngIf="isLoggedIn$ | async">
-            <a class="nav-link dropdown-toggle" id="id01" ngbDropdownToggle>{{ user.displayName }}</a>
+            <a class="nav-link dropdown-toggle" id="id01" ngbDropdownToggle>{{ localUser.displayName }}</a>
             <div class="dropdown-menu" aria-labelledby="id01" ngbDropdownMenu>
               <a class="dropdown-item" routerLink="/my-orders">My Orders</a>
-              <ng-container *ngIf="user.isAdmin">
+              <ng-container *ngIf="localUser.isAdmin">
                 <a class="dropdown-item" routerLink="/admin/orders">Manage Orders</a>
                 <a class="dropdown-item" routerLink="/admin/products">Manage Products</a>
               </ng-container>
               <a class="dropdown-item" routerLink="/" (click)="logout()">Log Out</a>
             </div>
           </li>
-        </ng-container>
       </ng-template>
       <ng-template #guest>
         <li class="nav-item" >

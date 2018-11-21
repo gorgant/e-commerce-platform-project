@@ -28,7 +28,7 @@ export class UserService {
     const data: AppUser = {
       uid: user.uid,
       email: user.email,
-      isAdmin: true, // Temporarily set to true
+      // isAdmin: undefined,
       displayName: user.displayName,
       photoURL: user.photoURL
     };
@@ -42,6 +42,15 @@ export class UserService {
 
   get userDoc (): AngularFirestoreDocument<AppUser> {
     return this.currentUserDoc;
+  }
+
+  get localStorageUserData(): AppUser {
+    const userData = localStorage.getItem('user');
+    let user: AppUser;
+    if (userData) {
+      user = JSON.parse(userData);
+    }
+    return user;
   }
 
 

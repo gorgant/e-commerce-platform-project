@@ -8,6 +8,8 @@ import { LoginComponent } from './components/login/login.component';
 import { SharedModule } from '../shared/shared.module';
 import { StoreModule } from '@ngrx/store';
 import * as fromAuth from './auth.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './auth.effects';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,8 @@ import * as fromAuth from './auth.reducer';
     CommonModule,
     SharedModule,
     CoreRoutingModule,
-    StoreModule.forFeature('auth', fromAuth.authReducer)
+    StoreModule.forFeature('auth', fromAuth.authReducer),
+    EffectsModule.forFeature([AuthEffects])
   ],
   exports: [
     BsNavbarComponent

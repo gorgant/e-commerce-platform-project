@@ -23,6 +23,7 @@ export class AuthGuardService implements CanActivate {
           select(isLoggedIn),
           tap(loggedIn => {
             if (!loggedIn) {
+              console.log('Preserving queryParams', state.url);
               this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
             }
           })
