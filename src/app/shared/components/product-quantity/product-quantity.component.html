@@ -2,7 +2,7 @@
   template here...
 </div>
 <ng-template #cataloguePage>
-  <button *ngIf="!addToCartClicked" (click)="onAdd(currentProduct.id)" class="btn btn-secondary btn-block">Add to Cart</button>
+  <button *ngIf="!addToCartClicked" (click)="onAdd(currentProduct.productId)" class="btn btn-secondary btn-block">Add to Cart</button>
   <div *ngIf="addToCartClicked && (currentItem$ | async) as cartItem ">
     <div class="row no-gutters">
       <div class="col-2">
@@ -10,7 +10,7 @@
       </div>
       <div class="col text-center quantity">{{ cartItem?.quantity }} in cart</div>
       <div class="col-2">
-        <button (click)="onAdd(currentProduct.id)" class="btn btn-secondary btn-block">+</button>
+        <button (click)="onAdd(currentProduct.productId)" class="btn btn-secondary btn-block">+</button>
       </div>
     </div>
   </div>
