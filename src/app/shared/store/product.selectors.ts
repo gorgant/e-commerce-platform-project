@@ -17,3 +17,8 @@ export const selectAllProducts = createSelector(
   selectProductsState,
   fromCourse.selectAll
 );
+
+export const allProductsLoaded = createSelector(
+  selectProductsState,
+  productsState => productsState.allProductsLoaded
+);

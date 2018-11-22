@@ -2,7 +2,10 @@ import { Injectable } from '@angular/core';
 import { ProductRequested, ProductActionTypes, ProductLoaded, AllProductsRequested, AllProductsLoaded } from './product.actions';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { ProductService } from '../services/product.service';
-import { mergeMap, map } from 'rxjs/operators';
+import { mergeMap, map, withLatestFrom, filter } from 'rxjs/operators';
+import { AppState } from 'src/app/reducers';
+import { Store, select } from '@ngrx/store';
+import { allProductsLoaded } from './product.selectors';
 
 @Injectable()
 export class ProductEffects {
@@ -21,6 +24,11 @@ export class ProductEffects {
   loadAllProducts$ = this.actions$
       .pipe(
         ofType<AllProductsRequested>(ProductActionTypes.AllProductsRequested),
+        // This combines the previous observable with the current one
+        withLatestFrom(this.store.pipe(select(allProductsLoaded))),
+        // Ingest both observable values and filter out the observable and only trigger if the
+        // courses haven't been loaded (only false makes it through)
+        filter(([action, allProductsLoadedVal]) => !allProductsLoadedVal),
         mergeMap(action => this.productService.getProducts()),
         map(products => new AllProductsLoaded({products}))
       );
@@ -28,6 +36,7 @@ export class ProductEffects {
   constructor(
     private actions$: Actions,
     private productService: ProductService,
+    private store: Store<AppState>
     ) {}
 
 }

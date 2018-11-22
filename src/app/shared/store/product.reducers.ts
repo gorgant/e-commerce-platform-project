@@ -4,7 +4,8 @@ import { Product } from '../models/product';
 import { ProductActions, ProductActionTypes } from './product.actions';
 
 export interface ProductsState extends EntityState<Product> {
-
+  // This is a custom addition to the EntityState that also needs to be initialized below
+  allProductsLoaded: boolean;
 }
 
 export const adapter: EntityAdapter<Product> =
@@ -12,7 +13,9 @@ export const adapter: EntityAdapter<Product> =
     selectId: (product: Product) => product.productId,
   });
 
-export const initialProductsState: ProductsState = adapter.getInitialState();
+export const initialProductsState: ProductsState = adapter.getInitialState({
+  allProductsLoaded: false
+});
 
 export function productsReducer(state = initialProductsState, action: ProductActions): ProductsState {
   switch (action.type) {
@@ -23,7 +26,8 @@ export function productsReducer(state = initialProductsState, action: ProductAct
       return adapter.addOne(action.payload.product, state);
 
     case ProductActionTypes.AllProductsLoaded:
-      return adapter.addAll(action.payload.products, state);
+      // Toggle the allCoursesLoaded value when this action is triggered
+      return adapter.addAll(action.payload.products, {...state, allProductsLoaded: true});
 
     default: {
       return state;
