@@ -29,6 +29,7 @@ import { ProductResolver } from './services/product.resolver';
     AngularFirestoreModule,
     NgbModule,
     ReactiveFormsModule,
+    // The first argument identifies the property under which the feature state will be visible in dev tools
     StoreModule.forFeature('products', productsReducer),
     EffectsModule.forFeature([ProductEffects])
   ],

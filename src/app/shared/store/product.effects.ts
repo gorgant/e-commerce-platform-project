@@ -13,7 +13,7 @@ export class ProductEffects {
       ofType<ProductRequested>(ProductActionTypes.ProductRequested),
       // Using mergeMap instead of switchMap b/c that will ensure multiple requests can run in parallel
       mergeMap(action => this.productService.getSingleProduct(action.payload.productId)),
-      // Now lets return the result (an observable of the mergmap value)
+      // Now lets return the result (an observable of the mergmap value) which gets sent to the store and is saved used the reducer
       map(product => new ProductLoaded({product})),
   );
 

@@ -5,7 +5,7 @@ import { Product } from '../models/product';
 export enum ProductActionTypes {
   ProductListRequested = '[View Products Pages] Product List Requested',
   ProductListLoaded = '[Products API] Products List Loaded',
-  ProductRequested = '[Products API] Product Requested',
+  ProductRequested = '[Product Resolver] Product Requested',
   ProductLoaded = '[Products API] Product Loaded'
 }
 

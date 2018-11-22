@@ -16,9 +16,9 @@ export class ProductResolver implements Resolve<Product> {
     private store: Store<AppState>
   ) {}
 
+  // This triggers a router transition only if the operation below gets resolved
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Product> {
-    const productId = route.params['id'];
-    console.log('product ID', productId);
+    const productId: string = route.params['id'];
 
     return this.store
       .pipe(
@@ -29,9 +29,9 @@ export class ProductResolver implements Resolve<Product> {
             this.store.dispatch(new ProductRequested({productId}));
           }
         }),
-        // Filter out any 'undefined' results if it's not in the store
+        // Filter out any 'undefined' results if it's not in the store so those don't get passed to the router
         filter(product => !!product),
-        // Return the first result, otherwise this operation never completes
+        // Return the first result, otherwise this router operation never resolves
         first()
       );
   }
