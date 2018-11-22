@@ -162,7 +162,7 @@ export class DataImporterService {
   private addItem(item: Product) {
     const autoId = this.afs.createId();
     const thisItem: Product = {
-      id: autoId,
+      productId: autoId,
       title: item.title,
       price: item.price,
       category: item.category,

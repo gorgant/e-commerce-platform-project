@@ -35,12 +35,13 @@ export class ProductService {
   }
 
   saveProduct(product: Product) {
+    this.getSingleProduct(product.productId);
     this.productDoc.update(product);
   }
 
   createProduct(product: Product) {
     const autoId = this.afs.createId();
-    product.id = autoId;
+    product.productId = autoId;
     this.productsCollection = this.afs.collection<Product>('products');
     this.productsCollection.doc(autoId).set(product);
   }

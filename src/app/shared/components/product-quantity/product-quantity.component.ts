@@ -52,7 +52,7 @@ export class ProductQuantityComponent implements OnInit {
 
   get shoppingCartItem() {
     // console.log('retrieving item info for product', this.currentProduct);
-    return this.shoppingCartService.getSingleCartItem(this.currentProduct.id);
+    return this.shoppingCartService.getSingleCartItem(this.currentProduct.productId);
   }
 
 }

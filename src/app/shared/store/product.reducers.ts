@@ -8,7 +8,9 @@ export interface ProductsState extends EntityState<Product> {
 }
 
 export const adapter: EntityAdapter<Product> =
-  createEntityAdapter<Product>();
+  createEntityAdapter<Product>({
+    selectId: (product: Product) => product.productId,
+  });
 
 export const initialProductsState: ProductsState = adapter.getInitialState();
 

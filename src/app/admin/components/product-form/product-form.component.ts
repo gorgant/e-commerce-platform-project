@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Product } from 'src/app/shared/models/product';
-import { Observable, of, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { switchMap, tap, take } from 'rxjs/operators';
 import { CategoryService } from 'src/app/shared/services/category.service';
 
 @Component({
@@ -14,30 +13,16 @@ import { CategoryService } from 'src/app/shared/services/category.service';
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
 
-  // This prevents an error when "loading" a new product
-  emptyProduct: Product = {
-    id: '',
-    title: '',
-    price: null,
-    categoryId: '',
-    category: '',
-    imageUrl: ''
-  };
-
-  product$: Observable<Product> = of(this.emptyProduct);
-  productId: string;
-
   categorySubscription: Subscription;
 
   productForm: FormGroup;
   categoryText: string;
 
+  product: Product;
   newProduct: boolean;
 
   validationPattern: RegExp = /^(ftp|http|https):\/\/[^ "]+$/;
 
-  // New variables
-  product: Product;
 
   constructor(
     private fb: FormBuilder,
@@ -65,7 +50,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       this.newProduct = false;
       this.product = this.route.snapshot.data['productFS'];
       this.productForm.patchValue({
-        productId: this.product.id,
+        productId: this.product.productId,
         title: this.product.title,
         price: this.product.price,
         categoryId: this.product.categoryId,
@@ -75,40 +60,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     } else {
       this.newProduct = true;
     }
-
-    // this.categoryService.refreshProductCategories();
-
-    // this.productForm = this.fb.group({
-    //   productId: [''],
-    //   title: ['', Validators.required],
-    //   price: ['', [Validators.required, Validators.min(0.01)]],
-    //   categoryId: ['', Validators.required],
-    //   category: [''],
-    //   imageUrl: ['', [Validators.required, Validators.pattern(this.validationPattern)]]
-    // });
-
-    // if (this.router.url !== '/admin/products/new') {
-    //   this.newProduct = false;
-    //   this.product$ = this.route.paramMap.pipe(
-    //     switchMap(params => {
-    //       this.productId = params.get('id');
-    //       return this.productService.getSingleProduct(this.productId);
-    //     }),
-    //     take(1),
-    //     tap(product => {
-    //       this.productForm.patchValue({
-    //        productId: product.id,
-    //        title: product.title,
-    //        price: product.price,
-    //        categoryId: product.categoryId,
-    //        category: product.category,
-    //        imageUrl: product.imageUrl
-    //      });
-    //     })
-    //   );
-    // } else {
-    //   this.newProduct = true;
-    // }
   }
 
   onSave() {
@@ -126,7 +77,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   onDelete() {
     if (confirm('Are you sure you want to delete this product?')) {
-      this.productService.deleteProduct(this.productId);
+      this.productService.deleteProduct(this.product.productId);
       this.router.navigate(['/admin/products']);
     }
   }

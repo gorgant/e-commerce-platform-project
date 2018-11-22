@@ -17,7 +17,6 @@ import { ProductEffects } from './store/product.effects';
 import { StoreModule } from '@ngrx/store';
 import { productsReducer } from './store/product.reducers';
 import { ProductSingleResolver } from './services/product-single.resolver';
-import { ProductAllResolver } from './services/product-all.resolver';
 
 @NgModule({
   declarations: [
@@ -50,8 +49,7 @@ import { ProductAllResolver } from './services/product-all.resolver';
     AuthService,
     AuthGuardService,
     UserService,
-    ProductSingleResolver,
-    ProductAllResolver
+    ProductSingleResolver
   ]
 })
 export class SharedModule { }
