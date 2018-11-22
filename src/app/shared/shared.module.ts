@@ -12,6 +12,11 @@ import { AuthGuardService } from './services/auth-guard.service';
 import { ProductService } from './services/product.service';
 import { ShoppingCartService } from './services/shopping-cart.service';
 import { UserService } from './services/user.service';
+import { EffectsModule } from '@ngrx/effects';
+import { ProductEffects } from './store/product.effects';
+import { StoreModule } from '@ngrx/store';
+import { productsReducer } from './store/product.reducers';
+import { ProductResolver } from './services/product.resolver';
 
 @NgModule({
   declarations: [
@@ -23,7 +28,9 @@ import { UserService } from './services/user.service';
     AngularFireAuthModule,
     AngularFirestoreModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    StoreModule.forFeature('products', productsReducer),
+    EffectsModule.forFeature([ProductEffects])
   ],
   exports: [
     ProductCardComponent,
@@ -40,7 +47,8 @@ import { UserService } from './services/user.service';
     ShoppingCartService,
     AuthService,
     AuthGuardService,
-    UserService
+    UserService,
+    ProductResolver
   ]
 })
 export class SharedModule { }

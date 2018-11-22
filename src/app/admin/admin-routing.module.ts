@@ -5,6 +5,7 @@ import { AdminOrdersComponent } from './components/admin-orders/admin-orders.com
 import { AuthGuardService } from '../shared/services/auth-guard.service';
 import { AdminAuthGuardService } from './services/admin-auth-guard.service';
 import { ProductFormComponent } from './components/product-form/product-form.component';
+import { ProductResolver } from '../shared/services/product.resolver';
 
 const adminRoutes: Routes = [
   {
@@ -15,7 +16,10 @@ const adminRoutes: Routes = [
   {
     path: 'admin/products/:id',
     component: ProductFormComponent,
-    canActivate: [AuthGuardService, AdminAuthGuardService]
+    canActivate: [AuthGuardService, AdminAuthGuardService],
+    resolve: {
+      productFS: ProductResolver
+    }
   },
   {
     path: 'admin/products',
