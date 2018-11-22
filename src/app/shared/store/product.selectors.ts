@@ -1,6 +1,8 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { ProductsState } from './product.reducers';
 
+import * as fromCourse from './product.reducers';
+
 // This string for the selector defines the property name exposed in the Ngrx devtools, must match StoreModule.forFeature selector in module
 export const selectProductsState = createFeatureSelector<ProductsState>('products');
 
@@ -11,3 +13,7 @@ export const selectProductById = (productId: string) => createSelector(
   productsState => productsState.entities[productId]
 );
 
+export const selectAllProducts = createSelector(
+  selectProductsState,
+  fromCourse.selectAll
+);

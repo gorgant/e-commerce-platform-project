@@ -3,35 +3,36 @@ import { Product } from '../models/product';
 
 
 export enum ProductActionTypes {
-  ProductListRequested = '[View Products Pages] Product List Requested',
-  ProductListLoaded = '[Products API] Products List Loaded',
   ProductRequested = '[Product Resolver] Product Requested',
-  ProductLoaded = '[Products API] Product Loaded'
-}
-
-export class ProductListRequested implements Action {
-  readonly type = ProductActionTypes.ProductListRequested;
-
-}
-
-export class ProductListLoaded implements Action {
-  readonly type = ProductActionTypes.ProductListLoaded;
-
-  constructor(public payload: {products: Product[]}) {}
-
+  ProductLoaded = '[Products API] Product Loaded',
+  AllProductsRequested = '[Admin Products or Catalogue] Product List Requested',
+  AllProductsLoaded = '[Products API] Products List Loaded',
 }
 
 export class ProductRequested implements Action {
   readonly type = ProductActionTypes.ProductRequested;
 
   constructor(public payload: {productId: string}) {}
-
 }
+
 export class ProductLoaded implements Action {
   readonly type = ProductActionTypes.ProductLoaded;
 
   constructor(public payload: {product: Product}) {}
-
 }
 
-export type ProductActions = ProductListRequested | ProductListLoaded | ProductRequested | ProductLoaded;
+export class AllProductsRequested implements Action {
+  readonly type = ProductActionTypes.AllProductsRequested;
+}
+
+export class AllProductsLoaded implements Action {
+  readonly type = ProductActionTypes.AllProductsLoaded;
+
+  constructor(public payload: {products: Product[]}) {}
+}
+
+export type ProductActions =
+  AllProductsRequested |
+  AllProductsLoaded |
+  ProductRequested |
+  ProductLoaded;

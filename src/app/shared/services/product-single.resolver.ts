@@ -10,7 +10,7 @@ import { tap, filter, first } from 'rxjs/operators';
 import { ProductRequested } from '../store/product.actions';
 
 @Injectable()
-export class ProductResolver implements Resolve<Product> {
+export class ProductSingleResolver implements Resolve<Product> {
   constructor(
     private productService: ProductService,
     private store: Store<AppState>
