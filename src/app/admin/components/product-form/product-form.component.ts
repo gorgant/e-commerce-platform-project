@@ -36,6 +36,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   validationPattern: RegExp = /^(ftp|http|https):\/\/[^ "]+$/;
 
+  // New variables
+  product: Product;
+
   constructor(
     private fb: FormBuilder,
     public productService: ProductService,
@@ -45,6 +48,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     ) { }
 
   ngOnInit() {
+
     this.categoryService.refreshProductCategories();
 
     this.productForm = this.fb.group({
@@ -56,28 +60,55 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       imageUrl: ['', [Validators.required, Validators.pattern(this.validationPattern)]]
     });
 
-    if (this.router.url !== '/admin/products/new') {
+    // Data here is pulled from the product resolver, which is in turn pulled from the Store
+    if (this.route.snapshot.data['productFS']) {
       this.newProduct = false;
-      this.product$ = this.route.paramMap.pipe(
-        switchMap(params => {
-          this.productId = params.get('id');
-          return this.productService.getSingleProduct(this.productId);
-        }),
-        take(1),
-        tap(product => {
-          this.productForm.patchValue({
-           productId: product.id,
-           title: product.title,
-           price: product.price,
-           categoryId: product.categoryId,
-           category: product.category,
-           imageUrl: product.imageUrl
-         });
-        })
-      );
+      this.product = this.route.snapshot.data['productFS'];
+      this.productForm.patchValue({
+        productId: this.product.id,
+        title: this.product.title,
+        price: this.product.price,
+        categoryId: this.product.categoryId,
+        category: this.product.category,
+        imageUrl: this.product.imageUrl
+      });
     } else {
       this.newProduct = true;
     }
+
+    // this.categoryService.refreshProductCategories();
+
+    // this.productForm = this.fb.group({
+    //   productId: [''],
+    //   title: ['', Validators.required],
+    //   price: ['', [Validators.required, Validators.min(0.01)]],
+    //   categoryId: ['', Validators.required],
+    //   category: [''],
+    //   imageUrl: ['', [Validators.required, Validators.pattern(this.validationPattern)]]
+    // });
+
+    // if (this.router.url !== '/admin/products/new') {
+    //   this.newProduct = false;
+    //   this.product$ = this.route.paramMap.pipe(
+    //     switchMap(params => {
+    //       this.productId = params.get('id');
+    //       return this.productService.getSingleProduct(this.productId);
+    //     }),
+    //     take(1),
+    //     tap(product => {
+    //       this.productForm.patchValue({
+    //        productId: product.id,
+    //        title: product.title,
+    //        price: product.price,
+    //        categoryId: product.categoryId,
+    //        category: product.category,
+    //        imageUrl: product.imageUrl
+    //      });
+    //     })
+    //   );
+    // } else {
+    //   this.newProduct = true;
+    // }
   }
 
   onSave() {
