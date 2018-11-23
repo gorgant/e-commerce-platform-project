@@ -29,7 +29,9 @@ export class ProductEffects {
         // Ingest both observable values and filter out the observable and only trigger if the
         // courses haven't been loaded (only false makes it through)
         filter(([action, allProductsLoadedVal]) => !allProductsLoadedVal),
+        // Call api for data
         mergeMap(action => this.productService.getProducts()),
+        // Take results and trigger an action
         map(products => new AllProductsLoaded({products}))
       );
 

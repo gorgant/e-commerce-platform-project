@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ShoppingCartService } from 'src/app/shared/services/shopping-cart.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { AppState } from 'src/app/reducers';
+import { AllProductsRequested } from 'src/app/shared/store/product.actions';
+import { Product } from 'src/app/shared/models/product';
+import { selectAllProducts } from 'src/app/shared/store/product.selectors';
 
 @Component({
   selector: 'products',
@@ -12,16 +17,21 @@ import { Subscription } from 'rxjs';
 export class ProductsComponent implements OnInit {
 
   authSubscription: Subscription;
+  products$: Observable<Product[]>;
 
   constructor(
     public productService: ProductService,
     private shoppingCartService: ShoppingCartService,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    private store: Store<AppState>
+    ) { }
 
   ngOnInit() {
     // this.authSubscription = this.authService.appUser$.subscribe( user => {
     //     this.shoppingCartService.loadCartProducts();
     //     console.log('Logged in, cart loaded');
     // });
+    this.store.dispatch(new AllProductsRequested());
+    this.products$ = this.store.pipe(select(selectAllProducts));
   }
 }

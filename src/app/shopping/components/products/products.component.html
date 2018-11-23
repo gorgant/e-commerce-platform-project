@@ -5,7 +5,7 @@
     </div>
     <div class="col-md-9">
       <div class="row">
-        <ng-container *ngFor="let product of productService.filteredProductList$ | async">
+        <ng-container *ngFor="let product of products$ | async">
           <div class="col-md-6">
             <product-card [product]="product"></product-card>
           </div>
