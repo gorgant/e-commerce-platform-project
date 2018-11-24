@@ -17,6 +17,9 @@ import { ProductEffects } from './store/product.effects';
 import { StoreModule } from '@ngrx/store';
 import { productsReducer } from './store/product.reducers';
 import { ProductSingleResolver } from './services/product-single.resolver';
+import { productCategoriesReducer } from './store/product-category.reducers';
+import { ProductCategoryEffects } from './store/product-category.effects';
+import { CategoryService } from './services/category.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,9 @@ import { ProductSingleResolver } from './services/product-single.resolver';
     ReactiveFormsModule,
     // The first argument identifies the property under which the feature state will be visible in dev tools
     StoreModule.forFeature('products', productsReducer),
-    EffectsModule.forFeature([ProductEffects])
+    EffectsModule.forFeature([ProductEffects]),
+    StoreModule.forFeature('product-categories', productCategoriesReducer),
+    EffectsModule.forFeature([ProductCategoryEffects]),
   ],
   exports: [
     ProductCardComponent,
@@ -49,7 +54,8 @@ import { ProductSingleResolver } from './services/product-single.resolver';
     AuthService,
     AuthGuardService,
     UserService,
-    ProductSingleResolver
+    ProductSingleResolver,
+    CategoryService
   ]
 })
 export class SharedModule { }

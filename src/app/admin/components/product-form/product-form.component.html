@@ -35,7 +35,7 @@
           <label for="category">Category</label>
           <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory()">
             <option 
-              *ngFor="let category of categoryService.productCategories$ | async"
+              *ngFor="let category of productCategories$ | async"
               [value]="category.id">{{ category.name }}</option>
             </select>
             <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"

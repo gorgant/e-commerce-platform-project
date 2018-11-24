@@ -1,14 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Product } from 'src/app/shared/models/product';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CategoryService } from 'src/app/shared/services/category.service';
 import { AppState } from 'src/app/reducers';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { ProductUpdated, ProductAdded, ProductDeleted } from 'src/app/shared/store/product.actions';
 import { Update } from '@ngrx/entity';
+import { selectAllProductCategories } from 'src/app/shared/store/product-category.selectors';
+import { ProductCategory } from 'src/app/shared/models/product-category';
+import { CategoriesRequested } from 'src/app/shared/store/product-category.actions';
 
 @Component({
   selector: 'product-form',
@@ -18,6 +20,8 @@ import { Update } from '@ngrx/entity';
 export class ProductFormComponent implements OnInit, OnDestroy {
 
   categorySubscription: Subscription;
+
+  productCategories$: Observable<ProductCategory[]>;
 
   productForm: FormGroup;
   categoryText: string;
@@ -31,7 +35,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     public productService: ProductService,
-    public categoryService: CategoryService,
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<AppState>
@@ -39,7 +42,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.categoryService.refreshProductCategories();
+    // This populates the course list on initialization, and only updates if changes to the list
+    this.store.dispatch(new CategoriesRequested);
+
+    this.productCategories$ = this.store
+    .pipe(
+      select(selectAllProductCategories)
+    );
 
     this.productForm = this.fb.group({
       productId: [''],
@@ -100,7 +109,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   // This fires when the Category select field is changed, pulling the object category vs the value
   setCategory() {
     const categoryId = this.productForm.value.categoryId;
-    this.categorySubscription = this.categoryService.productCategories
+    this.categorySubscription = this.productCategories$
       .subscribe( prodCat => {
         const filteredCats = prodCat.filter(cat => cat.id === categoryId);
         this.categoryText = (filteredCats.length > 0) ? filteredCats[0].category : null;

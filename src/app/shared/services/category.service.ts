@@ -4,9 +4,7 @@ import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument 
 import { Observable } from 'rxjs';
 import { ProductCategory } from '../models/product-category';
 
-@Injectable({
-  providedIn: SharedModule
-})
+@Injectable()
 export class CategoryService {
 
   private categoryDoc: AngularFirestoreDocument<ProductCategory>;
