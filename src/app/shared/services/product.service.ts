@@ -44,6 +44,7 @@ export class ProductService {
     product.productId = autoId;
     this.productsCollection = this.afs.collection<Product>('products');
     this.productsCollection.doc(autoId).set(product);
+    return autoId;
   }
 
   deleteProduct(productId: string) {

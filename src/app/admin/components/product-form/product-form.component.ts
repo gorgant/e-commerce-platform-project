@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { AppState } from 'src/app/reducers';
 import { Store } from '@ngrx/store';
-import { ProductUpdated } from 'src/app/shared/store/product.actions';
+import { ProductUpdated, ProductAdded } from 'src/app/shared/store/product.actions';
 import { Update } from '@ngrx/entity';
 
 @Component({
@@ -81,8 +81,10 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
     } else {
       const formValues: Product = this.productForm.value;
-      this.productService.createProduct(formValues);
+      const productId = this.productService.createProduct(formValues);
+      formValues.productId = productId;
       console.log(formValues);
+      this.store.dispatch(new ProductAdded({product: formValues}));
     }
     this.router.navigate(['/admin/products']);
   }

@@ -32,6 +32,9 @@ export function productsReducer(state = initialProductsState, action: ProductAct
     case ProductActionTypes.ProductUpdated:
       return adapter.updateOne(action.payload.product, state);
 
+    case ProductActionTypes.ProductAdded:
+      return adapter.addOne(action.payload.product, state);
+
     default: {
       return state;
     }
