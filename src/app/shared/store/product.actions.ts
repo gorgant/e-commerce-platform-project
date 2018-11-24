@@ -1,5 +1,6 @@
 import { Action } from '@ngrx/store';
 import { Product } from '../models/product';
+import { Update } from '@ngrx/entity';
 
 
 export enum ProductActionTypes {
@@ -7,6 +8,7 @@ export enum ProductActionTypes {
   ProductLoaded = '[Products API] Product Loaded',
   AllProductsRequested = '[Admin Products or Catalogue] Product List Requested',
   AllProductsLoaded = '[Products API] Products List Loaded',
+  ProductUpdated = '[Admin Product Form] Product Updated'
 }
 
 export class ProductRequested implements Action {
@@ -31,8 +33,16 @@ export class AllProductsLoaded implements Action {
   constructor(public payload: {products: Product[]}) {}
 }
 
+export class ProductUpdated implements Action {
+  readonly type = ProductActionTypes.ProductUpdated;
+
+  // This Update type is a rxjs specific type
+  constructor(public payload: {product: Update<Product>}) {}
+}
+
 export type ProductActions =
   AllProductsRequested |
   AllProductsLoaded |
   ProductRequested |
-  ProductLoaded;
+  ProductLoaded |
+  ProductUpdated;

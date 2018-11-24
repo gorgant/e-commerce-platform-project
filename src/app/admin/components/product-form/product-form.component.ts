@@ -5,6 +5,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from 'src/app/shared/services/category.service';
+import { AppState } from 'src/app/reducers';
+import { Store } from '@ngrx/store';
+import { ProductUpdated } from 'src/app/shared/store/product.actions';
+import { Update } from '@ngrx/entity';
 
 @Component({
   selector: 'product-form',
@@ -29,7 +33,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     public productService: ProductService,
     public categoryService: CategoryService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store<AppState>
     ) { }
 
   ngOnInit() {
@@ -67,6 +72,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       const formValues: Product = this.productForm.value;
       this.productService.saveProduct(formValues);
       console.log(formValues);
+
+      const product: Update<Product> = {
+        id: formValues.productId,
+        changes: formValues
+      };
+      this.store.dispatch(new ProductUpdated({product}));
+
     } else {
       const formValues: Product = this.productForm.value;
       this.productService.createProduct(formValues);

@@ -29,6 +29,9 @@ export function productsReducer(state = initialProductsState, action: ProductAct
       // Toggle the allCoursesLoaded value when this action is triggered
       return adapter.addAll(action.payload.products, {...state, allProductsLoaded: true});
 
+    case ProductActionTypes.ProductUpdated:
+      return adapter.updateOne(action.payload.product, state);
+
     default: {
       return state;
     }
