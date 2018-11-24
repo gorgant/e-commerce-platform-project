@@ -10,6 +10,7 @@ export enum ProductActionTypes {
   AllProductsLoaded = '[Products API] Products List Loaded',
   ProductUpdated = '[Admin Product Form] Product Updated',
   ProductAdded = '[Admin Product Form] Product Added',
+  ProductDeleted = '[Admin Product Form] Product Deleted',
 }
 
 export class ProductRequested implements Action {
@@ -47,10 +48,17 @@ export class ProductAdded implements Action {
   constructor(public payload: {product: Product}) {}
 }
 
+export class ProductDeleted implements Action {
+  readonly type = ProductActionTypes.ProductDeleted;
+
+  constructor(public payload: {productId: string}) {}
+}
+
 export type ProductActions =
   AllProductsRequested |
   AllProductsLoaded |
   ProductRequested |
   ProductLoaded |
   ProductUpdated |
-  ProductAdded;
+  ProductAdded |
+  ProductDeleted;

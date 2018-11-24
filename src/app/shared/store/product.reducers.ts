@@ -35,6 +35,9 @@ export function productsReducer(state = initialProductsState, action: ProductAct
     case ProductActionTypes.ProductAdded:
       return adapter.addOne(action.payload.product, state);
 
+    case ProductActionTypes.ProductDeleted:
+      return adapter.removeOne(action.payload.productId, state);
+
     default: {
       return state;
     }

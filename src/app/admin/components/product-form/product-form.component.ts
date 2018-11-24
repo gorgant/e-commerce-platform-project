@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { AppState } from 'src/app/reducers';
 import { Store } from '@ngrx/store';
-import { ProductUpdated, ProductAdded } from 'src/app/shared/store/product.actions';
+import { ProductUpdated, ProductAdded, ProductDeleted } from 'src/app/shared/store/product.actions';
 import { Update } from '@ngrx/entity';
 
 @Component({
@@ -92,6 +92,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   onDelete() {
     if (confirm('Are you sure you want to delete this product?')) {
       this.productService.deleteProduct(this.product.productId);
+      this.store.dispatch(new ProductDeleted({productId: this.product.productId}));
       this.router.navigate(['/admin/products']);
     }
   }
