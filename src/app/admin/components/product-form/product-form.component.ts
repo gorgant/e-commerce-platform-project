@@ -6,8 +6,7 @@ import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { ProductUpdated, ProductAdded, ProductDeleted, ProductUpdateRequested } from 'src/app/shared/store/product.actions';
-import { Update } from '@ngrx/entity';
+import { ProductDeleted, ProductUpdateRequested, ProductAddRequested } from 'src/app/shared/store/product.actions';
 import { selectAllProductCategories } from 'src/app/shared/store/product-category.selectors';
 import { ProductCategory } from 'src/app/shared/models/product-category';
 import { CategoriesRequested } from 'src/app/shared/store/product-category.actions';
@@ -77,17 +76,14 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   }
 
   onSave() {
+    const formValues: Product = this.productForm.value;
     if (!this.newProduct) {
-      const formValues: Product = this.productForm.value;
-      console.log('Product saved', formValues);
       this.store.dispatch(new ProductUpdateRequested({product: formValues}));
+      console.log('Product saved', formValues);
 
     } else {
-      const formValues: Product = this.productForm.value;
-      const productId = this.productService.createProduct(formValues);
-      formValues.productId = productId;
-      console.log(formValues);
-      this.store.dispatch(new ProductAdded({product: formValues}));
+      this.store.dispatch(new ProductAddRequested({product: formValues}));
+      console.log('Product added', formValues);
     }
     this.router.navigate(['/admin/products']);
   }

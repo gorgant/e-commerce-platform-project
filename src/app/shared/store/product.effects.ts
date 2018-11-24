@@ -6,7 +6,9 @@ import {
   AllProductsRequested,
   AllProductsLoaded,
   ProductUpdated,
-  ProductUpdateRequested
+  ProductUpdateRequested,
+  ProductAddRequested,
+  ProductAdded
 } from './product.actions';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { ProductService } from '../services/product.service';
@@ -46,7 +48,7 @@ export class ProductEffects {
     );
 
   @Effect()
-  updateProducts$ = this.actions$
+  updateProduct$ = this.actions$
     .pipe(
       ofType<ProductUpdateRequested>(ProductActionTypes.ProductUpdateRequested),
       mergeMap(action => this.productService.saveProduct(action.payload.product)),
@@ -58,6 +60,14 @@ export class ProductEffects {
         return new ProductUpdated({product: productUp});
       })
     );
+
+    @Effect()
+    addProduct$ = this.actions$
+      .pipe(
+        ofType<ProductAddRequested>(ProductActionTypes.ProductAddRequested),
+        mergeMap(action => this.productService.createProduct(action.payload.product)),
+        map(productWithId => new ProductAdded({product: productWithId}))
+      );
 
   constructor(
     private actions$: Actions,

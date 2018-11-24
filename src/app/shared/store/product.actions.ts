@@ -9,8 +9,9 @@ export enum ProductActionTypes {
   AllProductsRequested = '[Admin Products or Catalogue] Product List Requested',
   AllProductsLoaded = '[Products API] Products List Loaded',
   ProductUpdateRequested = '[Admin Product Form] Product Update Requested',
-  ProductUpdated = '[Admin Product Form] Product Updated',
-  ProductAdded = '[Admin Product Form] Product Added',
+  ProductUpdated = '[Products API] Product Updated',
+  ProductAddRequested = '[Admin Product Form] Product Add Requested',
+  ProductAdded = '[Products API] Product Added',
   ProductDeleted = '[Admin Product Form] Product Deleted',
 }
 
@@ -45,8 +46,13 @@ export class ProductUpdateRequested implements Action {
 export class ProductUpdated implements Action {
   readonly type = ProductActionTypes.ProductUpdated;
 
-  // This Update type is a rxjs specific type
   constructor(public payload: {product: Update<Product>}) {}
+}
+
+export class ProductAddRequested implements Action {
+  readonly type = ProductActionTypes.ProductAddRequested;
+
+  constructor(public payload: {product: Product}) {}
 }
 
 export class ProductAdded implements Action {

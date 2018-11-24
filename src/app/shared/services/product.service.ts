@@ -43,10 +43,19 @@ export class ProductService {
 
   createProduct(product: Product) {
     const autoId = this.afs.createId();
-    product.productId = autoId;
+    // Create a new product with the Firestore id
+    const updatedProduct = {
+      productId: autoId,
+      title: product.title,
+      price: product.price,
+      categoryId: product.categoryId,
+      category: product.category,
+      imageUrl: product.imageUrl
+    };
     this.productsCollection = this.afs.collection<Product>('products');
-    this.productsCollection.doc(autoId).set(product);
-    return autoId;
+    this.productsCollection.doc(autoId).set(updatedProduct);
+    // Convert this return to an observable to be consumed properly by the product effects service
+    return of(updatedProduct);
   }
 
   deleteProduct(productId: string) {
