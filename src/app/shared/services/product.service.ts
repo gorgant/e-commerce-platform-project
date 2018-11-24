@@ -61,6 +61,7 @@ export class ProductService {
   deleteProduct(productId: string) {
     this.productsCollection = this.afs.collection<Product>('products');
     this.productsCollection.doc(productId).delete();
+    return of(productId);
   }
 
   applyCategoryFilter(productCategory: ProductCategory) {

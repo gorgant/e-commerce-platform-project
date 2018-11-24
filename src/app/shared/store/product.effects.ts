@@ -8,7 +8,9 @@ import {
   ProductUpdated,
   ProductUpdateRequested,
   ProductAddRequested,
-  ProductAdded
+  ProductAdded,
+  ProductDeleteRequested,
+  ProductDeleted
 } from './product.actions';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { ProductService } from '../services/product.service';
@@ -61,13 +63,21 @@ export class ProductEffects {
       })
     );
 
-    @Effect()
-    addProduct$ = this.actions$
-      .pipe(
-        ofType<ProductAddRequested>(ProductActionTypes.ProductAddRequested),
-        mergeMap(action => this.productService.createProduct(action.payload.product)),
-        map(productWithId => new ProductAdded({product: productWithId}))
-      );
+  @Effect()
+  addProduct$ = this.actions$
+    .pipe(
+      ofType<ProductAddRequested>(ProductActionTypes.ProductAddRequested),
+      mergeMap(action => this.productService.createProduct(action.payload.product)),
+      map(productWithId => new ProductAdded({product: productWithId}))
+    );
+
+  @Effect()
+  deleteProduct$ = this.actions$
+    .pipe(
+      ofType<ProductDeleteRequested>(ProductActionTypes.ProductDeleteRequested),
+      mergeMap(action => this.productService.deleteProduct(action.payload.productId)),
+      map(prodId => new ProductDeleted({productId: prodId}))
+    );
 
   constructor(
     private actions$: Actions,

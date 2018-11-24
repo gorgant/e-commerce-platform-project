@@ -2,11 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Product } from 'src/app/shared/models/product';
 import { Subscription, Observable } from 'rxjs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { ProductDeleted, ProductUpdateRequested, ProductAddRequested } from 'src/app/shared/store/product.actions';
+import {
+  ProductUpdateRequested,
+  ProductAddRequested,
+  ProductDeleteRequested
+} from 'src/app/shared/store/product.actions';
 import { selectAllProductCategories } from 'src/app/shared/store/product-category.selectors';
 import { ProductCategory } from 'src/app/shared/models/product-category';
 import { CategoriesRequested } from 'src/app/shared/store/product-category.actions';
@@ -33,7 +36,6 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    public productService: ProductService,
     private route: ActivatedRoute,
     private router: Router,
     private store: Store<AppState>
@@ -90,8 +92,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   onDelete() {
     if (confirm('Are you sure you want to delete this product?')) {
-      this.productService.deleteProduct(this.product.productId);
-      this.store.dispatch(new ProductDeleted({productId: this.product.productId}));
+      this.store.dispatch(new ProductDeleteRequested({productId: this.product.productId}));
       this.router.navigate(['/admin/products']);
     }
   }
