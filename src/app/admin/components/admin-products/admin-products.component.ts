@@ -2,10 +2,10 @@ import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular
 // import { DataImporterService } from 'src/app/shared/services/data-importer.service';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { selectAllProducts } from 'src/app/shared/store/product.selectors';
+import { selectAllProducts, selectAllProductsLoaded } from 'src/app/shared/store/product.selectors';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
 
 @Component({
@@ -18,6 +18,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   storeSubscription: Subscription;
   displayedColumns: string[] = ['itemNo', 'title', 'price', 'edit'];
   dataSource: MatTableDataSource<Product>;
+
+  productsLoaded$: Observable<boolean>;
 
   constructor(
     // // Used to import products using the import service
@@ -36,6 +38,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
         this.dataSource.paginator = this.paginator;
         setTimeout(() => this.dataSource.sort = this.sort);
       });
+
+    this.productsLoaded$ = this.store.pipe(select(selectAllProductsLoaded));
   }
 
   applyFilter(filterValue: string) {

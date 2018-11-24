@@ -17,7 +17,7 @@ import { ProductService } from '../services/product.service';
 import { mergeMap, map, withLatestFrom, filter } from 'rxjs/operators';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { allProductsLoaded } from './product.selectors';
+import { selectAllProductsLoaded } from './product.selectors';
 import { Update } from '@ngrx/entity';
 import { Product } from '../models/product';
 
@@ -39,7 +39,7 @@ export class ProductEffects {
     .pipe(
       ofType<AllProductsRequested>(ProductActionTypes.AllProductsRequested),
       // This combines the previous observable with the current one
-      withLatestFrom(this.store.pipe(select(allProductsLoaded))),
+      withLatestFrom(this.store.pipe(select(selectAllProductsLoaded))),
       // Ingest both observable values and filter out the observable and only trigger if the
       // courses haven't been loaded (only false makes it through)
       filter(([action, allProductsLoadedVal]) => !allProductsLoadedVal),
