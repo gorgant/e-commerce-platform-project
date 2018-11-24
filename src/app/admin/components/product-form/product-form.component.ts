@@ -6,7 +6,7 @@ import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { ProductUpdated, ProductAdded, ProductDeleted } from 'src/app/shared/store/product.actions';
+import { ProductUpdated, ProductAdded, ProductDeleted, ProductUpdateRequested } from 'src/app/shared/store/product.actions';
 import { Update } from '@ngrx/entity';
 import { selectAllProductCategories } from 'src/app/shared/store/product-category.selectors';
 import { ProductCategory } from 'src/app/shared/models/product-category';
@@ -79,14 +79,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   onSave() {
     if (!this.newProduct) {
       const formValues: Product = this.productForm.value;
-      this.productService.saveProduct(formValues);
-      console.log(formValues);
-
-      const product: Update<Product> = {
-        id: formValues.productId,
-        changes: formValues
-      };
-      this.store.dispatch(new ProductUpdated({product}));
+      console.log('Product saved', formValues);
+      this.store.dispatch(new ProductUpdateRequested({product: formValues}));
 
     } else {
       const formValues: Product = this.productForm.value;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Product } from '../models/product';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ProductCategory } from '../models/product-category';
 import { map } from 'rxjs/operators';
 
@@ -37,6 +37,8 @@ export class ProductService {
   saveProduct(product: Product) {
     this.getSingleProduct(product.productId);
     this.productDoc.update(product);
+    // Convert this return to an observable to be consumed properly by the product effects service
+    return of(product);
   }
 
   createProduct(product: Product) {

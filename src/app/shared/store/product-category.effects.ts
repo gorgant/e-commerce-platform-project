@@ -18,16 +18,9 @@ export class ProductCategoryEffects {
         withLatestFrom(this.store.pipe(select(allProductCategoriesLoaded))),
         // Ingest both observable values and filter out the observable and only trigger if the
         // courses haven't been loaded (only false makes it through)
-        filter(([action, allCategoriesLoadedVal]) => {
-          console.log('filter engaged');
-          return !allCategoriesLoadedVal;
-        }
-         ),
+        filter(([action, allCategoriesLoadedVal]) => !allCategoriesLoadedVal),
         // Call api for data
-        mergeMap(action => {
-          console.log('category service requested');
-          return this.categoryService.refreshProductCategories();
-        } ),
+        mergeMap(action => this.categoryService.refreshProductCategories()),
         // Take results and trigger an action
         map(categories => new CategoriesLoaded({categories}))
       );
