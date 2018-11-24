@@ -37,6 +37,7 @@ export class ProductService {
   saveProduct(product: Product) {
     this.getSingleProduct(product.productId);
     this.productDoc.update(product);
+    console.log('Saved product', product);
     // Convert this return to an observable to be consumed properly by the product effects service
     return of(product);
   }
@@ -54,6 +55,7 @@ export class ProductService {
     };
     this.productsCollection = this.afs.collection<Product>('products');
     this.productsCollection.doc(autoId).set(updatedProduct);
+    console.log('Created product', updatedProduct);
     // Convert this return to an observable to be consumed properly by the product effects service
     return of(updatedProduct);
   }
@@ -61,6 +63,7 @@ export class ProductService {
   deleteProduct(productId: string) {
     this.productsCollection = this.afs.collection<Product>('products');
     this.productsCollection.doc(productId).delete();
+    console.log('Deleted product with ID', productId);
     return of(productId);
   }
 

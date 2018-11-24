@@ -21,9 +21,8 @@ import { CategoriesRequested } from 'src/app/shared/store/product-category.actio
 })
 export class ProductFormComponent implements OnInit, OnDestroy {
 
-  categorySubscription: Subscription;
-
   productCategories$: Observable<ProductCategory[]>;
+  categorySubscription: Subscription;
 
   productForm: FormGroup;
   categoryText: string;
@@ -81,11 +80,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     const formValues: Product = this.productForm.value;
     if (!this.newProduct) {
       this.store.dispatch(new ProductUpdateRequested({product: formValues}));
-      console.log('Product saved', formValues);
-
     } else {
       this.store.dispatch(new ProductAddRequested({product: formValues}));
-      console.log('Product added', formValues);
     }
     this.router.navigate(['/admin/products']);
   }
