@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CategoryService } from 'src/app/shared/services/category.service';
 import { ProductCategory } from 'src/app/shared/models/product-category';
-import { ProductService } from 'src/app/shared/services/product.service';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { AppState } from 'src/app/reducers';
+import { Store, select } from '@ngrx/store';
+import { AllCategoriesRequested, FilterCategorySelected } from 'src/app/shared/store/category.actions';
+import { selectAllCategories } from 'src/app/shared/store/category.selectors';
 
 
 @Component({
@@ -14,58 +15,44 @@ import { switchMap, tap } from 'rxjs/operators';
 })
 export class ProductFilterComponent implements OnInit, OnDestroy {
 
-  paramsSubscription: Subscription;
-  paramsId: string;
+  paramsCatId: string;
 
-  catServiceSubscription: Subscription;
-  selectedCategory: ProductCategory;
+  productCategories$: Observable<ProductCategory[]>;
 
-  allCategories: boolean;
+  queryParamSubscription: Subscription;
 
   constructor(
-    public categoryService: CategoryService,
-    private productService: ProductService,
     private route: ActivatedRoute,
+    private store: Store<AppState>
     ) { }
 
   ngOnInit() {
 
-    this.paramsSubscription = this.route.queryParamMap.pipe(
-      switchMap(params => {
-        if (params.get('categoryId')) {
-          this.allCategories = false;
-          this.paramsId = params.get('categoryId');
-        } else {
-          this.clearCategoryFilters();
-        }
-        return this.categoryService.refreshProductCategories();
-      }),
-      tap(() => {
-        if (this.paramsId) {
-          this.catServiceSubscription = this.categoryService.getSingleProductCategory(this.paramsId)
-            .subscribe( prodCat => {
-              this.selectedCategory = prodCat;
-              this.productService.getProducts();
-              this.productService.applyCategoryFilter(this.selectedCategory);
-            });
-        }
-      })
-    ).subscribe(); // this tap function won't work unless you subscribe
-  }
+    // This populates the categories list on initialization, and only updates if changes to the list
+    this.store.dispatch(new AllCategoriesRequested);
 
-  clearCategoryFilters() {
-    this.allCategories = true;
-    this.paramsId = null;
-    this.selectedCategory = null;
-    this.productService.getProducts();
+    // Load the product categories
+    this.productCategories$ = this.store
+    .pipe(
+      select(selectAllCategories)
+    );
+
+    // Set the active filter based on the query parameters
+    this.queryParamSubscription = this.route.queryParamMap.subscribe(
+      params => {
+        if (params.get('categoryId')) {
+          this.paramsCatId = params.get('categoryId');
+        } else {
+          this.paramsCatId = 'allCategories';
+        }
+        this.store.dispatch(new FilterCategorySelected({categoryId: this.paramsCatId}));
+      }
+    );
   }
 
   ngOnDestroy() {
-    if (this.paramsSubscription) {
-      this.paramsSubscription.unsubscribe();
-    }
-    if (this.catServiceSubscription) {
-      this.catServiceSubscription.unsubscribe();
+    if (this.queryParamSubscription) {
+      this.queryParamSubscription.unsubscribe();
     }
   }
 }

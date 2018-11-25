@@ -4,13 +4,15 @@ import { ProductCategoryActions, CategoryActionTypes } from './category.actions'
 
 export interface CategoryState extends EntityState<ProductCategory> {
   categoriesLoaded: boolean;
+  filterCategoryValue: string;
 }
 
 export const adapter: EntityAdapter<ProductCategory> =
   createEntityAdapter<ProductCategory>();
 
 const initialCategoryState = adapter.getInitialState({
-  categoriesLoaded: false
+  categoriesLoaded: false,
+  filterCategoryValue: 'allCategories'
 });
 
 export function productCategoriesReducer(state = initialCategoryState, action: ProductCategoryActions): CategoryState {
@@ -21,6 +23,9 @@ export function productCategoriesReducer(state = initialCategoryState, action: P
 
     case CategoryActionTypes.AllCategoriesLoaded:
       return adapter.addAll(action.payload.categories, {...state, categoriesLoaded: true});
+
+    case CategoryActionTypes.FilterCategorySelected:
+      return {...state, filterCategoryValue: action.payload.categoryId};
 
     default:
       return state;

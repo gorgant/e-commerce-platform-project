@@ -39,7 +39,6 @@ export class ShoppingCartService implements OnDestroy {
     if (userData) {
       user = JSON.parse(userData);
       this.userDoc = this.afs.doc<AppUser>(`users/${user.uid}`);
-      console.log('user doc from local storage', this.userDoc);
     } else {
       console.log('Cannot retrieve user data from local storage');
     }
@@ -63,25 +62,20 @@ export class ShoppingCartService implements OnDestroy {
     return this.shoppingCartItems$.pipe(
       mergeMap(cartItems => {
         this.shoppingCartItems = [];
-        console.log('Cart items before product added', cartItems);
         return cartItems;
       }),
       // Iterate through each cart item and add the actual product to it
       map(cartItem => {
-        console.log('Cart item to be modified', cartItem);
         this.storeSubscription = this.store.pipe(select(selectProductById(cartItem.productId)))
           .subscribe(product => {
-            console.log('Product to add to cartItem', product);
             const updatedCartItem: ShoppingCartItem = {
               cartItemId: cartItem.cartItemId,
               productId: cartItem.productId,
               quantity: cartItem.quantity,
               product: product
             };
-            console.log('Updated cart item', updatedCartItem);
             this.shoppingCartItems = [...this.shoppingCartItems, updatedCartItem];
           });
-        console.log('Updated shopping cart item array', this.shoppingCartItems);
         this.shoppingCartItems$ = of(this.shoppingCartItems);
         return this.shoppingCartItems;
       })

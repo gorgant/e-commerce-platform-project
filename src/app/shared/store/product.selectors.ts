@@ -22,3 +22,16 @@ export const selectAllProductsLoaded = createSelector(
   selectProductsState,
   productsState => productsState.allProductsLoaded
 );
+
+export const selectFilteredProducts = (categoryId: string) => createSelector(
+  selectAllProducts,
+  allProducts => {
+    // If no category selected, return all products (which is set in the product-filter component)
+    if (categoryId === 'allCategories') {
+      return allProducts;
+    } else {
+      return allProducts
+        .filter(product => product.categoryId === categoryId);
+    }
+  }
+);

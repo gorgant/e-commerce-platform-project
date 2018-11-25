@@ -5,7 +5,8 @@ export enum CategoryActionTypes {
   CategoryRequested = '[Product Filter] Category Requested',
   CategoryLoaded = '[Categories API] Category Loaded',
   AllCategoriesRequested = '[Admin Product Form] All Categories Requested',
-  AllCategoriesLoaded = '[Categories API] All Categories Loaded'
+  AllCategoriesLoaded = '[Categories API] All Categories Loaded',
+  FilterCategorySelected = '[Product Filter] Filter Category Selected'
 }
 
 export class CategoryRequested implements Action {
@@ -30,8 +31,15 @@ export class AllCategoriesLoaded implements Action {
   constructor(public payload: {categories: ProductCategory[]}) { }
 }
 
+export class FilterCategorySelected implements Action {
+  readonly type = CategoryActionTypes.FilterCategorySelected;
+
+  constructor(public payload: {categoryId: string}) { }
+}
+
 export type ProductCategoryActions =
 CategoryRequested |
 CategoryLoaded |
 AllCategoriesRequested |
-AllCategoriesLoaded;
+AllCategoriesLoaded |
+FilterCategorySelected;

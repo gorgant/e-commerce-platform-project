@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from 'src/app/shared/services/product.service';
-import { ShoppingCartService } from 'src/app/shared/services/shopping-cart.service';
-import { AuthService } from 'src/app/shared/services/auth.service';
-import { Subscription, Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
 import { Product } from 'src/app/shared/models/product';
-import { selectAllProducts } from 'src/app/shared/store/product.selectors';
+import { selectFilteredProducts } from 'src/app/shared/store/product.selectors';
 import { AllCartItemsRequested } from 'src/app/shared/store/shopping-cart.actions';
+import { selectFilterCategoryValue } from 'src/app/shared/store/category.selectors';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'products',
@@ -17,7 +16,7 @@ import { AllCartItemsRequested } from 'src/app/shared/store/shopping-cart.action
 })
 export class ProductsComponent implements OnInit {
 
-  products$: Observable<Product[]>;
+  filteredProducts$: Observable<Product[]> = of([]);
 
   constructor(private store: Store<AppState>) { }
 
@@ -30,6 +29,13 @@ export class ProductsComponent implements OnInit {
     // The product list is required to load the cart items list
     this.store.dispatch(new AllProductsRequested());
     this.store.dispatch(new AllCartItemsRequested());
-    this.products$ = this.store.pipe(select(selectAllProducts));
+
+    // Set the filtered products list based on the filter value in the store (set in the product-filter component)
+    this.filteredProducts$ = this.store.pipe(
+      select(selectFilterCategoryValue),
+      switchMap(catValue => {
+        return this.store.pipe(select(selectFilteredProducts(catValue)));
+      })
+    );
   }
 }

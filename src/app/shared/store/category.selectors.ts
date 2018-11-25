@@ -20,5 +20,10 @@ export const selectAllCategories = createSelector(
 
 export const allCategoriesLoaded = createSelector(
   selectCategoryState,
-  productCategoriesState => productCategoriesState.categoriesLoaded
+  categoriesState => categoriesState.categoriesLoaded
+);
+
+export const selectFilterCategoryValue = createSelector(
+  selectCategoryState,
+  categoriesState => categoriesState.filterCategoryValue
 );
