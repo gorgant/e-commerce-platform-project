@@ -16,9 +16,9 @@ export class ProductCardComponent {
 
   }
 
-  addToCart(prodId) {
-    this.shoppingCartService.addToCart(prodId);
-  }
+  // addToCart(prodId) {
+  //   this.shoppingCartService.addToCart(prodId);
+  // }
 
   get title() { return this.productForm.get('title'); }
   get price() { return this.productForm.get('price'); }

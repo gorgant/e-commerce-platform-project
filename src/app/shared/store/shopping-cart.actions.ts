@@ -56,7 +56,7 @@ export class IncrementCartItemComplete implements Action {
 }
 
 export class DecrementCartItemRequested implements Action {
-  readonly type = CartActionTypes.IncrementCartItemRequested;
+  readonly type = CartActionTypes.DecrementCartItemRequested;
 
   constructor(public payload: {cartItem: ShoppingCartItem}) { }
 }

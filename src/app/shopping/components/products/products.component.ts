@@ -8,6 +8,7 @@ import { AppState } from 'src/app/reducers';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
 import { Product } from 'src/app/shared/models/product';
 import { selectAllProducts } from 'src/app/shared/store/product.selectors';
+import { AllCartItemsRequested } from 'src/app/shared/store/shopping-cart.actions';
 
 @Component({
   selector: 'products',
@@ -32,6 +33,7 @@ export class ProductsComponent implements OnInit {
     //     console.log('Logged in, cart loaded');
     // });
     this.store.dispatch(new AllProductsRequested());
+    this.store.dispatch(new AllCartItemsRequested());
     this.products$ = this.store.pipe(select(selectAllProducts));
   }
 }

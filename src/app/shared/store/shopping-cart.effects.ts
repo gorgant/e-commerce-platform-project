@@ -50,7 +50,10 @@ export class ShoppingCartEffects {
       // Call api for data
       mergeMap(action => this.shoppingCartService.getAllCartItems()),
       // Take results and trigger an action
-      map(cartItems => new AllCartItemsLoaded({cartItems}))
+      map(cartItems => {
+        console.log('Cart Items to Add to Store:', cartItems);
+        return new AllCartItemsLoaded({cartItems: cartItems});
+      })
     );
 
   @Effect()

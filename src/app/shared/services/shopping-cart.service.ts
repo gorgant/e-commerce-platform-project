@@ -8,6 +8,11 @@ import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AppUser } from '../models/app-user';
+import { Store, select } from '@ngrx/store';
+import { isLoggedIn } from 'src/app/core/auth.selectors';
+import { AppState } from 'src/app/reducers';
+import { selectCartItemById } from '../store/shopping-cart.selectors';
+import { selectProductById } from '../store/product.selectors';
 
 // Provided in shared module to prevent circular dependency
 @Injectable()
@@ -31,10 +36,23 @@ export class ShoppingCartService implements OnDestroy {
   private productServiceSubscription: Subscription;
 
   constructor(
-    private productService: ProductService,
-    private authService: AuthService,
-    private userService: UserService,
-    private readonly afs: AngularFirestore) { }
+      private productService: ProductService,
+      private authService: AuthService,
+      private userService: UserService,
+      private readonly afs: AngularFirestore,
+      private store: Store<AppState>
+    ) {
+      // Retrieve user data from local storage
+      const userData = localStorage.getItem('user');
+      let user: AppUser;
+      if (userData) {
+        user = JSON.parse(userData);
+      } else {
+        console.log('Cannot retrieve user data from local storage');
+      }
+      this.userDoc = this.afs.doc<AppUser>(`users/${user.uid}`);
+      console.log('user doc from local storage', this.userDoc);
+    }
 
 
 
@@ -71,33 +89,72 @@ export class ShoppingCartService implements OnDestroy {
   // }
 
   getSingleCartItem(cartItemId: string) {
-    this.userDoc = this.userService.userDoc;
+    // this.userDoc = this.userService.userDoc;
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItemId);
     this.singleShoppingCartItem$ = this.shoppingCartDoc.valueChanges();
     return this.singleShoppingCartItem$;
   }
 
+  // getAllCartItems(): Observable<ShoppingCartItem[]> {
+  //   // Retreive cart data from database
+  //   this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+  //   this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
+  //   return this.shoppingCartItems$.pipe(
+  //     mergeMap(cartItems => {
+  //       this.shoppingCartItems = [];
+  //       console.log('Cart items before product added', cartItems);
+  //       return cartItems;
+  //     }),
+  //     // Iterate through each cart item and add the actual product to it
+  //     map(cartItem => {
+  //       console.log('Cart item to be modified', cartItem);
+  //       this.productServiceSubscription = this.productService.getSingleProduct(cartItem.productId)
+  //         .subscribe(product => {
+  //           console.log('Product to add to cartItem', product);
+  //           const updatedCartItem: ShoppingCartItem = {
+  //             cartItemId: cartItem.cartItemId,
+  //             productId: cartItem.productId,
+  //             quantity: cartItem.quantity,
+  //             product: product
+  //           };
+  //           console.log('Updated cart item', updatedCartItem);
+  //           this.shoppingCartItems = [...this.shoppingCartItems, updatedCartItem];
+  //         });
+  //       console.log('Updated shopping cart item array', this.shoppingCartItems);
+
+  //       this.shoppingCartItems$ = of(this.shoppingCartItems);
+  //       return this.shoppingCartItems;
+  //     })
+  //   );
+  // }
+
   getAllCartItems(): Observable<ShoppingCartItem[]> {
-    this.userDoc = this.userService.userDoc;
+    // Retreive cart data from database
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
     return this.shoppingCartItems$.pipe(
-      switchMap(cartItems => {
+      mergeMap(cartItems => {
         this.shoppingCartItems = [];
+        console.log('Cart items before product added', cartItems);
         return cartItems;
       }),
       // Iterate through each cart item and add the actual product to it
       map(cartItem => {
-        this.productServiceSubscription = this.productService.getSingleProduct(cartItem.productId)
+        console.log('Cart item to be modified', cartItem);
+        this.store.pipe(select(selectProductById(cartItem.productId)))
           .subscribe(product => {
-            this.shoppingCartItems.push({
+            console.log('Product to add to cartItem', product);
+            const updatedCartItem: ShoppingCartItem = {
               cartItemId: cartItem.cartItemId,
               productId: cartItem.productId,
               quantity: cartItem.quantity,
               product: product
-            });
+            };
+            console.log('Updated cart item', updatedCartItem);
+            this.shoppingCartItems = [...this.shoppingCartItems, updatedCartItem];
           });
+        console.log('Updated shopping cart item array', this.shoppingCartItems);
         this.shoppingCartItems$ = of(this.shoppingCartItems);
         return this.shoppingCartItems;
       })
@@ -105,7 +162,7 @@ export class ShoppingCartService implements OnDestroy {
   }
 
   incrementCartItem(cartItem: ShoppingCartItem) {
-    this.userDoc = this.userService.userDoc;
+    // this.userDoc = this.userService.userDoc;
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
 
@@ -123,7 +180,7 @@ export class ShoppingCartService implements OnDestroy {
   }
 
   decrementCartItem(cartItem: ShoppingCartItem) {
-    this.userDoc = this.userService.userDoc;
+    // this.userDoc = this.userService.userDoc;
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
 
@@ -141,7 +198,7 @@ export class ShoppingCartService implements OnDestroy {
   }
 
   createCartItem(product: Product) {
-    this.userDoc = this.userService.userDoc;
+    // this.userDoc = this.userService.userDoc;
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
 
     const cartItem: ShoppingCartItem = {
@@ -184,7 +241,7 @@ export class ShoppingCartService implements OnDestroy {
   // }
 
   deleteCartItem(cartItemId: string) {
-    this.userDoc = this.userService.userDoc;
+    // this.userDoc = this.userService.userDoc;
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
 
     this.shoppingCartCollection.doc(cartItemId).delete();

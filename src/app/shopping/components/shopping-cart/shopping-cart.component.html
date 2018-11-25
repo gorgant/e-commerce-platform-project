@@ -12,15 +12,15 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of shoppingCartService.shoppingCartItems$ | async; let i = index;">
+    <tr *ngFor="let cartItem of shoppingCartItems$ | async">
       <td>
-        <div [ngStyle]="{ 'background-image': 'url(' + item.product.imageUrl + ')'}" class="img-thumbnail"></div>
+        <div [ngStyle]="{ 'background-image': 'url(' + cartItem.product.imageUrl + ')'}" class="img-thumbnail"></div>
       </td>
-      <td>{{ item?.product.title }}</td>
+      <td>{{ cartItem?.product.title }}</td>
       <td>
-        <product-quantity [currentItem]="item"></product-quantity>
+        <product-quantity [currentProduct]="cartItem.product"></product-quantity>
       </td>
-      <td>{{ item.product.price*item.quantity | currency: 'USD' }}</td>
+      <td>{{ cartItem.product.price*cartItem.quantity | currency: 'USD' }}</td>
     </tr>
   </tbody>
 </table>
