@@ -46,7 +46,7 @@ export class ProductQuantityComponent implements OnInit {
   }
 
   onSubtract(item: ShoppingCartItem) {
-    console.log('Removing item with id ', item.id);
+    console.log('Removing item with id ', item.cartItemId);
     this.shoppingCartService.removeFromCart(item);
   }
 

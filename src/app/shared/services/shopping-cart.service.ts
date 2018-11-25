@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { Observable, Subscription, of } from 'rxjs';
+import { map, switchMap, take, mergeMap } from 'rxjs/operators';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Product } from '../models/product';
 import { ProductService } from './product.service';
@@ -13,6 +13,8 @@ import { AppUser } from '../models/app-user';
 @Injectable()
 
 export class ShoppingCartService implements OnDestroy {
+
+  private userDoc: AngularFirestoreDocument<AppUser>;
 
   // shoppingCart$: Observable<ShoppingCart>;
   shoppingCartItems: ShoppingCartItem[] = [];
@@ -36,87 +38,176 @@ export class ShoppingCartService implements OnDestroy {
 
 
 
-    initializeCart() {
-    console.log('initializing cart');
-    const userDoc = this.userService.userDoc;
-    this.shoppingCartCollection = userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
-    return this.shoppingCartItems$;
-  }
+  // initializeCart() {
+  //   console.log('initializing cart');
+  //   const userDoc = this.userService.userDoc;
+  //   this.shoppingCartCollection = userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+  //   this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
+  //   return this.shoppingCartItems$;
+  // }
 
-  loadCartProducts() {
-    console.log('loading cart products');
-    this.shoppingCartItems$ = this.initializeCart().pipe(
-      switchMap(cartItems => {
-        this.shoppingCartItems = [];
-        return cartItems;
-      }),
-      map(item => {
-        this.productServiceSubscription = this.productService.getSingleProduct(item.productId)
-          .subscribe(product => {
-            this.shoppingCartItems.push({
-              id: item.id,
-              productId: item.productId,
-              quantity: item.quantity,
-              product: product
-            });
-          });
-        // this.calculateCartItemsQuantity();
-        return this.shoppingCartItems;
-      })
-    );
-  }
+  // // Consider getting user doc from store instead of user service
+  // loadCartProducts() {
+  //   console.log('loading cart products');
+  //   this.shoppingCartItems$ = this.initializeCart().pipe(
+  //     switchMap(cartItems => {
+  //       this.shoppingCartItems = [];
+  //       return cartItems;
+  //     }),
+  //     map(item => {
+  //       this.productServiceSubscription = this.productService.getSingleProduct(item.productId)
+  //         .subscribe(product => {
+  //           this.shoppingCartItems.push({
+  //             cartItemId: item.cartItemId,
+  //             productId: item.productId,
+  //             quantity: item.quantity,
+  //             product: product
+  //           });
+  //         });
+  //       // this.calculateCartItemsQuantity();
+  //       return this.shoppingCartItems;
+  //     })
+  //   );
+  // }
 
   getSingleCartItem(cartItemId: string) {
+    this.userDoc = this.userService.userDoc;
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItemId);
     this.singleShoppingCartItem$ = this.shoppingCartDoc.valueChanges();
     return this.singleShoppingCartItem$;
   }
 
-  addToCart(productId: string) {
-    this.getSingleCartItem(productId).pipe(
-      take(1)
-      ).subscribe(cartItem => {
-        // Set cartItem Id to product ID because each cart item is an individual product and this makes easier to search
-        const cartItemData: ShoppingCartItem = {
-          id: productId,
-          productId: productId,
-          quantity: 1
-        };
-        if (cartItem) {
-          cartItemData.quantity = cartItem.quantity + 1;
-        }
-        this.shoppingCartCollection.doc(productId).update(cartItemData)
-        .then(() => {
-          console.log('Item update successful', cartItemData);
-        })
-        .catch((error) => {
-          console.log('Item does not exist, creating new item', cartItemData);
-          this.shoppingCartCollection.doc(productId).set(cartItemData);
-        });
-    });
-
+  getAllCartItems(): Observable<ShoppingCartItem[]> {
+    this.userDoc = this.userService.userDoc;
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+    this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
+    return this.shoppingCartItems$.pipe(
+      switchMap(cartItems => {
+        this.shoppingCartItems = [];
+        return cartItems;
+      }),
+      // Iterate through each cart item and add the actual product to it
+      map(cartItem => {
+        this.productServiceSubscription = this.productService.getSingleProduct(cartItem.productId)
+          .subscribe(product => {
+            this.shoppingCartItems.push({
+              cartItemId: cartItem.cartItemId,
+              productId: cartItem.productId,
+              quantity: cartItem.quantity,
+              product: product
+            });
+          });
+        this.shoppingCartItems$ = of(this.shoppingCartItems);
+        return this.shoppingCartItems;
+      })
+    );
   }
 
-  removeFromCart(cartItem: ShoppingCartItem) {
-    console.log('Removal request recieved');
-    if (cartItem.quantity > 1) {
-      const updatedItem: ShoppingCartItem = {
-            id: cartItem.id,
-            productId: cartItem.productId,
-            quantity: cartItem.quantity - 1
-          };
-      this.shoppingCartCollection.doc(cartItem.id).update(updatedItem);
-    } else {
-      this.shoppingCartCollection.doc(cartItem.id).delete();
-    }
+  incrementCartItem(cartItem: ShoppingCartItem) {
+    this.userDoc = this.userService.userDoc;
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+    this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
+
+    const updatedCartItem: ShoppingCartItem = {
+      cartItemId: cartItem.cartItemId,
+      productId: cartItem.productId,
+      quantity: cartItem.quantity + 1,
+      product: cartItem.product
+    };
+
+    this.shoppingCartDoc.update(updatedCartItem);
+    console.log('Incremented quantity', updatedCartItem);
+
+    return of(updatedCartItem);
   }
 
-  // Removes from view, does not delete from database (used for logout)
-  clearShoppingCart() {
-    this.shoppingCartItems = null;
-    this.shoppingCartItems$ = null;
+  decrementCartItem(cartItem: ShoppingCartItem) {
+    this.userDoc = this.userService.userDoc;
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+    this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
+
+    const updatedCartItem: ShoppingCartItem = {
+      cartItemId: cartItem.cartItemId,
+      productId: cartItem.productId,
+      quantity: cartItem.quantity - 1,
+      product: cartItem.product
+    };
+
+    this.shoppingCartDoc.update(updatedCartItem);
+    console.log('Decremented quantity', updatedCartItem);
+
+    return of(updatedCartItem);
   }
+
+  createCartItem(product: Product) {
+    this.userDoc = this.userService.userDoc;
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+
+    const cartItem: ShoppingCartItem = {
+      // Set cartItem Id to product ID because each cart item is an individual product and this makes easier to search
+      cartItemId: product.productId,
+      productId: product.productId,
+      quantity: 1,
+      product: product
+    };
+
+    this.shoppingCartCollection.doc(cartItem.cartItemId).set(cartItem);
+    console.log('Created cart item', cartItem);
+
+    return of(cartItem);
+  }
+
+  // addToCart(productId: string) {
+  //   this.getSingleCartItem(productId).pipe(
+  //     take(1)
+  //     ).subscribe(cartItem => {
+  //       // Set cartItem Id to product ID because each cart item is an individual product and this makes easier to search
+  //       const cartItemData: ShoppingCartItem = {
+  //         cartItemId: productId,
+  //         productId: productId,
+  //         quantity: 1
+  //       };
+  //       if (cartItem) {
+  //         cartItemData.quantity = cartItem.quantity + 1;
+  //       }
+  //       this.shoppingCartCollection.doc(productId).update(cartItemData)
+  //       .then(() => {
+  //         console.log('Item update successful', cartItemData);
+  //       })
+  //       .catch((error) => {
+  //         console.log('Item does not exist, creating new item', cartItemData);
+  //         this.shoppingCartCollection.doc(productId).set(cartItemData);
+  //       });
+  //   });
+
+  // }
+
+  deleteCartItem(cartItemId: string) {
+    this.userDoc = this.userService.userDoc;
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+
+    this.shoppingCartCollection.doc(cartItemId).delete();
+    console.log('Deleted cart item with ID', cartItemId);
+
+    return of(cartItemId);
+  }
+
+  // removeFromCart(cartItem: ShoppingCartItem) {
+  //   console.log('Removal request recieved');
+  //   if (cartItem.quantity > 1) {
+  //     const updatedItem: ShoppingCartItem = {
+  //           cartItemId: cartItem.cartItemId,
+  //           productId: cartItem.productId,
+  //           quantity: cartItem.quantity - 1
+  //         };
+  //     this.shoppingCartCollection.doc(cartItem.cartItemId).update(updatedItem);
+  //   } else {
+  //     this.shoppingCartCollection.doc(cartItem.cartItemId).delete();
+  //   }
+  // }
+
+
 
   async deleteAllCartItems() {
     console.log('alternate delete fired');
@@ -130,7 +221,12 @@ export class ShoppingCartService implements OnDestroy {
     batch.commit();
 
     this.clearShoppingCart();
+  }
 
+  // Removes from view, does not delete from database (used for logout)
+  clearShoppingCart() {
+    this.shoppingCartItems = null;
+    this.shoppingCartItems$ = null;
   }
 
   calculateCartItemsQuantity() {

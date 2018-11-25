@@ -45,7 +45,7 @@ export class ProductService {
   createProduct(product: Product) {
     const autoId = this.afs.createId();
     // Create a new product with the Firestore id
-    const updatedProduct = {
+    const updatedProduct: Product = {
       productId: autoId,
       title: product.title,
       price: product.price,

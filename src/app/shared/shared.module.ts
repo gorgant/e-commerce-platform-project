@@ -20,6 +20,8 @@ import { ProductSingleResolver } from './services/product-single.resolver';
 import { productCategoriesReducer } from './store/product-category.reducers';
 import { ProductCategoryEffects } from './store/product-category.effects';
 import { CategoryService } from './services/category.service';
+import { cartItemsReducer } from './store/shopping-cart.reducers';
+import { ShoppingCartEffects } from './store/shopping-cart.effects';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { CategoryService } from './services/category.service';
     EffectsModule.forFeature([ProductEffects]),
     StoreModule.forFeature('product-categories', productCategoriesReducer),
     EffectsModule.forFeature([ProductCategoryEffects]),
+    StoreModule.forFeature('cartItems', cartItemsReducer),
+    EffectsModule.forFeature([ShoppingCartEffects]),
   ],
   exports: [
     ProductCardComponent,
