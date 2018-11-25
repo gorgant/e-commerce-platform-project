@@ -50,7 +50,7 @@ export class ProductService {
       title: product.title,
       price: product.price,
       categoryId: product.categoryId,
-      category: product.category,
+      categoryValue: product.categoryValue,
       imageUrl: product.imageUrl
     };
     this.productsCollection = this.afs.collection<Product>('products');
@@ -71,7 +71,7 @@ export class ProductService {
     this.filteredProductList$ = this.products$.pipe(
       map(products => {
         return products.filter(product => {
-          return product.category === productCategory.category;
+          return product.categoryValue === productCategory.categoryValue;
         });
     }));
   }

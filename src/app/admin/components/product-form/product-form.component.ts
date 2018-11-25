@@ -55,7 +55,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
       title: ['', Validators.required],
       price: ['', [Validators.required, Validators.min(0.01)]],
       categoryId: ['', Validators.required],
-      category: [''],
+      categoryValue: [''],
       imageUrl: ['', [Validators.required, Validators.pattern(this.validationPattern)]]
     });
 
@@ -68,7 +68,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
         title: this.product.title,
         price: this.product.price,
         categoryId: this.product.categoryId,
-        category: this.product.category,
+        categoryValue: this.product.categoryValue,
         imageUrl: this.product.imageUrl
       });
     } else {
@@ -99,7 +99,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     this.storeSubscription = this.store.pipe(select(selectCategoryById(categoryId)))
       .subscribe(category => {
         this.productForm.patchValue({
-          category: category.name
+          categoryValue: category.categoryValue
         });
       });
   }

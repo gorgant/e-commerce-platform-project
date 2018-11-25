@@ -10,7 +10,7 @@ export const selectCategoryState = createFeatureSelector<CategoryState>('categor
 export const selectCategoryById = (categoryId: string) => createSelector(
   selectCategoryState,
   // This scans the entity array and returns the product if it is there, otherwise undefined
-  productsState => productsState.entities[categoryId]
+  categoryState => categoryState.entities[categoryId]
 );
 
 export const selectAllCategories = createSelector(
@@ -25,5 +25,5 @@ export const allCategoriesLoaded = createSelector(
 
 export const selectFilterCategoryValue = createSelector(
   selectCategoryState,
-  categoriesState => categoriesState.filterCategoryValue
+  categoriesState => categoriesState.filterCategoryId
 );

@@ -8,11 +8,11 @@
       <a 
         *ngFor="let category of productCategories$ | async" 
         routerLink="/"
-        [queryParams]="{ category: category.name, categoryId: category.id }"
+        [queryParams]="{ category: category.categoryName, categoryId: category.categoryId }"
         class="list-group-item list-group-item-action"
-        [class.active]="category.id === paramsCatId"
+        [class.active]="category.categoryId === paramsCatId"
         >
-          {{ category.name }}
+          {{ category.categoryName }}
       </a>
   </div>
 </div>

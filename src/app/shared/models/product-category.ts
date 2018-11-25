@@ -1,5 +1,5 @@
 export interface ProductCategory {
-  id: string;
-  name: string;
-  category: string;
+  categoryId: string;
+  categoryName: string;
+  categoryValue: string;
 }

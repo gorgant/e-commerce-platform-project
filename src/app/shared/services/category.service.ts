@@ -16,7 +16,7 @@ export class CategoryService {
   constructor(private readonly afs: AngularFirestore) { }
 
   refreshProductCategories() {
-    this.productCategoryCollection = this.afs.collection<ProductCategory>('categories', ref => ref.orderBy('name'));
+    this.productCategoryCollection = this.afs.collection<ProductCategory>('categories', ref => ref.orderBy('categoryName'));
     this.productCategories$ = this.productCategoryCollection.valueChanges();
     return this.productCategories$;
   }

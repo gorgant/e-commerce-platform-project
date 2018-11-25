@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
-// import { DataImporterService } from 'src/app/shared/services/data-importer.service';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
 import { Subscription, Observable } from 'rxjs';
@@ -7,6 +6,8 @@ import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { selectAllProducts, selectAllProductsLoaded } from 'src/app/shared/store/product.selectors';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
+import { ProductImporterService } from 'src/app/shared/services/product-importer.service';
+import { CategoryImporterService } from 'src/app/shared/services/category-importer.service';
 
 @Component({
   selector: 'admin-products',
@@ -22,8 +23,8 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   productsLoaded$: Observable<boolean>;
 
   constructor(
-    // // Used to import products using the import service
-    // public importer: DataImporterService,
+    // public productImporter: ProductImporterService,
+    // public categoryImporter: CategoryImporterService,
     private store: Store<AppState>) {
   }
 

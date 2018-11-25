@@ -36,7 +36,7 @@
           <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory($event.target.value)">
             <option
               *ngFor="let category of productCategories$ | async"
-              [value]="category.id">{{ category.name }}</option>
+              [value]="category.categoryId">{{ category.categoryName }}</option>
             </select>
             <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"
                   class="alert alert-danger">
