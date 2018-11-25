@@ -8,6 +8,7 @@ import {
   IncrementCartItemRequested,
   DecrementCartItemRequested,
   AddCartItemRequested,
+  DeleteCartItemRequested,
 } from '../../store/shopping-cart.actions';
 import { selectCartItemById } from '../../store/shopping-cart.selectors';
 
@@ -39,6 +40,10 @@ export class ProductQuantityComponent implements OnInit {
   }
 
   decrementCartItem(cartItem: ShoppingCartItem) {
-    this.store.dispatch(new DecrementCartItemRequested({cartItem: cartItem}));
+    if (cartItem.quantity > 1) {
+      this.store.dispatch(new DecrementCartItemRequested({cartItem: cartItem}));
+    } else {
+      this.store.dispatch(new DeleteCartItemRequested({cartItemId: cartItem.cartItemId}));
+    }
   }
 }
