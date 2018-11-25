@@ -26,6 +26,8 @@ export class ProductsComponent implements OnInit {
     //     this.shoppingCartService.loadCartProducts();
     //     console.log('Logged in, cart loaded');
     // });
+
+    // The product list is required to load the cart items list
     this.store.dispatch(new AllProductsRequested());
     this.store.dispatch(new AllCartItemsRequested());
     this.products$ = this.store.pipe(select(selectAllProducts));

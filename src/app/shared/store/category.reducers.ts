@@ -1,22 +1,25 @@
 import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 import { ProductCategory } from '../models/product-category';
-import { ProductCategoryActions, ProductCategoryActionTypes } from './product-category.actions';
+import { ProductCategoryActions, CategoryActionTypes } from './category.actions';
 
-export interface ProductCategoryState extends EntityState<ProductCategory> {
+export interface CategoryState extends EntityState<ProductCategory> {
   categoriesLoaded: boolean;
 }
 
 export const adapter: EntityAdapter<ProductCategory> =
   createEntityAdapter<ProductCategory>();
 
-const initialProductCategoryState = adapter.getInitialState({
+const initialCategoryState = adapter.getInitialState({
   categoriesLoaded: false
 });
 
-export function productCategoriesReducer(state = initialProductCategoryState, action: ProductCategoryActions): ProductCategoryState {
+export function productCategoriesReducer(state = initialCategoryState, action: ProductCategoryActions): CategoryState {
   switch (action.type) {
 
-    case ProductCategoryActionTypes.CategoriesLoaded:
+    case CategoryActionTypes.CategoryLoaded:
+      return adapter.addOne(action.payload.category, state);
+
+    case CategoryActionTypes.AllCategoriesLoaded:
       return adapter.addAll(action.payload.categories, {...state, categoriesLoaded: true});
 
     default:

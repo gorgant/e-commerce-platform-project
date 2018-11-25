@@ -33,8 +33,8 @@
         </div>
         <div class="form-group">
           <label for="category">Category</label>
-          <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory()">
-            <option 
+          <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory($event.target.value)">
+            <option
               *ngFor="let category of productCategories$ | async"
               [value]="category.id">{{ category.name }}</option>
             </select>

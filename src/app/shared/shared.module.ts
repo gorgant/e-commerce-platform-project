@@ -17,8 +17,8 @@ import { ProductEffects } from './store/product.effects';
 import { StoreModule } from '@ngrx/store';
 import { productsReducer } from './store/product.reducers';
 import { ProductSingleResolver } from './services/product-single.resolver';
-import { productCategoriesReducer } from './store/product-category.reducers';
-import { ProductCategoryEffects } from './store/product-category.effects';
+import { productCategoriesReducer } from './store/category.reducers';
+import { CategoryEffects } from './store/category.effects';
 import { CategoryService } from './services/category.service';
 import { cartItemsReducer } from './store/shopping-cart.reducers';
 import { ShoppingCartEffects } from './store/shopping-cart.effects';
@@ -37,8 +37,8 @@ import { ShoppingCartEffects } from './store/shopping-cart.effects';
     // The first argument identifies the property under which the feature state will be visible in dev tools
     StoreModule.forFeature('products', productsReducer),
     EffectsModule.forFeature([ProductEffects]),
-    StoreModule.forFeature('product-categories', productCategoriesReducer),
-    EffectsModule.forFeature([ProductCategoryEffects]),
+    StoreModule.forFeature('categories', productCategoriesReducer),
+    EffectsModule.forFeature([CategoryEffects]),
     StoreModule.forFeature('cartItems', cartItemsReducer),
     EffectsModule.forFeature([ShoppingCartEffects]),
   ],

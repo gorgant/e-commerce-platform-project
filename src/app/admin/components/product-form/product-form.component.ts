@@ -10,9 +10,9 @@ import {
   ProductAddRequested,
   ProductDeleteRequested
 } from 'src/app/shared/store/product.actions';
-import { selectAllProductCategories } from 'src/app/shared/store/product-category.selectors';
+import { selectAllCategories, selectCategoryById } from 'src/app/shared/store/category.selectors';
 import { ProductCategory } from 'src/app/shared/models/product-category';
-import { CategoriesRequested } from 'src/app/shared/store/product-category.actions';
+import { AllCategoriesRequested } from 'src/app/shared/store/category.actions';
 
 @Component({
   selector: 'product-form',
@@ -22,7 +22,7 @@ import { CategoriesRequested } from 'src/app/shared/store/product-category.actio
 export class ProductFormComponent implements OnInit, OnDestroy {
 
   productCategories$: Observable<ProductCategory[]>;
-  categorySubscription: Subscription;
+  storeSubscription: Subscription;
 
   productForm: FormGroup;
   categoryText: string;
@@ -43,11 +43,11 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     // This populates the course list on initialization, and only updates if changes to the list
-    this.store.dispatch(new CategoriesRequested);
+    this.store.dispatch(new AllCategoriesRequested);
 
     this.productCategories$ = this.store
     .pipe(
-      select(selectAllProductCategories)
+      select(selectAllCategories)
     );
 
     this.productForm = this.fb.group({
@@ -93,15 +93,13 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  // This fires when the Category select field is changed, pulling the object category vs the value
-  setCategory() {
-    const categoryId = this.productForm.value.categoryId;
-    this.categorySubscription = this.productCategories$
-      .subscribe( prodCat => {
-        const filteredCats = prodCat.filter(cat => cat.id === categoryId);
-        this.categoryText = (filteredCats.length > 0) ? filteredCats[0].category : null;
+  // This fires when the Category select field is changed, allowing access to the category object
+  // Without this, when saving the form, the category name will not populate on the form
+  setCategory(categoryId: string) {
+    this.storeSubscription = this.store.pipe(select(selectCategoryById(categoryId)))
+      .subscribe(category => {
         this.productForm.patchValue({
-          category: this.categoryText
+          category: category.name
         });
       });
   }
@@ -113,8 +111,8 @@ export class ProductFormComponent implements OnInit, OnDestroy {
   get imageUrl() { return this.productForm.get('imageUrl'); }
 
   ngOnDestroy() {
-    if (this.categorySubscription) {
-      this.categorySubscription.unsubscribe();
+    if (this.storeSubscription) {
+      this.storeSubscription.unsubscribe();
     }
   }
 
