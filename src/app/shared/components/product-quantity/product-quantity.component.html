@@ -1,31 +1,14 @@
-<!-- <div *ngIf="currentProduct; then cataloguePage else cartPage">
-  template here...
-</div> -->
-<!-- <ng-template #cataloguePage> -->
-  <button *ngIf="!(storeCartItem$ | async) || (storeCartItem$ | async).quantity < 1" (click)="addToCart(currentProduct)" class="btn btn-secondary btn-block">Add to Cart</button>
-  <div *ngIf="(storeCartItem$ | async) as cartItem">
-    <div *ngIf="cartItem.quantity !== 0">
-      <div class="row no-gutters">
-        <div class="col-2">
-          <button (click)="decrementCartItem(cartItem)" class="btn btn-secondary btn-block">-</button>
-        </div>
-        <div class="col text-center quantity">{{ cartItem?.quantity }} in cart</div>
-        <div class="col-2">
-          <button (click)="incrementCartItem(cartItem)" class="btn btn-secondary btn-block">+</button>
-        </div>
+<button *ngIf="!(storeCartItem$ | async) || (storeCartItem$ | async).quantity < 1" (click)="addToCart(currentProduct)" class="btn btn-secondary btn-block">Add to Cart</button>
+<div *ngIf="(storeCartItem$ | async) as cartItem">
+  <div *ngIf="cartItem.quantity !== 0">
+    <div class="row no-gutters">
+      <div class="col-2">
+        <button (click)="decrementCartItem(cartItem)" class="btn btn-secondary btn-block">-</button>
+      </div>
+      <div class="col text-center quantity">{{ cartItem?.quantity }} in cart</div>
+      <div class="col-2">
+        <button (click)="incrementCartItem(cartItem)" class="btn btn-secondary btn-block">+</button>
       </div>
     </div>
   </div>
-<!-- </ng-template> -->
-<!-- <ng-template #cartPage>
-  <div class="row no-gutters">
-    <div class="col-2">
-      <button (click)="onSubtract(currentItem)" class="btn btn-secondary btn-block">-</button>
-    </div>
-    <div class="col text-center quantity">{{ currentItem.quantity }} in cart</div>
-    <div class="col-2">
-      <button (click)="onAdd(currentItem.cartItemId)" class="btn btn-secondary btn-block">+</button>
-    </div>
-    <div class="col"></div>
-  </div>
-</ng-template> -->
+</div>

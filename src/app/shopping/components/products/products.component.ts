@@ -17,15 +17,9 @@ import { AllCartItemsRequested } from 'src/app/shared/store/shopping-cart.action
 })
 export class ProductsComponent implements OnInit {
 
-  authSubscription: Subscription;
   products$: Observable<Product[]>;
 
-  constructor(
-    public productService: ProductService,
-    private shoppingCartService: ShoppingCartService,
-    private authService: AuthService,
-    private store: Store<AppState>
-    ) { }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
     // this.authSubscription = this.authService.appUser$.subscribe( user => {
