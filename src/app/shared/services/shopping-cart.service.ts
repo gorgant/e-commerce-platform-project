@@ -7,7 +7,7 @@ import { AppUser } from '../models/app-user';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { selectCartItemById, selectAllCartItems } from '../store/shopping-cart.selectors';
-import { withLatestFrom } from 'rxjs/operators';
+import { withLatestFrom, merge } from 'rxjs/operators';
 
 // Provided in shared module to prevent circular dependency
 @Injectable()
@@ -53,15 +53,22 @@ export class ShoppingCartService {
   }
 
   getAllCartItems(): Observable<ShoppingCartItem[]> {
-
     if (this.fetchUserData()) {
-      this.fetchUserData();
       // Retreive cart data from database
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
       // Return the shopping cart items with the product inserted
       return this.shoppingCartItems$;
     }
+  }
+
+  upsertOfflineCartItems(cartItems: ShoppingCartItem[]) {
+    this.fetchUserData();
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+    cartItems.map(item => {
+      this.shoppingCartDoc = this.shoppingCartCollection.doc(item.cartItemId);
+      this.shoppingCartDoc.set(item, {merge: true});
+    });
   }
 
   incrementCartItem(cartItem: ShoppingCartItem) {

@@ -56,6 +56,9 @@ export function cartItemsReducer(state = initialShoppingCartState, action: CartI
     case CartActionTypes.CartQuantitySet:
       return {...state, cartItemQuantity: action.payload.cartItemQuantity};
 
+    case CartActionTypes.UpsertOfflineCartItemsComplete:
+      return adapter.upsertMany(action.payload.offlineCartItems, state);
+
     default: {
       return state;
     }

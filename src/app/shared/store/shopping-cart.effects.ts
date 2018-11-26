@@ -18,7 +18,8 @@ import {
   EmptyCartComplete,
   CartQuantityRequested,
   CartQuantitySet,
-  UpdateCartItemProductComplete
+  UpdateCartItemProductComplete,
+  UpsertOfflineCartItemsComplete
  } from './shopping-cart.actions';
 import { mergeMap, map, withLatestFrom, filter, tap } from 'rxjs/operators';
 import { ShoppingCartService } from '../services/shopping-cart.service';
@@ -49,23 +50,27 @@ export class ShoppingCartEffects {
   loadAllCartItems$ = this.actions$
     .pipe(
       ofType<AllCartItemsRequested>(CartActionTypes.AllCartItemsRequested),
-      // This combines the previous observable with the current one
+      // This is the best way to get a "snapshot" of the state without causing an infinite loop which happens if you just pipe a select
       withLatestFrom(this.store.pipe(select(selectAllCartItemsLoaded)), this.store.pipe(select(selectAllCartItems))),
-      // tap(([action, allCartItemsLoadedVal, cartItems]) => {
-      //   localStorage.setItem('cart', JSON.stringify(cartItems));
-      //   console.log('Cart items set in local storage', cartItems);
-      // }),
-      // Ingest both observable values and filter out the observable and only trigger if the
-      // courses haven't been loaded (only false makes it through)
       filter(([action, allCartItemsLoadedVal, cartItems]) => !allCartItemsLoadedVal),
-      // Call api for data
+      // Call api for data if logged in, otherwise load from store
       mergeMap(([action, allCartItemsLoadedVal, cartItems]) => {
+        // This is a cheap way of verifying if logged in
         const userData = localStorage.getItem('user');
         if (userData) {
+          if (localStorage.getItem('cart')) {
+            const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('cart'));
+            console.log('Offline Cart', offlineCart);
+            this.shoppingCartService.upsertOfflineCartItems(offlineCart);
+            this.store.dispatch(new UpsertOfflineCartItemsComplete({offlineCartItems: offlineCart}));
+          }
           return this.shoppingCartService.getAllCartItems();
         } else {
-          localStorage.setItem('cart', JSON.stringify(cartItems));
-          console.log('Cart items set in local storage', cartItems);
+          // This prevents local storage cart from being deleted during the refresh cycle during redirect logging in
+          if (cartItems.length > 0) {
+            localStorage.setItem('cart', JSON.stringify(cartItems));
+            console.log('Cart items set in local storage', cartItems);
+          }
           return of(cartItems);
         }
       }),

@@ -54,6 +54,7 @@ export class BsNavbarComponent implements OnInit {
         // Initialize the cart quantity
         this.store.dispatch(new CartQuantityRequested());
       } else {
+        // Empty cart (local only)
         this.store.dispatch(new EmptyCartRequested());
         // Initialize the product list
         this.store.dispatch(new AllProductsRequested());
@@ -81,6 +82,8 @@ export class BsNavbarComponent implements OnInit {
     this.auth.signOut();
     this.store.dispatch(new Logout());
     this.router.navigate(['/login']);
+    // Empty local storage cart
+    localStorage.removeItem('cart');
   }
 
 }

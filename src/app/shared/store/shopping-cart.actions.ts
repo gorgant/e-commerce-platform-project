@@ -22,6 +22,7 @@ export enum CartActionTypes {
   EmptyCartComplete = '[Shopping Cart API] Cart Emptied',
   CartQuantityRequested = '[Nav Bar] Cart Quantity Requested',
   CartQuantitySet = '[Shopping Cart Selector] Cart Quantity Set',
+  UpsertOfflineCartItemsComplete = '[Navbar] Offline Items Upserted'
 }
 
 export class CartItemRequested implements Action {
@@ -118,6 +119,12 @@ export class CartQuantitySet implements Action {
   constructor (public payload: {cartItemQuantity: number}) {}
 }
 
+export class UpsertOfflineCartItemsComplete implements Action {
+  readonly type = CartActionTypes.UpsertOfflineCartItemsComplete;
+
+  constructor (public payload: {offlineCartItems: ShoppingCartItem[]}) {}
+}
+
 export type CartItemActions =
   AllCartItemsRequested |
   AllCartItemsLoaded |
@@ -135,4 +142,5 @@ export type CartItemActions =
   EmptyCartRequested |
   EmptyCartComplete |
   CartQuantityRequested |
-  CartQuantitySet;
+  CartQuantitySet |
+  UpsertOfflineCartItemsComplete;
