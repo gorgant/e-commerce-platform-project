@@ -8,7 +8,7 @@ import {
   IncrementCartItemRequested,
   DecrementCartItemRequested,
   AddCartItemRequested,
-  DeleteCartItemRequested,
+  DeleteCartItemRequested
 } from '../../store/shopping-cart.actions';
 import { selectCartItemById } from '../../store/shopping-cart.selectors';
 
@@ -45,5 +45,6 @@ export class ProductQuantityComponent implements OnInit {
     } else {
       this.store.dispatch(new DeleteCartItemRequested({cartItemId: cartItem.cartItemId}));
     }
+    // this.store.dispatch(new DecrementCartQuantityComplete());
   }
 }

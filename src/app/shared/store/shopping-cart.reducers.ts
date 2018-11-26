@@ -6,6 +6,7 @@ import { CartActionTypes, CartItemActions } from './shopping-cart.actions';
 export interface ShoppingCartState extends EntityState<ShoppingCartItem> {
   // This is a custom addition to the EntityState that also needs to be initialized below
   allCartItemsLoaded: boolean;
+  cartItemQuantity: number;
 }
 
 export const adapter: EntityAdapter<ShoppingCartItem> =
@@ -14,7 +15,8 @@ export const adapter: EntityAdapter<ShoppingCartItem> =
   });
 
 export const initialShoppingCartState: ShoppingCartState = adapter.getInitialState({
-  allCartItemsLoaded: false
+  allCartItemsLoaded: false,
+  cartItemQuantity: 0
 });
 
 export function cartItemsReducer(state = initialShoppingCartState, action: CartItemActions): ShoppingCartState {
@@ -43,6 +45,9 @@ export function cartItemsReducer(state = initialShoppingCartState, action: CartI
 
     case CartActionTypes.EmptyCartComplete:
       return adapter.removeAll(state);
+
+    case CartActionTypes.CartQuantitySet:
+      return {...state, cartItemQuantity: action.payload.cartItemQuantity};
 
     default: {
       return state;

@@ -15,13 +15,15 @@ import {
   DeleteCartItemRequested,
   DeleteCartItemComplete,
   EmptyCartRequested,
-  EmptyCartComplete
+  EmptyCartComplete,
+  CartQuantityRequested,
+  CartQuantitySet
  } from './shopping-cart.actions';
-import { mergeMap, map, withLatestFrom, filter } from 'rxjs/operators';
+import { mergeMap, map, withLatestFrom, filter, switchMap } from 'rxjs/operators';
 import { ShoppingCartService } from '../services/shopping-cart.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { selectAllCartItemsLoaded } from './shopping-cart.selectors';
+import { selectAllCartItemsLoaded, calculateCartItemQuantity } from './shopping-cart.selectors';
 import { Update } from '@ngrx/entity';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 
@@ -104,6 +106,20 @@ export class ShoppingCartEffects {
         mergeMap(action => this.shoppingCartService.deleteAllCartItems()),
         map(() => new EmptyCartComplete())
       );
+
+  @Effect()
+  setCartQuantity$ = this.actions$
+    .pipe(
+      ofType<CartQuantityRequested>(CartActionTypes.CartQuantityRequested),
+      mergeMap(action => {
+        console.log('calculateing cart item quantity');
+        return this.store.pipe(select(calculateCartItemQuantity));
+      }),
+      map(quantity => {
+        console.log('setting cart item quantity');
+        return new CartQuantitySet({cartItemQuantity: quantity});
+      })
+    );
 
   constructor(
     private actions$: Actions,

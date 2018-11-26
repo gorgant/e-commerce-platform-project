@@ -5,20 +5,22 @@ import { Product } from '../models/product';
 
 
 export enum CartActionTypes {
-  CartItemRequested = '[Cart or Product Page] Cart Item Requested',
+  CartItemRequested = '[Product Card] Cart Item Requested',
   CartItemLoaded = '[Shopping Cart API] Cart Item Loaded',
   AllCartItemsRequested = '[Cart or Product Page] All Cart Items Requsted',
   AllCartItemsLoaded = '[Shopping Cart API] All Cart Items Loaded',
-  IncrementCartItemRequested = '[Cart or Product Page] Increment Cart Item Requested',
+  IncrementCartItemRequested = '[Quantity Component] Increment Cart Item Requested',
   IncrementCartItemComplete = '[Shopping Cart API] Cart Item Incremented',
-  DecrementCartItemRequested = '[Cart or Product Page] Decrement Cart Item Requested',
+  DecrementCartItemRequested = '[Quantity Component] Decrement Cart Item Requested',
   DecrementCartItemComplete = '[Shopping Cart API] Cart Item Decremented',
-  AddCartItemRequested = '[Cart or Product Page] Add Cart Item Requested',
+  AddCartItemRequested = '[Product Card] Add Cart Item Requested',
   AddCartItemComplete = '[Shopping Cart API] Cart Item Added',
-  DeleteCartItemRequested = '[Cart or Product Page] Delete Cart Item Requested',
+  DeleteCartItemRequested = '[Product Card] Delete Cart Item Requested',
   DeleteCartItemComplete = '[Shopping Cart API] Cart Item Deleted',
   EmptyCartRequested = '[Cart Page] Empty Cart Requested',
-  EmptyCartComplete = '[Shopping Cart API] Cart Emptied'
+  EmptyCartComplete = '[Shopping Cart API] Cart Emptied',
+  CartQuantityRequested = '[Nav Bar] Cart Quantity Requested',
+  CartQuantitySet = '[Shopping Cart Selector] Cart Quantity Set',
 }
 
 export class CartItemRequested implements Action {
@@ -99,6 +101,16 @@ export class EmptyCartComplete implements Action {
   readonly type = CartActionTypes.EmptyCartComplete;
 }
 
+export class CartQuantityRequested implements Action {
+  readonly type = CartActionTypes.CartQuantityRequested;
+}
+
+export class CartQuantitySet implements Action {
+  readonly type = CartActionTypes.CartQuantitySet;
+
+  constructor (public payload: {cartItemQuantity: number}) {}
+}
+
 export type CartItemActions =
   AllCartItemsRequested |
   AllCartItemsLoaded |
@@ -113,4 +125,6 @@ export type CartItemActions =
   DeleteCartItemRequested |
   DeleteCartItemComplete |
   EmptyCartRequested |
-  EmptyCartComplete;
+  EmptyCartComplete |
+  CartQuantityRequested |
+  CartQuantitySet;

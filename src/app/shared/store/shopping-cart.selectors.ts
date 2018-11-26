@@ -20,5 +20,34 @@ export const selectAllCartItems = createSelector(
 
 export const selectAllCartItemsLoaded = createSelector(
   selectShoppingCartState,
-  productsState => productsState.allCartItemsLoaded
+  shoppingCartState => shoppingCartState.allCartItemsLoaded
+);
+
+export const calculateCartItemQuantity = createSelector(
+  selectAllCartItems,
+  cartItems => {
+    let quantity = 0;
+    cartItems.forEach(item => {
+      quantity += item.quantity;
+    });
+    console.log('returning calculated quantity');
+    return quantity;
+  }
+);
+
+// export const calculateCartItemQuantity = () => createSelector(
+//   selectAllCartItems,
+//   cartItems => {
+//     let quantity = 0;
+//     cartItems.forEach(item => {
+//       quantity += item.quantity;
+//     });
+//     console.log('returning calculated quantity');
+//     return quantity;
+//   }
+// );
+
+export const selectCartItemQuantity = createSelector(
+  selectShoppingCartState,
+  shoppingCartState => shoppingCartState.cartItemQuantity
 );

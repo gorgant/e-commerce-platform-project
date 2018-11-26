@@ -8,6 +8,9 @@ import { isLoggedIn, isLoggedOut } from '../../auth.selectors';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user';
+import { calculateCartItemQuantity, selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
+import { AllProductsRequested } from 'src/app/shared/store/product.actions';
+import { AllCartItemsRequested, CartQuantityRequested } from 'src/app/shared/store/shopping-cart.actions';
 
 @Component({
   selector: 'bs-navbar',
@@ -20,6 +23,8 @@ export class BsNavbarComponent implements OnInit {
 
   isLoggedIn$: Observable<boolean>;
   isLoggedOut$: Observable<boolean>;
+
+  cartItemQuantity$: Observable<number>;
 
   constructor(
     public auth: AuthService,
@@ -38,6 +43,18 @@ export class BsNavbarComponent implements OnInit {
     .pipe(
       select(isLoggedOut)
     );
+
+    // Initialize the product list
+    this.store.dispatch(new AllProductsRequested());
+    // Initialize the shopping cart
+    this.store.dispatch(new AllCartItemsRequested());
+    // Initialize the cart quantity
+    this.store.dispatch(new CartQuantityRequested());
+
+    // Query the cart item quantity
+    this.cartItemQuantity$ = this.store.pipe(select(
+      selectCartItemQuantity
+    ));
 
   }
 

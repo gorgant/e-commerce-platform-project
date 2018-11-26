@@ -1,11 +1,10 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
 import { Subscription, Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { selectAllProducts, selectAllProductsLoaded } from 'src/app/shared/store/product.selectors';
-import { AllProductsRequested } from 'src/app/shared/store/product.actions';
 import { ProductImporterService } from 'src/app/shared/services/product-importer.service';
 import { CategoryImporterService } from 'src/app/shared/services/category-importer.service';
 
@@ -32,7 +31,9 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
-    this.store.dispatch(new AllProductsRequested());
+
+    // Product list initialized in nav bar
+    // Load product data into MatTable
     this.storeSubscription = this.store.pipe(select(selectAllProducts))
       .subscribe(products => {
         this.dataSource = new MatTableDataSource(products);

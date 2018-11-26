@@ -6,7 +6,7 @@
   <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarsDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a routerLink="/shopping-cart" class="nav-link" >Shopping Cart</a>
+        <a routerLink="/shopping-cart" class="nav-link" >Shopping Cart <span class="badge badge-light">{{ cartItemQuantity$ | async }}</span></a>
       </li>
       <div *ngIf="isLoggedIn$ | async; then authenticated else guest">
         <!-- template will replace this div -->
