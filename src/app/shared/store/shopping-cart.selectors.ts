@@ -30,22 +30,10 @@ export const calculateCartItemQuantity = createSelector(
     cartItems.forEach(item => {
       quantity += item.quantity;
     });
-    console.log('returning calculated quantity');
+    console.log('returning calculated quantity', quantity);
     return quantity;
   }
 );
-
-// export const calculateCartItemQuantity = () => createSelector(
-//   selectAllCartItems,
-//   cartItems => {
-//     let quantity = 0;
-//     cartItems.forEach(item => {
-//       quantity += item.quantity;
-//     });
-//     console.log('returning calculated quantity');
-//     return quantity;
-//   }
-// );
 
 export const selectCartItemQuantity = createSelector(
   selectShoppingCartState,

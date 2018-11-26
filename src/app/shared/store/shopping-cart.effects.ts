@@ -17,18 +17,23 @@ import {
   EmptyCartRequested,
   EmptyCartComplete,
   CartQuantityRequested,
-  CartQuantitySet
+  CartQuantitySet,
+  AddProductToCartItemComplete
  } from './shopping-cart.actions';
-import { mergeMap, map, withLatestFrom, filter, switchMap } from 'rxjs/operators';
+import { mergeMap, map, withLatestFrom, filter, switchMap, last, tap } from 'rxjs/operators';
 import { ShoppingCartService } from '../services/shopping-cart.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { selectAllCartItemsLoaded, calculateCartItemQuantity } from './shopping-cart.selectors';
+import { selectAllCartItemsLoaded, calculateCartItemQuantity, selectAllCartItems } from './shopping-cart.selectors';
 import { Update } from '@ngrx/entity';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
+import { Subscription } from 'rxjs';
+import { selectProductById } from './product.selectors';
 
 @Injectable()
 export class ShoppingCartEffects {
+
+  storeSubscription: Subscription;
 
   @Effect()
   loadCartItem$ = this.actions$
@@ -40,7 +45,26 @@ export class ShoppingCartEffects {
       map(cartItem => new CartItemLoaded({cartItem})),
     );
 
-  @Effect()
+  // @Effect()
+  // loadAllCartItems$ = this.actions$
+  //   .pipe(
+  //     ofType<AllCartItemsRequested>(CartActionTypes.AllCartItemsRequested),
+  //     // This combines the previous observable with the current one
+  //     withLatestFrom(this.store.pipe(select(selectAllCartItemsLoaded))),
+  //     // Ingest both observable values and filter out the observable and only trigger if the
+  //     // courses haven't been loaded (only false makes it through)
+  //     filter(([action, allCartItemsLoadedVal]) => !allCartItemsLoadedVal),
+  //     // Call api for data
+  //     mergeMap(action => this.shoppingCartService.getAllCartItems()),
+  //     // Take results and trigger an action
+  //     map(cartItems => {
+  //       console.log('Updated cart items', cartItems);
+  //       return new AllCartItemsLoaded({cartItems: cartItems});
+  //     })
+  //   );
+
+
+  @Effect({dispatch: false})
   loadAllCartItems$ = this.actions$
     .pipe(
       ofType<AllCartItemsRequested>(CartActionTypes.AllCartItemsRequested),
@@ -51,8 +75,26 @@ export class ShoppingCartEffects {
       filter(([action, allCartItemsLoadedVal]) => !allCartItemsLoadedVal),
       // Call api for data
       mergeMap(action => this.shoppingCartService.getAllCartItems()),
-      // Take results and trigger an action
-      map(cartItems => new AllCartItemsLoaded({cartItems: cartItems}))
+      tap(cartItems => {
+        this.store.dispatch(new AllCartItemsLoaded({cartItems: cartItems}));
+        console.log('Updated cart items without products', cartItems);
+      }),
+      mergeMap(cartItems => cartItems),
+      map(cartItem => {
+        this.storeSubscription = this.store.pipe(select(selectProductById(cartItem.productId)))
+          .subscribe(product => {
+            const updatedCartItem: Update<ShoppingCartItem> = {
+              id: cartItem.cartItemId,
+              changes: {
+                productId: cartItem.productId,
+                quantity: cartItem.quantity,
+                product: product
+              }
+            };
+            this.store.dispatch(new AddProductToCartItemComplete({cartItem: updatedCartItem}));
+            console.log('Updated cart item store with this item', updatedCartItem);
+          });
+      }),
     );
 
   @Effect()
@@ -116,10 +158,44 @@ export class ShoppingCartEffects {
         return this.store.pipe(select(calculateCartItemQuantity));
       }),
       map(quantity => {
-        console.log('setting cart item quantity');
+        console.log('setting cart item quantity', quantity);
         return new CartQuantitySet({cartItemQuantity: quantity});
       })
     );
+
+  // @Effect()
+  // setCartQuantity$ = this.actions$
+  //   .pipe(
+  //     ofType<CartQuantityRequested>(CartActionTypes.CartQuantityRequested),
+  //     mergeMap(action => {
+  //       return this.store.pipe(select(selectAllCartItems));
+  //     }),
+  //     map(cartItems => {
+  //       let quantity = 0;
+  //       cartItems.forEach(item => {
+  //         quantity += item.quantity;
+  //       });
+  //       console.log('setting cart item quantity', quantity);
+  //       return new CartQuantitySet({cartItemQuantity: quantity});
+  //     }),
+  //   );
+
+  // @Effect()
+  // setCartQuantity$ = this.actions$
+  //   .pipe(
+  //     ofType<CartQuantityRequested>(CartActionTypes.CartQuantityRequested),
+  //     mergeMap(action => {
+  //       return this.store.pipe(select(selectAllCartItems));
+  //     }),
+  //     map(cartItems => {
+  //       // let quantity = 0;
+  //       // cartItems.map(item => quantity += item.quantity);
+  //       const quant = cartItems.reduce(((acc, num) => acc + num.quantity), 0);
+  //       console.log('setting cart item quantity', quant);
+  //       return new CartQuantitySet({cartItemQuantity: quant});
+  //     }),
+  //   );
+
 
   constructor(
     private actions$: Actions,

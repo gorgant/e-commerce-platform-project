@@ -11,6 +11,7 @@ import { AppUser } from 'src/app/shared/models/app-user';
 import { calculateCartItemQuantity, selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
 import { AllCartItemsRequested, CartQuantityRequested } from 'src/app/shared/store/shopping-cart.actions';
+import { first, last } from 'rxjs/operators';
 
 @Component({
   selector: 'bs-navbar',

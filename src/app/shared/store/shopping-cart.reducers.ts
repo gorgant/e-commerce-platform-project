@@ -31,6 +31,9 @@ export function cartItemsReducer(state = initialShoppingCartState, action: CartI
       // Toggle the allCoursesLoaded value when this action is triggered
       return adapter.addAll(action.payload.cartItems, {...state, allCartItemsLoaded: true});
 
+    case CartActionTypes.AddProductToCartItemComplete:
+      return adapter.updateOne(action.payload.cartItem, state);
+
     case CartActionTypes.IncrementCartItemComplete:
       return adapter.updateOne(action.payload.cartItem, state);
 
