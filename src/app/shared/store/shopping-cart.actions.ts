@@ -9,8 +9,7 @@ export enum CartActionTypes {
   CartItemLoaded = '[Shopping Cart API] Cart Item Loaded',
   AllCartItemsRequested = '[Cart or Product Page] All Cart Items Requsted',
   AllCartItemsLoaded = '[Shopping Cart API] All Cart Items Loaded',
-  // AddProductToCartItemRequested = '[Shopping Cart API] Add Product to Cart Item Requested',
-  AddProductToCartItemComplete = '[Shopping Cart API] Product Added to Cart Item',
+  UpdateCartItemProductComplete = '[Shopping Cart Effects] Updated Cart Item Product',
   IncrementCartItemRequested = '[Quantity Component] Increment Cart Item Requested',
   IncrementCartItemComplete = '[Shopping Cart API] Cart Item Incremented',
   DecrementCartItemRequested = '[Quantity Component] Decrement Cart Item Requested',
@@ -47,14 +46,8 @@ export class AllCartItemsLoaded implements Action {
   constructor(public payload: {cartItems: ShoppingCartItem[]}) {}
 }
 
-// export class AddProductToCartItemRequested implements Action {
-//   readonly type = CartActionTypes.AddProductToCartItemRequested;
-
-//   constructor(public payload: {product: Product}) {}
-// }
-
-export class AddProductToCartItemComplete implements Action {
-  readonly type = CartActionTypes.AddProductToCartItemComplete;
+export class UpdateCartItemProductComplete implements Action {
+  readonly type = CartActionTypes.UpdateCartItemProductComplete;
 
   constructor(public payload: {cartItem: Update<ShoppingCartItem>}) {}
 }
@@ -130,8 +123,7 @@ export type CartItemActions =
   AllCartItemsLoaded |
   CartItemRequested |
   CartItemLoaded |
-  // AddProductToCartItemRequested |
-  AddProductToCartItemComplete |
+  UpdateCartItemProductComplete |
   IncrementCartItemRequested |
   IncrementCartItemComplete |
   DecrementCartItemRequested |

@@ -8,10 +8,9 @@ import { isLoggedIn, isLoggedOut } from '../../auth.selectors';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user';
-import { calculateCartItemQuantity, selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
+import { selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
 import { AllCartItemsRequested, CartQuantityRequested } from 'src/app/shared/store/shopping-cart.actions';
-import { first, last } from 'rxjs/operators';
 
 @Component({
   selector: 'bs-navbar',

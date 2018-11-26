@@ -23,18 +23,6 @@ export const selectAllCartItemsLoaded = createSelector(
   shoppingCartState => shoppingCartState.allCartItemsLoaded
 );
 
-export const calculateCartItemQuantity = createSelector(
-  selectAllCartItems,
-  cartItems => {
-    let quantity = 0;
-    cartItems.forEach(item => {
-      quantity += item.quantity;
-    });
-    console.log('returning calculated quantity', quantity);
-    return quantity;
-  }
-);
-
 export const selectCartItemQuantity = createSelector(
   selectShoppingCartState,
   shoppingCartState => shoppingCartState.cartItemQuantity
