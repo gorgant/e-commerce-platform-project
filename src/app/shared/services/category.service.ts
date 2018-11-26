@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { SharedModule } from '../shared.module';
 import { AngularFirestoreCollection, AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { ProductCategory } from '../models/product-category';

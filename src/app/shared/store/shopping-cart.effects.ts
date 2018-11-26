@@ -27,7 +27,7 @@ import { AppState } from 'src/app/reducers';
 import { selectAllCartItemsLoaded, selectAllCartItems } from './shopping-cart.selectors';
 import { Update } from '@ngrx/entity';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { selectProductById } from './product.selectors';
 
 @Injectable()
@@ -50,12 +50,25 @@ export class ShoppingCartEffects {
     .pipe(
       ofType<AllCartItemsRequested>(CartActionTypes.AllCartItemsRequested),
       // This combines the previous observable with the current one
-      withLatestFrom(this.store.pipe(select(selectAllCartItemsLoaded))),
+      withLatestFrom(this.store.pipe(select(selectAllCartItemsLoaded)), this.store.pipe(select(selectAllCartItems))),
+      // tap(([action, allCartItemsLoadedVal, cartItems]) => {
+      //   localStorage.setItem('cart', JSON.stringify(cartItems));
+      //   console.log('Cart items set in local storage', cartItems);
+      // }),
       // Ingest both observable values and filter out the observable and only trigger if the
       // courses haven't been loaded (only false makes it through)
-      filter(([action, allCartItemsLoadedVal]) => !allCartItemsLoadedVal),
+      filter(([action, allCartItemsLoadedVal, cartItems]) => !allCartItemsLoadedVal),
       // Call api for data
-      mergeMap(action => this.shoppingCartService.getAllCartItems()),
+      mergeMap(([action, allCartItemsLoadedVal, cartItems]) => {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          return this.shoppingCartService.getAllCartItems();
+        } else {
+          localStorage.setItem('cart', JSON.stringify(cartItems));
+          console.log('Cart items set in local storage', cartItems);
+          return of(cartItems);
+        }
+      }),
       tap(cartItems => {
         this.store.dispatch(new AllCartItemsLoaded({cartItems: cartItems}));
         console.log('Updated cart items without products', cartItems);

@@ -8,9 +8,11 @@ import {
   IncrementCartItemRequested,
   DecrementCartItemRequested,
   AddCartItemRequested,
-  DeleteCartItemRequested
+  DeleteCartItemRequested,
+  AllCartItemsRequested
 } from '../../store/shopping-cart.actions';
 import { selectCartItemById } from '../../store/shopping-cart.selectors';
+import { isLoggedIn } from 'src/app/core/auth.selectors';
 
 @Component({
   selector: 'product-quantity',
@@ -25,18 +27,31 @@ export class ProductQuantityComponent implements OnInit {
 
   addToCartClicked: boolean;
 
+  isLoggedIn$: Observable<boolean>;
+
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
     this.storeCartItem$ = this.store.pipe(select(selectCartItemById(this.currentProduct.productId)));
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedIn));
   }
 
   addToCart(product: Product) {
     this.store.dispatch(new AddCartItemRequested({product: product}));
+    this.isLoggedIn$.subscribe(loggedIn => {
+      if (!loggedIn) {
+        this.store.dispatch(new AllCartItemsRequested());
+      }
+    });
   }
 
   incrementCartItem(cartItem: ShoppingCartItem) {
     this.store.dispatch(new IncrementCartItemRequested({cartItem: cartItem}));
+    this.isLoggedIn$.subscribe(loggedIn => {
+      if (!loggedIn) {
+        this.store.dispatch(new AllCartItemsRequested());
+      }
+    });
   }
 
   decrementCartItem(cartItem: ShoppingCartItem) {
@@ -45,6 +60,10 @@ export class ProductQuantityComponent implements OnInit {
     } else {
       this.store.dispatch(new DeleteCartItemRequested({cartItemId: cartItem.cartItemId}));
     }
-    // this.store.dispatch(new DecrementCartQuantityComplete());
+    this.isLoggedIn$.subscribe(loggedIn => {
+      if (!loggedIn) {
+        this.store.dispatch(new AllCartItemsRequested());
+      }
+    });
   }
 }

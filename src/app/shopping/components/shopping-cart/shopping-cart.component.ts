@@ -3,8 +3,9 @@ import { Observable } from 'rxjs';
 import { ShoppingCartItem } from 'src/app/shared/models/shopping-cart-item';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { EmptyCartRequested } from 'src/app/shared/store/shopping-cart.actions';
+import { EmptyCartRequested, AllCartItemsRequested, CartQuantityRequested } from 'src/app/shared/store/shopping-cart.actions';
 import { selectAllCartItems, selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
+import { AllProductsRequested } from 'src/app/shared/store/product.actions';
 
 @Component({
   selector: 'shopping-cart',
@@ -20,7 +21,13 @@ export class ShoppingCartComponent implements OnInit {
 
   ngOnInit() {
 
-    // Product and cart initialized in Navbar
+    // // Initialize the product list
+    // this.store.dispatch(new AllProductsRequested());
+    // // Initialize the shopping cart
+    // this.store.dispatch(new AllCartItemsRequested());
+    // // Initialize the cart quantity
+    // this.store.dispatch(new CartQuantityRequested());
+
     // Fetch cart items from store
     this.shoppingCartItems$ = this.store.pipe(select(selectAllCartItems));
 

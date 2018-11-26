@@ -4,6 +4,10 @@ import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Product } from '../models/product';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AppUser } from '../models/app-user';
+import { Store, select } from '@ngrx/store';
+import { AppState } from 'src/app/reducers';
+import { selectCartItemById, selectAllCartItems } from '../store/shopping-cart.selectors';
+import { withLatestFrom } from 'rxjs/operators';
 
 // Provided in shared module to prevent circular dependency
 @Injectable()
@@ -18,7 +22,10 @@ export class ShoppingCartService {
   private shoppingCartCollection: AngularFirestoreCollection<ShoppingCartItem>;
   shoppingCartItems$: Observable<ShoppingCartItem[]>;
 
-  constructor(private readonly afs: AngularFirestore) { }
+  constructor(
+    private readonly afs: AngularFirestore,
+    private store: Store<AppState>
+    ) { }
 
   // Retrieve user data from local storage
   fetchUserData() {
@@ -27,33 +34,37 @@ export class ShoppingCartService {
     if (userData) {
       user = JSON.parse(userData);
       this.userDoc = this.afs.doc<AppUser>(`users/${user.uid}`);
+      return true;
     } else {
-      console.log('Cannot retrieve user data from local storage');
+      return false;
     }
   }
 
   getSingleCartItem(cartItemId: string) {
-    this.fetchUserData();
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItemId);
-    this.singleShoppingCartItem$ = this.shoppingCartDoc.valueChanges();
-    return this.singleShoppingCartItem$;
+
+    if (this.fetchUserData()) {
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItemId);
+      this.singleShoppingCartItem$ = this.shoppingCartDoc.valueChanges();
+      return this.singleShoppingCartItem$;
+    } else {
+      return this.store.pipe(select(selectCartItemById(cartItemId)));
+    }
   }
 
   getAllCartItems(): Observable<ShoppingCartItem[]> {
-    this.fetchUserData();
-    // Retreive cart data from database
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
 
-    // Return the shopping cart items with the product inserted
-    return this.shoppingCartItems$;
+    if (this.fetchUserData()) {
+      this.fetchUserData();
+      // Retreive cart data from database
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
+      // Return the shopping cart items with the product inserted
+      return this.shoppingCartItems$;
+    }
   }
 
   incrementCartItem(cartItem: ShoppingCartItem) {
-    this.fetchUserData();
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
 
     const updatedCartItem: ShoppingCartItem = {
       cartItemId: cartItem.cartItemId,
@@ -62,16 +73,17 @@ export class ShoppingCartService {
       product: cartItem.product
     };
 
-    this.shoppingCartDoc.update(updatedCartItem);
-    console.log('Incremented quantity', updatedCartItem);
+    if (this.fetchUserData()) {
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
+      this.shoppingCartDoc.update(updatedCartItem);
+    }
 
+    console.log('Incremented quantity', updatedCartItem);
     return of(updatedCartItem);
   }
 
   decrementCartItem(cartItem: ShoppingCartItem) {
-    this.fetchUserData();
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
 
     const updatedCartItem: ShoppingCartItem = {
       cartItemId: cartItem.cartItemId,
@@ -80,15 +92,17 @@ export class ShoppingCartService {
       product: cartItem.product
     };
 
-    this.shoppingCartDoc.update(updatedCartItem);
-    console.log('Decremented quantity', updatedCartItem);
+    if (this.fetchUserData()) {
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
+      this.shoppingCartDoc.update(updatedCartItem);
+    }
 
+    console.log('Decremented quantity', updatedCartItem);
     return of(updatedCartItem);
   }
 
   createCartItem(product: Product) {
-    this.fetchUserData();
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
 
     const cartItem: ShoppingCartItem = {
       // Set cartItem Id to product ID because each cart item is an individual product and this makes easier to search
@@ -98,31 +112,36 @@ export class ShoppingCartService {
       product: product
     };
 
-    this.shoppingCartCollection.doc(cartItem.cartItemId).set(cartItem);
-    console.log('Created cart item', cartItem);
+    if (this.fetchUserData()) {
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      this.shoppingCartCollection.doc(cartItem.cartItemId).set(cartItem);
+    }
 
+    console.log('Created cart item', cartItem);
     return of(cartItem);
   }
 
   deleteCartItem(cartItemId: string) {
-    this.fetchUserData();
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+    if (this.fetchUserData()) {
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      this.shoppingCartCollection.doc(cartItemId).delete();
+    }
 
-    this.shoppingCartCollection.doc(cartItemId).delete();
     console.log('Deleted cart item with ID', cartItemId);
-
     return of(cartItemId);
   }
 
   async deleteAllCartItems() {
-    const qry: firebase.firestore.QuerySnapshot = await this.shoppingCartCollection.ref.get();
-    const batch = this.afs.firestore.batch();
+    if (this.fetchUserData()) {
+      const qry: firebase.firestore.QuerySnapshot = await this.shoppingCartCollection.ref.get();
+      const batch = this.afs.firestore.batch();
 
-    qry.forEach(doc => {
-      batch.delete(doc.ref);
-    });
+      qry.forEach(doc => {
+        batch.delete(doc.ref);
+      });
 
-    batch.commit();
-    console.log('Cart emptied');
+      batch.commit();
+      console.log('Cart emptied');
+    }
   }
 }

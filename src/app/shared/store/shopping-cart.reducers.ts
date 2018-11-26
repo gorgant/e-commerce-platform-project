@@ -27,9 +27,13 @@ export function cartItemsReducer(state = initialShoppingCartState, action: CartI
       // and will add ID to the separate id array (the second part of the entity adapter that preserves the order of the courses)
       return adapter.addOne(action.payload.cartItem, state);
 
-    case CartActionTypes.AllCartItemsLoaded:
+    case CartActionTypes.AllCartItemsRequested:
       // Toggle the allCoursesLoaded value when this action is triggered
-      return adapter.addAll(action.payload.cartItems, {...state, allCartItemsLoaded: true});
+      return {...state, allCartItemsLoaded: false};
+
+    case CartActionTypes.AllCartItemsLoaded:
+    // Toggle the allCoursesLoaded value when this action is triggered
+    return adapter.addAll(action.payload.cartItems, {...state, allCartItemsLoaded: true});
 
     case CartActionTypes.UpdateCartItemProductComplete:
       return adapter.updateOne(action.payload.cartItem, state);

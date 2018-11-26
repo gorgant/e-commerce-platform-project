@@ -10,7 +10,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user';
 import { selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
-import { AllCartItemsRequested, CartQuantityRequested } from 'src/app/shared/store/shopping-cart.actions';
+import { AllCartItemsRequested, CartQuantityRequested, EmptyCartRequested } from 'src/app/shared/store/shopping-cart.actions';
 
 @Component({
   selector: 'bs-navbar',
@@ -44,12 +44,26 @@ export class BsNavbarComponent implements OnInit {
       select(isLoggedOut)
     );
 
-    // Initialize the product list
-    this.store.dispatch(new AllProductsRequested());
-    // Initialize the shopping cart
-    this.store.dispatch(new AllCartItemsRequested());
-    // Initialize the cart quantity
-    this.store.dispatch(new CartQuantityRequested());
+    // Load cart products if logged in, else empty cart (without deleting on account)
+    this.isLoggedIn$.subscribe(loggedIn => {
+      if (loggedIn) {
+        // Initialize the product list
+        this.store.dispatch(new AllProductsRequested());
+        // Initialize the shopping cart
+        this.store.dispatch(new AllCartItemsRequested());
+        // Initialize the cart quantity
+        this.store.dispatch(new CartQuantityRequested());
+      } else {
+        this.store.dispatch(new EmptyCartRequested());
+        // Initialize the product list
+        this.store.dispatch(new AllProductsRequested());
+        // Initialize the shopping cart
+        this.store.dispatch(new AllCartItemsRequested());
+        // Initialize the cart quantity
+        this.store.dispatch(new CartQuantityRequested());
+      }
+    });
+
 
     // Query the cart item quantity
     this.cartItemQuantity$ = this.store.pipe(select(

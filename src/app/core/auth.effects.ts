@@ -2,8 +2,11 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Login, AuthActionTypes, Logout } from './auth.actions';
 import { tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
 import { defer, Observable, of } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { AppState } from '../reducers';
+import { AllProductsRequested } from '../shared/store/product.actions';
+import { AllCartItemsRequested } from '../shared/store/shopping-cart.actions';
 
 // Make sure to add the EffectsModule.forRoot to the app.module!
 @Injectable()
@@ -15,7 +18,9 @@ export class AuthEffects {
     // Filters for this specific action type
     ofType<Login>(AuthActionTypes.LoginAction),
     // Do the side effect
-    tap(action => localStorage.setItem('user', JSON.stringify(action.payload.user)))
+    tap(action => {
+      return localStorage.setItem('user', JSON.stringify(action.payload.user));
+    })
   );
 
   @Effect({dispatch: false})
@@ -43,6 +48,6 @@ export class AuthEffects {
   // The action observable emits a new value each time an action is dispatched
   constructor(
     private actions$: Actions,
-    private router: Router
+    private store: Store<AppState>
     ) {}
 }
