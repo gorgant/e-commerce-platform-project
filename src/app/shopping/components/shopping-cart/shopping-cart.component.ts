@@ -32,5 +32,6 @@ export class ShoppingCartComponent implements OnInit {
 
   emptyCart() {
     this.store.dispatch(new EmptyCartRequested());
+    localStorage.removeItem('cart');
   }
 }
