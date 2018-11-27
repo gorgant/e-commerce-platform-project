@@ -5,8 +5,6 @@ import { tap } from 'rxjs/operators';
 import { defer, Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState } from '../reducers';
-import { AllProductsRequested } from '../shared/store/product.actions';
-import { AllCartItemsRequested } from '../shared/store/shopping-cart.actions';
 
 // Make sure to add the EffectsModule.forRoot to the app.module!
 @Injectable()

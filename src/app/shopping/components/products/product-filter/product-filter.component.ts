@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { AllCategoriesRequested, FilterCategorySelected } from 'src/app/shared/store/category.actions';
+import { FilterCategorySelected } from 'src/app/shared/store/category.actions';
 import { selectAllCategories } from 'src/app/shared/store/category.selectors';
 
 
@@ -28,9 +28,7 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    // This populates the categories list on initialization, and only updates if changes to the list
-    this.store.dispatch(new AllCategoriesRequested);
-
+    // Categories store initialized in nav bar component
     // Load the product categories
     this.productCategories$ = this.store
     .pipe(

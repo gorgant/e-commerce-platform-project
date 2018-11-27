@@ -30,7 +30,6 @@ import { Update } from '@ngrx/entity';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Subscription, of } from 'rxjs';
 import { selectProductById } from './product.selectors';
-import { AllProductsRequested } from './product.actions';
 
 @Injectable()
 export class ShoppingCartEffects {

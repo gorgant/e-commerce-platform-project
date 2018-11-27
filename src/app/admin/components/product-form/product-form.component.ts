@@ -12,7 +12,6 @@ import {
 } from 'src/app/shared/store/product.actions';
 import { selectAllCategories, selectCategoryById } from 'src/app/shared/store/category.selectors';
 import { ProductCategory } from 'src/app/shared/models/product-category';
-import { AllCategoriesRequested } from 'src/app/shared/store/category.actions';
 
 @Component({
   selector: 'product-form',
@@ -42,9 +41,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    // This populates the course list on initialization, and only updates if changes to the list
-    this.store.dispatch(new AllCategoriesRequested);
-
+    // Categories store initialized in nav bar component
     this.productCategories$ = this.store
     .pipe(
       select(selectAllCategories)

@@ -1,7 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { ShoppingCartItem } from '../../models/shopping-cart-item';
 import { Product } from '../../models/product';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import {
@@ -19,7 +19,7 @@ import { isLoggedIn } from 'src/app/core/auth.selectors';
   templateUrl: './product-quantity.component.html',
   styleUrls: ['./product-quantity.component.scss']
 })
-export class ProductQuantityComponent implements OnInit {
+export class ProductQuantityComponent implements OnInit, OnDestroy {
 
   @Input('currentProduct') currentProduct: Product;
 
@@ -28,6 +28,8 @@ export class ProductQuantityComponent implements OnInit {
   addToCartClicked: boolean;
 
   isLoggedIn$: Observable<boolean>;
+
+  loginSubscription: Subscription;
 
   constructor(private store: Store<AppState>) { }
 
@@ -38,7 +40,9 @@ export class ProductQuantityComponent implements OnInit {
 
   addToCart(product: Product) {
     this.store.dispatch(new AddCartItemRequested({product: product}));
-    this.isLoggedIn$.subscribe(loggedIn => {
+
+    // In offline mode, cart will only update if this is dispatched
+    this.loginSubscription = this.isLoggedIn$.subscribe(loggedIn => {
       if (!loggedIn) {
         this.store.dispatch(new AllCartItemsRequested());
       }
@@ -47,7 +51,9 @@ export class ProductQuantityComponent implements OnInit {
 
   incrementCartItem(cartItem: ShoppingCartItem) {
     this.store.dispatch(new IncrementCartItemRequested({cartItem: cartItem}));
-    this.isLoggedIn$.subscribe(loggedIn => {
+
+    // In offline mode, cart will only update if this is dispatched
+    this.loginSubscription = this.isLoggedIn$.subscribe(loggedIn => {
       if (!loggedIn) {
         this.store.dispatch(new AllCartItemsRequested());
       }
@@ -55,15 +61,25 @@ export class ProductQuantityComponent implements OnInit {
   }
 
   decrementCartItem(cartItem: ShoppingCartItem) {
+    // Delete item if only one left
     if (cartItem.quantity > 1) {
       this.store.dispatch(new DecrementCartItemRequested({cartItem: cartItem}));
     } else {
       this.store.dispatch(new DeleteCartItemRequested({cartItemId: cartItem.cartItemId}));
     }
-    this.isLoggedIn$.subscribe(loggedIn => {
+
+    // In offline mode, cart will only update if this is dispatched
+    this.loginSubscription = this.isLoggedIn$.subscribe(loggedIn => {
       if (!loggedIn) {
         this.store.dispatch(new AllCartItemsRequested());
       }
     });
   }
+
+  ngOnDestroy() {
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
+  }
+
 }

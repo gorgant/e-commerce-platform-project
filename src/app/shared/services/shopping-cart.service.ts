@@ -28,6 +28,7 @@ export class ShoppingCartService {
     ) { }
 
   // Retrieve user data from local storage
+  // This is also used as a "cheap" way to determine if user is logged in (vs subscribing to store)
   fetchUserData() {
     const userData = localStorage.getItem('user');
     let user: AppUser;
