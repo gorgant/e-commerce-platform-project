@@ -4,7 +4,7 @@ import { ShoppingCartItem } from 'src/app/shared/models/shopping-cart-item';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { EmptyCartRequested } from 'src/app/shared/store/shopping-cart.actions';
-import { selectAllCartItems, selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
+import { selectAllCartItems, selectCartItemQuantity, selectCartTotalPrice } from 'src/app/shared/store/shopping-cart.selectors';
 
 @Component({
   selector: 'shopping-cart',
@@ -15,6 +15,7 @@ export class ShoppingCartComponent implements OnInit {
 
   shoppingCartItems$: Observable<ShoppingCartItem[]>;
   cartItemQuantity$: Observable<number>;
+  cartTotalPrice$: Observable<number>;
 
   constructor(private store: Store<AppState>) { }
 
@@ -27,6 +28,11 @@ export class ShoppingCartComponent implements OnInit {
     // Query the cart item quantity
     this.cartItemQuantity$ = this.store.pipe(select(
       selectCartItemQuantity
+    ));
+
+    // Query the cart total price
+    this.cartTotalPrice$ = this.store.pipe(select(
+      selectCartTotalPrice
     ));
   }
 

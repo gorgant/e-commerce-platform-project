@@ -27,3 +27,8 @@ export const selectCartItemQuantity = createSelector(
   selectShoppingCartState,
   shoppingCartState => shoppingCartState.cartItemQuantity
 );
+
+export const selectCartTotalPrice = createSelector(
+  selectShoppingCartState,
+  shoppingCartState => shoppingCartState.cartTotalPrice
+);

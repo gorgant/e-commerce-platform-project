@@ -7,6 +7,7 @@ export interface ShoppingCartState extends EntityState<ShoppingCartItem> {
   // This is a custom addition to the EntityState that also needs to be initialized below
   allCartItemsLoaded: boolean;
   cartItemQuantity: number;
+  cartTotalPrice: number;
 }
 
 export const adapter: EntityAdapter<ShoppingCartItem> =
@@ -16,7 +17,8 @@ export const adapter: EntityAdapter<ShoppingCartItem> =
 
 export const initialShoppingCartState: ShoppingCartState = adapter.getInitialState({
   allCartItemsLoaded: false,
-  cartItemQuantity: 0
+  cartItemQuantity: 0,
+  cartTotalPrice: 0,
 });
 
 export function cartItemsReducer(state = initialShoppingCartState, action: CartItemActions): ShoppingCartState {
@@ -55,6 +57,9 @@ export function cartItemsReducer(state = initialShoppingCartState, action: CartI
 
     case CartActionTypes.CartQuantitySet:
       return {...state, cartItemQuantity: action.payload.cartItemQuantity};
+
+    case CartActionTypes.CartTotalPriceSet:
+      return {...state, cartTotalPrice: action.payload.cartTotalPrice};
 
     case CartActionTypes.UpsertOfflineCartItemsComplete:
       return adapter.upsertMany(action.payload.offlineCartItems, state);

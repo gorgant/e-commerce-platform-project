@@ -22,6 +22,12 @@
       </td>
       <td>{{ cartItem.product.price*cartItem.quantity | currency: 'USD' }}</td>
     </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td><b>{{ (cartTotalPrice$ | async) | currency: 'USD' }}</b></td>
+    </tr>
   </tbody>
 </table>
 <button (click)="emptyCart()" class="btn btn-danger">Empty Shopping Cart</button>

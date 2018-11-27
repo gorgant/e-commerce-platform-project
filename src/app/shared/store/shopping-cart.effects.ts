@@ -19,7 +19,9 @@ import {
   CartQuantityRequested,
   CartQuantitySet,
   UpdateCartItemProductComplete,
-  UpsertOfflineCartItemsComplete
+  UpsertOfflineCartItemsComplete,
+  CartTotalPriceRequested,
+  CartTotalPriceSet
  } from './shopping-cart.actions';
 import { mergeMap, map, withLatestFrom, filter, tap } from 'rxjs/operators';
 import { ShoppingCartService } from '../services/shopping-cart.service';
@@ -160,6 +162,18 @@ export class ShoppingCartEffects {
         // This reduce function scans the array and spits out a final value
         const cartQuantity = cartItems.reduce(((valueStore, item) => valueStore + item.quantity), 0);
         return new CartQuantitySet({cartItemQuantity: cartQuantity});
+      }),
+    );
+
+  @Effect()
+  setCartPrice$ = this.actions$
+    .pipe(
+      ofType<CartTotalPriceRequested>(CartActionTypes.CartTotalPriceRequested),
+      mergeMap(action => this.store.pipe(select(selectAllCartItems))),
+      map(cartItems => {
+        // This reduce function scans the array and spits out a final value
+        const cartTotalPrice = cartItems.reduce(((valueStore, item) => valueStore + (item.quantity * item.product.price)), 0);
+        return new CartTotalPriceSet({cartTotalPrice: cartTotalPrice});
       }),
     );
 

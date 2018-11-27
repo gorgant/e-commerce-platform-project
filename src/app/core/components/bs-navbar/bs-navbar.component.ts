@@ -10,7 +10,12 @@ import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user';
 import { selectCartItemQuantity } from 'src/app/shared/store/shopping-cart.selectors';
 import { AllProductsRequested } from 'src/app/shared/store/product.actions';
-import { AllCartItemsRequested, CartQuantityRequested, EmptyCartRequested } from 'src/app/shared/store/shopping-cart.actions';
+import {
+  AllCartItemsRequested,
+  CartQuantityRequested,
+  EmptyCartRequested,
+  CartTotalPriceRequested
+} from 'src/app/shared/store/shopping-cart.actions';
 import { AllCategoriesRequested } from 'src/app/shared/store/category.actions';
 
 @Component({
@@ -54,8 +59,10 @@ export class BsNavbarComponent implements OnInit {
         this.store.dispatch(new AllCartItemsRequested());
         // Initialize the cart quantity
         this.store.dispatch(new CartQuantityRequested());
+        // Initialize the cart total price
+        this.store.dispatch(new CartTotalPriceRequested());
         // Initialize the product categories
-        this.store.dispatch(new AllCategoriesRequested);
+        this.store.dispatch(new AllCategoriesRequested());
       } else {
         // Empty cart (local only)
         this.store.dispatch(new EmptyCartRequested());
@@ -65,8 +72,10 @@ export class BsNavbarComponent implements OnInit {
         this.store.dispatch(new AllCartItemsRequested());
         // Initialize the cart quantity
         this.store.dispatch(new CartQuantityRequested());
+        // Initialize the cart total price
+        this.store.dispatch(new CartTotalPriceRequested());
         // Initialize the product categories
-        this.store.dispatch(new AllCategoriesRequested);
+        this.store.dispatch(new AllCategoriesRequested());
       }
     });
 

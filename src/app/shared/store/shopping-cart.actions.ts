@@ -7,7 +7,7 @@ import { Product } from '../models/product';
 export enum CartActionTypes {
   CartItemRequested = '[Product Card] Cart Item Requested',
   CartItemLoaded = '[Shopping Cart API] Cart Item Loaded',
-  AllCartItemsRequested = '[Cart or Product Page] All Cart Items Requsted',
+  AllCartItemsRequested = '[Nav Bar] All Cart Items Requsted',
   AllCartItemsLoaded = '[Shopping Cart API] All Cart Items Loaded',
   UpdateCartItemProductComplete = '[Shopping Cart Effects] Updated Cart Item Product',
   IncrementCartItemRequested = '[Quantity Component] Increment Cart Item Requested',
@@ -21,7 +21,9 @@ export enum CartActionTypes {
   EmptyCartRequested = '[Cart Page] Empty Cart Requested',
   EmptyCartComplete = '[Shopping Cart API] Cart Emptied',
   CartQuantityRequested = '[Nav Bar] Cart Quantity Requested',
-  CartQuantitySet = '[Shopping Cart Selector] Cart Quantity Set',
+  CartQuantitySet = '[Shopping Cart Effects] Cart Quantity Set',
+  CartTotalPriceRequested = '[Nav Bar] Cart Total Price Requested',
+  CartTotalPriceSet = '[Shopping Cart Effects] Cart Total Price Set',
   UpsertOfflineCartItemsComplete = '[Navbar] Offline Items Upserted'
 }
 
@@ -113,10 +115,20 @@ export class CartQuantityRequested implements Action {
   readonly type = CartActionTypes.CartQuantityRequested;
 }
 
+export class CartTotalPriceRequested implements Action {
+  readonly type = CartActionTypes.CartTotalPriceRequested;
+}
+
 export class CartQuantitySet implements Action {
   readonly type = CartActionTypes.CartQuantitySet;
 
   constructor (public payload: {cartItemQuantity: number}) {}
+}
+
+export class CartTotalPriceSet implements Action {
+  readonly type = CartActionTypes.CartTotalPriceSet;
+
+  constructor (public payload: {cartTotalPrice: number}) {}
 }
 
 export class UpsertOfflineCartItemsComplete implements Action {
@@ -143,4 +155,6 @@ export type CartItemActions =
   EmptyCartComplete |
   CartQuantityRequested |
   CartQuantitySet |
+  CartTotalPriceRequested |
+  CartTotalPriceSet |
   UpsertOfflineCartItemsComplete;
