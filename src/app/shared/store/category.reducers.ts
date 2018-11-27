@@ -23,6 +23,9 @@ export function productCategoriesReducer(state = initialCategoryState, action: P
     case CategoryActionTypes.CategoryLoaded:
       return adapter.addOne(action.payload.category, state);
 
+    case CategoryActionTypes.AllCategoriesRequested:
+      return {...state, categoriesLoaded: false};
+
     case CategoryActionTypes.AllCategoriesLoaded:
       return adapter.addAll(action.payload.categories, {...state, categoriesLoaded: true});
 

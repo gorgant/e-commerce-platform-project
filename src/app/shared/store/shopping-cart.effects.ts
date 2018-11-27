@@ -30,6 +30,7 @@ import { Update } from '@ngrx/entity';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Subscription, of } from 'rxjs';
 import { selectProductById } from './product.selectors';
+import { AllProductsRequested } from './product.actions';
 
 @Injectable()
 export class ShoppingCartEffects {
@@ -91,8 +92,10 @@ export class ShoppingCartEffects {
                 product: product
               }
             };
-            this.store.dispatch(new UpdateCartItemProductComplete({cartItem: updatedCartItem}));
-            console.log('Updated cart item store with this item', updatedCartItem);
+            if (product) {
+              this.store.dispatch(new UpdateCartItemProductComplete({cartItem: updatedCartItem}));
+              console.log('Updated cart item store with this item', updatedCartItem);
+            }
           });
       }),
     );

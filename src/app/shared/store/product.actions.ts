@@ -6,8 +6,8 @@ import { Update } from '@ngrx/entity';
 export enum ProductActionTypes {
   ProductRequested = '[Product Resolver] Product Requested',
   ProductLoaded = '[Products API] Product Loaded',
-  AllProductsRequested = '[Admin Products or Catalogue] Product List Requested',
-  AllProductsLoaded = '[Products API] Products List Loaded',
+  AllProductsRequested = '[Admin Products or Catalogue] All Products Requested',
+  AllProductsLoaded = '[Products API] All Products Loaded',
   ProductUpdateRequested = '[Admin Product Form] Product Update Requested',
   ProductUpdated = '[Products API] Product Updated',
   ProductAddRequested = '[Admin Product Form] Product Add Requested',

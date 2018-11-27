@@ -25,6 +25,9 @@ export function productsReducer(state = initialProductsState, action: ProductAct
       // and will add ID to the separate id array (the second part of the entity adapter that preserves the order of the courses)
       return adapter.addOne(action.payload.product, state);
 
+    case ProductActionTypes.AllProductsRequested:
+      return {...state, allProductsLoaded: false};
+
     case ProductActionTypes.AllProductsLoaded:
       // Toggle the allCoursesLoaded value when this action is triggered
       return adapter.addAll(action.payload.products, {...state, allProductsLoaded: true});
