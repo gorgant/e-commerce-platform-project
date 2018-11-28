@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { LoginComplete } from '../../auth.actions';
-import { from, noop } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { isLoggedIn } from '../../auth.selectors';
+import { UserService } from 'src/app/shared/services/user.service';
+import { AppUser } from 'src/app/shared/models/app-user';
 
 @Component({
   selector: 'login',
@@ -14,40 +14,27 @@ import { tap } from 'rxjs/operators';
 })
 export class LoginComponent implements OnInit {
 
+  isLoggedIn$: Observable<boolean>;
+
   constructor(
-    public auth: AuthService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private store: Store<AppState>
+    private auth: AuthService,
+    private store: Store<AppState>,
+    private userService: UserService
     ) { }
 
   ngOnInit() {
-    this.auth.retreiveAppUser()
+    console.log('Login component initialized');
+    this.isLoggedIn$ = this.store
     .pipe(
-      tap(user => {
-        if (user) {
-          console.log('Dispatching Login to store');
-          this.store.dispatch(new LoginComplete({user}));
-        }
-        // This redirects the user to their original destination
-        this.auth.redirectIfAuthorized(() => {
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-            if (returnUrl) {
-              console.log('navigating to return url: ', returnUrl);
-              this.router.navigate([returnUrl]);
-            } else {
-              this.router.navigate(['/login']);
-            }
-        });
-      })
-    )
-    .subscribe(
-      noop,
-      () => alert('Login Failed')
+      select(isLoggedIn)
     );
   }
 
   signIn() {
-    this.auth.googleLogin();
+    this.auth.login();
+  }
+
+  get localUser(): AppUser {
+    return this.userService.localStorageUserData;
   }
 }

@@ -63,6 +63,15 @@ export class BsNavbarComponent implements OnInit {
         this.store.dispatch(new CartTotalPriceRequested());
         // Initialize the product categories
         this.store.dispatch(new AllCategoriesRequested());
+
+        // // Perform the redirect if just logged in
+        // const returnUrl = localStorage.getItem('returnUrl');
+        // if (!returnUrl) {
+        //   return;
+        // }
+        // localStorage.removeItem('returnUrl');
+        // this.router.navigateByUrl(returnUrl);
+
       } else {
         // Empty cart (local only)
         this.store.dispatch(new EmptyCartRequested());

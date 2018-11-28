@@ -22,6 +22,7 @@ import { CategoryEffects } from './store/category.effects';
 import { CategoryService } from './services/category.service';
 import { cartItemsReducer } from './store/shopping-cart.reducers';
 import { ShoppingCartEffects } from './store/shopping-cart.effects';
+import { LoginRedirectGuardService } from './services/login-redirect-guard.service';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { ShoppingCartEffects } from './store/shopping-cart.effects';
     AuthGuardService,
     UserService,
     ProductSingleResolver,
-    CategoryService
+    CategoryService,
+    LoginRedirectGuardService
   ]
 })
 export class SharedModule { }

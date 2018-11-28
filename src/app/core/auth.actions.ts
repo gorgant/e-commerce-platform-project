@@ -8,9 +8,11 @@ export enum AuthActionTypes {
   LogoutComplete = '[Auth API] Logout Complete'
 }
 
-export class LoginRequested implements Action {
-  readonly type = AuthActionTypes.LoginRequested;
-}
+// export class LoginRequested implements Action {
+//   readonly type = AuthActionTypes.LoginRequested;
+
+//   constructor(public payload: {user: AppUser}) {}
+// }
 
 export class LoginComplete implements Action {
   readonly type = AuthActionTypes.LoginComplete;
@@ -27,7 +29,7 @@ export class LogoutComplete implements Action {
 }
 
 export type AuthActions =
-LoginRequested |
+// LoginRequested |
 LoginComplete |
 LogoutRequested |
 LogoutComplete;

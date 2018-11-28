@@ -5,24 +5,55 @@ import { switchMap } from 'rxjs/operators';
 import { auth } from 'firebase';
 import { UserService } from './user.service';
 import { AppUser } from '../models/app-user';
+import { ActivatedRoute } from '@angular/router';
+import { AppState } from 'src/app/reducers';
+import { Store } from '@ngrx/store';
+import { LoginComplete } from 'src/app/core/auth.actions';
 
 // Provided in shared module to prevent circular dependencies
 @Injectable()
 export class AuthService {
 
-  appUser$: Observable<AppUser>;
+  // firebaseUser$: Observable<firebase.User>;
+  // appUser$: Observable<AppUser>;
 
   constructor(
     private afAuth: AngularFireAuth,
-    private userService: UserService
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private store: Store<AppState>
+
     ) {
-      this.appUser$ = this.retreiveAppUser();
+      // this.firebaseUser$ = this.afAuth.authState;
     }
 
-  retreiveAppUser(): Observable<AppUser> {
-    // Get auth data (firebase.User), then get firestore user document || null
-    return  this.afAuth.authState.pipe(
-      // Switchmap takes one observable (firebase.User) and converts it to another (AppUser)
+  login() {
+    // Set return URL to local storage for retrieval after redirect
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+    localStorage.setItem('returnUrl', returnUrl);
+
+    // Kick off login process
+    const provider = new auth.GoogleAuthProvider();
+    this.afAuth.auth.signInWithRedirect(provider);
+
+    // // Wait for redirect results, then dispatch login to store
+    // this.afAuth.auth.getRedirectResult().then( result => {
+    //   const firebaseUser = result.user;
+    //   console.log('Storing firebase user in database', firebaseUser);
+    //   this.userService.storeUserData(firebaseUser);
+    //   console.log('Storing firebase user in local storage', firebaseUser);
+    //   localStorage.setItem('user', JSON.stringify(firebaseUser));
+    //   this.userService.retrieveUserData(firebaseUser).subscribe( appUser => {
+    //     console.log('Dispatching login complete');
+    //     this.store.dispatch(new LoginComplete({user: appUser}));
+    //   });
+    // });
+  }
+
+
+  get appUser$(): Observable<AppUser> {
+    // Retreive user data from Firebase
+    return this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
           return this.userService.retrieveUserData(user);
@@ -31,35 +62,6 @@ export class AuthService {
         }
       })
     );
-  }
-
-  googleLogin() {
-    const provider = new auth.GoogleAuthProvider();
-    return this.oAuthLogin(provider);
-  }
-  // // This is the popup version (database details get updated automatically upon sign in)
-  // private oAuthLogin(provider) {
-  //   return this.afAuth.auth.signInWithPopup(provider)
-  //     .then((credentials) => {
-  //       this.userService.storeUserData(credentials.user);
-  //     });
-  // }
-
-  // This is the redirect version (database details don't get updated automatically)
-  // Any promises here will get canceled when page redirects, so those promises need
-  // to be inserted in the helper function below it with getRedirectResult
-  private oAuthLogin(provider) {
-    return this.afAuth.auth.signInWithRedirect(provider);
-  }
-
-  // This is based on a comment on section 20 lecutre 293
-  redirectIfAuthorized(redirectFunc: () => void) {
-    this.afAuth.auth.getRedirectResult().then(result => {
-      if (result.user) {
-        this.userService.storeUserData(result.user);
-        redirectFunc();
-      }
-    });
   }
 
   signOut() {

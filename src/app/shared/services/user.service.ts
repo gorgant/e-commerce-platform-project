@@ -8,22 +8,18 @@ import { Observable } from 'rxjs';
 export class UserService {
 
   private currentUserDoc: AngularFirestoreDocument<AppUser>;
-  currentUser: Observable<AppUser>;
-
-  private currentUserId: string;
+  private currentUser$: Observable<AppUser>;
 
   constructor(private afs: AngularFirestore) { }
 
   retrieveUserData(user) {
     this.currentUserDoc = this.afs.doc<AppUser>(`users/${user.uid}`);
-    this.currentUser = this.currentUserDoc.valueChanges();
-    return this.currentUser;
+    this.currentUser$ = this.currentUserDoc.valueChanges();
+    return this.currentUser$;
   }
 
-  storeUserData(user) {
+  storeUserData(user: firebase.User) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-
-    this.currentUserId = user.uid;
 
     const data: AppUser = {
       uid: user.uid,
@@ -34,14 +30,6 @@ export class UserService {
     };
 
     return userRef.set(data, { merge: true});
-  }
-
-  get userId (): string {
-    return this.currentUserId;
-  }
-
-  get userDoc (): AngularFirestoreDocument<AppUser> {
-    return this.currentUserDoc;
   }
 
   get localStorageUserData(): AppUser {
