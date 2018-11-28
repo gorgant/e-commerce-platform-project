@@ -3,7 +3,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
-import { Login, Logout } from '../../auth.actions';
+import { LoginComplete } from '../../auth.actions';
 import { from, noop } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
       tap(user => {
         if (user) {
           console.log('Dispatching Login to store');
-          this.store.dispatch(new Login({user}));
+          this.store.dispatch(new LoginComplete({user}));
         }
         // This redirects the user to their original destination
         this.auth.redirectIfAuthorized(() => {

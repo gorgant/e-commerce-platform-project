@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { AppState } from 'src/app/reducers';
 import { Store, select } from '@ngrx/store';
-import { Logout } from '../../auth.actions';
+import { LogoutComplete } from '../../auth.actions';
 import { Observable } from 'rxjs';
-import { isLoggedIn, isLoggedOut } from '../../auth.selectors';
+import { isLoggedIn } from '../../auth.selectors';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user';
@@ -28,7 +28,7 @@ export class BsNavbarComponent implements OnInit {
   isNavbarCollapsed = true;
 
   isLoggedIn$: Observable<boolean>;
-  isLoggedOut$: Observable<boolean>;
+  // isLoggedOut$: Observable<boolean>;
 
   cartItemQuantity$: Observable<number>;
 
@@ -45,10 +45,10 @@ export class BsNavbarComponent implements OnInit {
       select(isLoggedIn)
     );
 
-    this.isLoggedOut$ = this.store
-    .pipe(
-      select(isLoggedOut)
-    );
+    // this.isLoggedOut$ = this.store
+    // .pipe(
+    //   select(isLoggedOut)
+    // );
 
     // Load cart products if logged in, else empty cart (without deleting on account)
     this.isLoggedIn$.subscribe(loggedIn => {
@@ -94,7 +94,7 @@ export class BsNavbarComponent implements OnInit {
   logout() {
     console.log('Dispatching Logout to store');
     this.auth.signOut();
-    this.store.dispatch(new Logout());
+    this.store.dispatch(new LogoutComplete());
     this.router.navigate(['/login']);
     // Empty local storage cart
     localStorage.removeItem('cart');

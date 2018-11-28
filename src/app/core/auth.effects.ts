@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { Login, AuthActionTypes, Logout } from './auth.actions';
+import { AuthActionTypes, LoginComplete, LogoutComplete } from './auth.actions';
 import { tap } from 'rxjs/operators';
 import { defer, Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -14,7 +14,7 @@ export class AuthEffects {
   @Effect({dispatch: false})
   login$ = this.actions$.pipe(
     // Filters for this specific action type
-    ofType<Login>(AuthActionTypes.LoginAction),
+    ofType<LoginComplete>(AuthActionTypes.LoginComplete),
     // Do the side effect
     tap(action => {
       return localStorage.setItem('user', JSON.stringify(action.payload.user));
@@ -23,7 +23,7 @@ export class AuthEffects {
 
   @Effect({dispatch: false})
   logout$ = this.actions$.pipe(
-    ofType<Logout>(AuthActionTypes.LogoutAction),
+    ofType<LogoutComplete>(AuthActionTypes.LogoutComplete),
     tap(() => {
       localStorage.removeItem('user');
     })
@@ -34,12 +34,12 @@ export class AuthEffects {
   @Effect()
   // Defer is used to wait for someone to subscribe to an observable (or in this case,
   // initializing the class) before creating a separate one
-  init$ = defer((): Observable<Login | Logout> => {
+  init$ = defer((): Observable<LoginComplete | LogoutComplete> => {
     const userData = localStorage.getItem('user');
     if (userData) {
-      return of(new Login({user: JSON.parse(userData)}));
+      return of(new LoginComplete({user: JSON.parse(userData)}));
     } else {
-      return of(new Logout());
+      return of(new LogoutComplete());
     }
   });
 

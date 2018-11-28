@@ -1,4 +1,9 @@
-<button *ngIf="!(storeCartItem$ | async) || (storeCartItem$ | async).quantity < 1" (click)="addToCart(currentProduct)" class="btn btn-secondary btn-block">Add to Cart</button>
+<button 
+  *ngIf="!(storeCartItem$ | async) || (storeCartItem$ | async).quantity < 1" 
+  (click)="addToCart(currentProduct)" 
+  class="btn btn-secondary btn-block">
+  Add to Cart
+</button>
 <div *ngIf="(storeCartItem$ | async) as cartItem">
   <div *ngIf="cartItem.quantity !== 0">
     <div class="row no-gutters">
