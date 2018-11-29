@@ -57,6 +57,7 @@ export class AuthEffects {
   logout$ = this.actions$.pipe(
     ofType<LogoutComplete>(AuthActionTypes.LogoutComplete),
     tap(() => {
+      console.log('Removing user from local storage');
       localStorage.removeItem('user');
     })
   );

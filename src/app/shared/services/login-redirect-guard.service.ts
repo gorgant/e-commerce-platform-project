@@ -21,7 +21,7 @@ export class LoginRedirectGuardService implements CanActivate {
   canActivate() {
     return this.afAuth.auth.getRedirectResult().then( result => {
       const firebaseUser = result.user;
-      if (firebaseUser != null) {
+      if (result.user != null) {
         console.log('Storing firebase user in database', firebaseUser);
         this.userService.storeUserData(firebaseUser);
         console.log('Storing firebase user in local storage', firebaseUser);

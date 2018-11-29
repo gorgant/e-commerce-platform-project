@@ -32,6 +32,7 @@ import { Update } from '@ngrx/entity';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Subscription, of } from 'rxjs';
 import { selectProductById } from './product.selectors';
+import { isLoggedIn } from 'src/app/core/auth.selectors';
 
 @Injectable()
 export class ShoppingCartEffects {
@@ -53,13 +54,16 @@ export class ShoppingCartEffects {
     .pipe(
       ofType<AllCartItemsRequested>(CartActionTypes.AllCartItemsRequested),
       // This is the best way to get a "snapshot" of the state without causing an infinite loop which happens if you just pipe a select
-      withLatestFrom(this.store.pipe(select(selectAllCartItemsLoaded)), this.store.pipe(select(selectAllCartItems))),
-      filter(([action, allCartItemsLoadedVal, cartItems]) => !allCartItemsLoadedVal),
+      withLatestFrom(
+        this.store.pipe(select(selectAllCartItemsLoaded)),
+        this.store.pipe(select(selectAllCartItems)),
+        this.store.pipe(select(isLoggedIn)),
+        ),
+      filter(([action, allCartItemsLoadedVal, cartItems, loggedIn]) => !allCartItemsLoadedVal),
       // Call api for data if logged in, otherwise load from store
-      mergeMap(([action, allCartItemsLoadedVal, cartItems]) => {
-        // This is a cheap way of verifying if logged in
-        const userData = localStorage.getItem('user');
-        if (userData) {
+      mergeMap(([action, allCartItemsLoadedVal, cartItems, loggedIn]) => {
+        if (loggedIn) {
+          console.log('Logged in, initiating cart merge');
           if (localStorage.getItem('cart')) {
             const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('cart'));
             console.log('Offline Cart', offlineCart);

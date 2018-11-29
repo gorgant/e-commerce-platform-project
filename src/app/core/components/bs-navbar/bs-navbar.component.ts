@@ -104,7 +104,7 @@ export class BsNavbarComponent implements OnInit {
     console.log('Dispatching Logout to store');
     this.auth.signOut();
     this.store.dispatch(new LogoutComplete());
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
     // Empty local storage cart
     localStorage.removeItem('cart');
   }
