@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, from, defer } from 'rxjs';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Product } from '../models/product';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
@@ -7,7 +7,8 @@ import { AppUser } from '../models/app-user';
 import { Store, select } from '@ngrx/store';
 import { AppState } from 'src/app/reducers';
 import { selectCartItemById, selectAllCartItems } from '../store/shopping-cart.selectors';
-import { withLatestFrom, merge } from 'rxjs/operators';
+import { withLatestFrom, merge, mergeMap, map, switchMap, tap } from 'rxjs/operators';
+import { RootStoreState, ShoppingCartStoreActions } from 'src/app/root-store';
 
 // Provided in shared module to prevent circular dependency
 @Injectable()
@@ -24,7 +25,8 @@ export class ShoppingCartService {
 
   constructor(
     private readonly afs: AngularFirestore,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    // private store$: Store<RootStoreState.State>
     ) { }
 
   // Retrieve user data from local storage
@@ -63,13 +65,42 @@ export class ShoppingCartService {
     }
   }
 
-  upsertOfflineCartItems(cartItems: ShoppingCartItem[]) {
-    this.fetchUserData();
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    cartItems.map(item => {
-      this.shoppingCartDoc = this.shoppingCartCollection.doc(item.cartItemId);
-      this.shoppingCartDoc.set(item, {merge: true});
-    });
+  // upsertOfflineCartItems(cartItems: ShoppingCartItem[]) {
+  //   if (this.fetchUserData()) {
+  //     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+  //     cartItems.map(item => {
+  //       this.shoppingCartDoc = this.shoppingCartCollection.doc(item.cartItemId);
+  //       this.shoppingCartDoc.set(item, {merge: true});
+  //     });
+  //   }
+  // }
+
+  // Must use the firestore API for batch calls
+  batchedUpsertOfflineCartItems(offlineCartItems: ShoppingCartItem[]): Observable<ShoppingCartItem[]> {
+    if (this.fetchUserData()) {
+      const batch = this.afs.firestore.batch();
+      // const user: AppUser = JSON.parse(localStorage.getItem('user'));
+      // const userRef = this.afs.firestore.doc(user.uid);
+      // const shoppingCartCol = userRef.collection('shoppingCartCol');
+
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+
+      offlineCartItems.map(item => {
+        // const itemRef = shoppingCartCol.doc(item.cartItemId);
+        const itemRef = this.shoppingCartCollection.ref.doc(item.cartItemId);
+        batch.set(itemRef, item, {merge: true});
+      });
+
+      // Commit the batch to the database and return the updated cart from the database
+      return from(batch.commit()).pipe(
+        mergeMap(() => {
+          console.log('Batched cart items uploaded to database', batch);
+          return this.getAllCartItems();
+        })
+      );
+    } else {
+      console.log('Not logged in, no batch operation was run');
+    }
   }
 
   incrementCartItem(cartItem: ShoppingCartItem) {
@@ -139,17 +170,32 @@ export class ShoppingCartService {
     return of(cartItemId);
   }
 
-  async deleteAllCartItems() {
+  // async deleteAllCartItems() {
+  //   if (this.fetchUserData()) {
+  //     const qry: firebase.firestore.QuerySnapshot = await this.shoppingCartCollection.ref.get();
+  //     const batch = this.afs.firestore.batch();
+
+  //     qry.forEach(doc => {
+  //       batch.delete(doc.ref);
+  //     });
+
+  //     batch.commit();
+  //     console.log('Cart emptied');
+  //   }
+  // }
+
+  altDeleteAllCartItems(): Observable<void> {
     if (this.fetchUserData()) {
-      const qry: firebase.firestore.QuerySnapshot = await this.shoppingCartCollection.ref.get();
       const batch = this.afs.firestore.batch();
-
-      qry.forEach(doc => {
-        batch.delete(doc.ref);
-      });
-
-      batch.commit();
-      console.log('Cart emptied');
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      return from(this.shoppingCartCollection.ref.get()).pipe(
+        switchMap(qry => {
+          qry.forEach(doc => {
+            batch.delete(doc.ref);
+          });
+          return batch.commit();
+        }),
+      );
     }
   }
 }

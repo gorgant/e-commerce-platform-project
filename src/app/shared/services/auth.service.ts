@@ -9,12 +9,13 @@ import { ActivatedRoute } from '@angular/router';
 import { AppState } from 'src/app/reducers';
 import { Store } from '@ngrx/store';
 import { LoginComplete } from 'src/app/core/auth.actions';
+import * as firebase from 'firebase';
 
 // Provided in shared module to prevent circular dependencies
 @Injectable()
 export class AuthService {
 
-  // firebaseUser$: Observable<firebase.User>;
+  firebaseUser$: Observable<firebase.User>;
   // appUser$: Observable<AppUser>;
 
   constructor(
@@ -24,16 +25,17 @@ export class AuthService {
     private store: Store<AppState>
 
     ) {
-      // this.firebaseUser$ = this.afAuth.authState;
+      // This is used to set the initial login state in the Store
+      this.firebaseUser$ = this.afAuth.authState;
     }
 
   login() {
-    // Set return URL to local storage for retrieval after redirect
+    // Store return URL (set by auth guard if blocked) if the user request was blocked by login
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
     localStorage.setItem('returnUrl', returnUrl);
 
-    // Kick off login process
-    const provider = new auth.GoogleAuthProvider();
+    // The actions taking place after this completes are in the app component
+    const provider = new firebase.auth.GoogleAuthProvider();
     this.afAuth.auth.signInWithRedirect(provider);
 
     // // Wait for redirect results, then dispatch login to store
@@ -51,20 +53,24 @@ export class AuthService {
   }
 
 
-  get appUser$(): Observable<AppUser> {
-    // Retreive user data from Firebase
-    return this.afAuth.authState.pipe(
-      switchMap(user => {
-        if (user) {
-          return this.userService.retrieveUserData(user);
-        } else {
-          return of(null);
-        }
-      })
-    );
-  }
+  // get appUser$(): Observable<AppUser> {
+  //   // Retreive user data from Firebase
+  //   return this.afAuth.authState.pipe(
+  //     switchMap(user => {
+  //       if (user) {
+  //         return this.userService.retrieveUserData(user);
+  //       } else {
+  //         return of(null);
+  //       }
+  //     })
+  //   );
+  // }
 
-  signOut() {
+  // signOut() {
+  //   this.afAuth.auth.signOut();
+  // }
+
+  logout() {
     this.afAuth.auth.signOut();
   }
 }
