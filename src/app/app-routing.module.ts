@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
 
   {
-    path: '',
+    path: 'shopping',
     loadChildren: './shopping/shopping.module#ShoppingModule'
   },
   {
@@ -15,11 +15,11 @@ const routes: Routes = [
     path: 'admin',
     loadChildren: './admin/admin.module#AdminModule'
   },
-  // {
-  //   path: '',
-  //   redirectTo: 'shopping',
-  //   pathMatch: 'full'
-  // },
+  {
+    path: '',
+    redirectTo: 'shopping',
+    pathMatch: 'full'
+  },
 ];
 
 @NgModule({

@@ -14,7 +14,7 @@ export class AuthStoreEffects {
     private userService: UserService,
     private authService: AuthService,
     private actions$: Actions,
-    private router: Router
+    private router: Router,
     ) {}
 
   @Effect()

@@ -20,6 +20,7 @@
                 <a class="dropdown-item" routerLink="/admin/orders">Manage Orders</a>
                 <a class="dropdown-item" routerLink="/admin/products">Manage Products</a>
               </ng-container>
+              <a class="dropdown-item" routerLink="/auth/profile">Profile</a>
               <a class="dropdown-item" routerLink="/" (click)="logout()">Log Out</a>
             </div>
           </li>
@@ -29,7 +30,6 @@
           <a routerLink="/auth/login" class="nav-link">Login</a>
         </li>
       </ng-template>
-      <a routerLink="/" class="nav-link" (click)="logout()">Backup Log Out</a>
     </ul>
   </div>
 </nav>

@@ -9,13 +9,13 @@ import { RootStoreState, AuthStoreActions } from 'src/app/root-store';
 export class LoginGuardService implements CanActivate {
 
   constructor(
-    private auth: AuthService,
+    private authService: AuthService,
     private router: Router,
     private store$: Store<RootStoreState.State>
   ) { }
 
   canActivate() {
-    return this.auth.firebaseUser$.
+    return this.authService.firebaseUser$.
       pipe(map(user => {
         // The firebaseuser determines if user is logged in
         // If logged in, block the route with a redirect

@@ -27,18 +27,19 @@ export class BsNavbarComponent implements OnInit {
 
   appUser$: Observable<AppUser>;
 
+  appUserInStore: boolean;
+
   constructor(
-    public auth: AuthService,
+    private authService: AuthService,
     private store$: Store<RootStoreState.State>,
-    public userService: UserService) { }
+  ) { }
 
   ngOnInit() {
-    // This select function ensures observable only emits on actual changes to auth (vs other state changes)
     this.appUser$ = this.store$.select(
       AuthStoreSelectors.selectAppUser
     );
 
-    // Load cart products if logged in, else empty cart (without deleting on account)
+    // Load cart products if logged in,
     this.appUser$.subscribe(appUser => {
       if (appUser) {
         // Initialize the product list
@@ -51,19 +52,22 @@ export class BsNavbarComponent implements OnInit {
         this.store$.dispatch(new ShoppingCartStoreActions.CartTotalPriceRequested());
         // Initialize the product categories
         this.store$.dispatch(new CategoriesStoreActions.AllCategoriesRequested());
+        this.appUserInStore = true;
       } else {
-        // // Empty cart (local only)
-        // this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
-        // Initialize the product list
-        this.store$.dispatch(new ProductsStoreActions.AllProductsRequested());
-        // Initialize the shopping cart
-        this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
+        this.appUserInStore = false;
+      }
+    });
+
+    // Logout happens faster in the store than in the authservice so this is used to delay empty cart until auth is ready
+    this.authService.firebaseUser$.subscribe(fbUser => {
+      if (!fbUser && !this.appUserInStore) {
+      this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
         // Initialize the cart quantity
         this.store$.dispatch(new ShoppingCartStoreActions.CartQuantityRequested());
         // Initialize the cart total price
         this.store$.dispatch(new ShoppingCartStoreActions.CartTotalPriceRequested());
-        // Initialize the product categories
-        this.store$.dispatch(new CategoriesStoreActions.AllCategoriesRequested());
+      } else {
+        this.store$.dispatch(new AuthStoreActions.SaveLoginDataRequestedAction({user: fbUser}));
       }
     });
 
@@ -77,8 +81,6 @@ export class BsNavbarComponent implements OnInit {
 
   logout() {
     this.store$.dispatch(new AuthStoreActions.LoggedOut());
-    // Since already signed out above, this will be a local removal only (rather than deleted user's database cart)
-    this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
   }
 
 }

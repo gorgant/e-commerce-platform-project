@@ -7,7 +7,7 @@ import { AdminAuthGuardService } from '../shared/services/route-guards/admin-aut
 import { ProductFormComponent } from './components/product-form/product-form.component';
 import { ProductSingleResolver } from '../shared/services/product-single.resolver';
 
-const adminRoutes: Routes = [
+const routes: Routes = [
   {
     path: 'products/new',
     component: ProductFormComponent,
@@ -41,7 +41,7 @@ const adminRoutes: Routes = [
 @NgModule({
   declarations: [],
   imports: [
-    RouterModule.forChild(adminRoutes)
+    RouterModule.forChild(routes)
   ],
   exports: [
     RouterModule

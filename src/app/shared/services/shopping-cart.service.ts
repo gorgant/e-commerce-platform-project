@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store';
 import { mergeMap, switchMap } from 'rxjs/operators';
 import { RootStoreState, ShoppingCartStoreSelectors, AuthStoreSelectors } from 'src/app/root-store';
 import { AuthService } from './auth.service';
+import { UserService } from './user.service';
 
 // Provided in shared module to prevent circular dependency
 @Injectable()
@@ -27,13 +28,16 @@ export class ShoppingCartService {
   constructor(
     private readonly afs: AngularFirestore,
     // private store$: Store<RootStoreState.State>,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
     ) {
       // Can't use the Root Store for this because circular dependencies
       this.authService.firebaseUser$.subscribe(user => {
         if (user) {
+          console.log('Cart detects user is logged in');
           this.loggedIn = true;
         } else {
+          console.log('Cart detects user is logged out');
           this.loggedIn = false;
         }
       });
@@ -64,6 +68,7 @@ export class ShoppingCartService {
 
   getAllCartItems(): Observable<ShoppingCartItem[]> {
     // Retreive cart data from database
+    this.userDoc = this.userService.userDoc;
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
     // Return the shopping cart items with the product inserted
@@ -88,6 +93,7 @@ export class ShoppingCartService {
       // const userRef = this.afs.firestore.doc(user.uid);
       // const shoppingCartCol = userRef.collection('shoppingCartCol');
 
+      this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
 
       offlineCartItems.map(item => {
@@ -118,6 +124,7 @@ export class ShoppingCartService {
     };
 
     if (this.loggedIn) {
+      this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
       this.shoppingCartDoc.update(updatedCartItem);
@@ -137,6 +144,7 @@ export class ShoppingCartService {
     };
 
     if (this.loggedIn) {
+      this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
       this.shoppingCartDoc.update(updatedCartItem);
@@ -157,6 +165,7 @@ export class ShoppingCartService {
     };
 
     if (this.loggedIn) {
+      this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartCollection.doc(cartItem.cartItemId).set(cartItem);
     }
@@ -167,6 +176,7 @@ export class ShoppingCartService {
 
   deleteCartItem(cartItemId: string) {
     if (this.loggedIn) {
+      this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartCollection.doc(cartItemId).delete();
     }
@@ -177,6 +187,8 @@ export class ShoppingCartService {
 
   altDeleteAllCartItems(): Observable<void> {
     if (this.loggedIn) {
+      console.log('Logged in, removing all cart items from db');
+      this.userDoc = this.userService.userDoc;
       const batch = this.afs.firestore.batch();
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       return from(this.shoppingCartCollection.ref.get()).pipe(
@@ -188,7 +200,8 @@ export class ShoppingCartService {
         }),
       );
     } else {
-      return of();
+      console.log('Logged out, removing all cart items locally');
+      return of(null);
     }
   }
 }

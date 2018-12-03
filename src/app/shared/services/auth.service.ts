@@ -4,19 +4,20 @@ import { Observable } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import * as firebase from 'firebase';
+import { RootStoreState, ShoppingCartStoreActions } from 'src/app/root-store';
 
 // Provided in shared module to prevent circular dependencies
 @Injectable()
 export class AuthService {
 
-  firebaseUser$: Observable<firebase.User>;
+  private currentFirebaseUser$: Observable<firebase.User>;
 
   constructor(
     private afAuth: AngularFireAuth,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
     ) {
       // This is used to set the initial login state in the Store
-      this.firebaseUser$ = this.afAuth.authState;
+      this.currentFirebaseUser$ = this.afAuth.authState;
     }
 
   login() {
@@ -31,5 +32,9 @@ export class AuthService {
 
   logout() {
     this.afAuth.auth.signOut();
+  }
+
+  get firebaseUser$() {
+    return this.currentFirebaseUser$;
   }
 }

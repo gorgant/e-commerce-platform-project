@@ -24,69 +24,6 @@ export class ShoppingCartStoreEffects {
     private store$: Store<RootStoreState.State>
     ) { }
 
-  // @Effect()
-  // loadAllCartItemsEffect$: Observable<Action> = this.actions$
-  //   .pipe(
-  //     ofType<featureActions.AllCartItemsRequested>(
-  //       featureActions.ActionTypes.ALL_CART_ITEMS_REQUESTED),
-  //     // This is the best way to get a "snapshot" of the state without causing an infinite loop which happens if you just pipe a select
-  //     withLatestFrom(
-  //       this.store$.select(featureSelectors.selectCartItemsLoading),
-  //       this.store$.select(featureSelectors.selectAllCartItems),
-  //       // The presence of an app user is determined using the auth store
-  //       this.store$.select(selectAppUser),
-  //       ),
-  //     // filter(([action, cartItemsLoading, cartItems, appUser]) => cartItemsLoading),
-  //     // Call api for data if logged in, otherwise load from store
-  //     switchMap(([action, cartItemsLoading, cartItems, appUser]) => {
-  //       // If logged in, merge offline cart (if exists) into database cart and pull from database
-  //       if (appUser) {
-  //         console.log('Logged in, checking for offline cart');
-  //         // If offline cart, merge that into database cart
-  //         if (localStorage.getItem('offlineCart')) {
-  //           // Extract data from offline cart if it exists
-  //           const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('cart'));
-  //           console.log('Offline cart found, extracting offline cart', offlineCart);
-  //           // Now remove the offline cart because we don't want it to keep loading
-  //           localStorage.removeItem('offlineCart');
-  //           // NEW: This new service batch uploads the offline cart items to the database and returns the updated cart list
-  //           return this.shoppingCartService.batchedUpsertOfflineCartItems(offlineCart).pipe(
-  //           );
-  //         } else {
-  //           // If no offline cart, just pull the cart form the database
-  //           console.log('No offline cart found, pulling cart directly from databse');
-  //           return this.shoppingCartService.getAllCartItems();
-  //         }
-  //       } else {
-  //         // If not logged in, update offline cart
-  //         // This prevents local storage cart from being deleted during the refresh cycle during redirect logging in
-  //         if (cartItems.length > 1) {
-  //           localStorage.setItem('offlineCart', JSON.stringify(cartItems));
-  //           console.log('Cart items set in local storage', cartItems);
-  //         }
-  //         return of(cartItems);
-  //       }
-  //     }),
-  //     // This bottom section updates the cart items with the latest product data from the store (if changed since last added to cart)
-  //     switchMap(cartItems => cartItems),
-  //     map(cartItem => {
-  //       console.log('mapping products to cart item');
-  //       const updatedCartItems: ShoppingCartItem[] = [];
-  //       this.storeSubscription = this.store$.select(selectProductById(cartItem.productId))
-  //         .subscribe(product => {
-  //           const itemWithProduct: ShoppingCartItem = {
-  //               cartItemId: cartItem.cartItemId,
-  //               productId: cartItem.productId,
-  //               quantity: cartItem.quantity,
-  //               product: product
-  //           };
-  //           updatedCartItems.push(itemWithProduct);
-  //         });
-  //       console.log('Dispatching all cart items loaded');
-  //       return new featureActions.AllCartItemsLoaded({cartItems: updatedCartItems});
-  //     }),
-  //   );
-
   @Effect()
   loadAllCartItemsEffect$: Observable<Action> = this.actions$
     .pipe(
@@ -103,10 +40,11 @@ export class ShoppingCartStoreEffects {
         // If logged in, merge offline cart (if exists) into database cart and pull from database
         if (appUser) {
           console.log('Logged in, checking for offline cart');
+          const offlineCartData = localStorage.getItem('offlineCart');
           // If offline cart, merge that into database cart
-          if (localStorage.getItem('offlineCart')) {
+          if (offlineCartData) {
             // Extract data from offline cart if it exists
-            const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('cart'));
+            const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('offlineCart'));
             console.log('Offline cart found, extracting offline cart', offlineCart);
             // Now remove the offline cart because we don't want it to keep loading
             localStorage.removeItem('offlineCart');
@@ -154,6 +92,7 @@ export class ShoppingCartStoreEffects {
             );
           }
         } else {
+          console.log('Not logged in, initializing offline cart');
           // If not logged in, update offline cart
           // This prevents local storage cart from being deleted during the refresh cycle during redirect logging in
           if (cartItems.length > 0) {

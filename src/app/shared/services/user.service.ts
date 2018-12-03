@@ -35,4 +35,8 @@ export class UserService {
       })
     );
   }
+
+  get userDoc() {
+    return this.currentUserDoc;
+  }
 }
