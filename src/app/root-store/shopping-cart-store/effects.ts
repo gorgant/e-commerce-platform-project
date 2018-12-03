@@ -34,9 +34,12 @@ export class ShoppingCartStoreEffects {
         this.store$.select(featureSelectors.selectAllCartItems),
         // The presence of an app user is determined using the auth store
         this.store$.select(selectAppUser),
+        this.store$.select(featureSelectors.selectCartItemsLoading)
         ),
+      // Not convinced this filter is necessary
+      filter(([action, cartItems, appUser, cartItemsLoading]) => cartItemsLoading),
       // Call api for data if logged in, otherwise load from store
-      mergeMap(([action, cartItems, appUser]) => {
+      mergeMap(([action, cartItems, appUser, cartItemsLoading]) => {
         // If logged in, merge offline cart (if exists) into database cart and pull from database
         if (appUser) {
           console.log('Logged in, checking for offline cart');

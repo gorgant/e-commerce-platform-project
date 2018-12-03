@@ -71,6 +71,7 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     if (!this.newProduct) {
       this.store$.dispatch(new ProductsStoreActions.UpdateProductRequested({product: formValues}));
     } else {
+      console.log('Dispatching add product request');
       this.store$.dispatch(new ProductsStoreActions.AddProductRequested({product: formValues}));
     }
     this.router.navigate(['/admin/products']);

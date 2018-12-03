@@ -135,7 +135,7 @@ export class ProductStoreEffects {
       featureActions.ActionTypes.ADD_PRODUCT_REQUESTED
     ),
     mergeMap(action => this.productService.createProduct(action.payload.product).pipe(
-      map(productWithId => new featureActions.AddProductRequested({product: productWithId})),
+      map(productWithId => new featureActions.AddProductComplete({product: productWithId})),
       catchError(error =>
         of(new featureActions.LoadErrorDetected({ error }))
       )
