@@ -4,14 +4,6 @@ import { Actions, ActionTypes } from './actions';
 export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
 
-    // case ActionTypes.CART_ITEM_LOADED:
-    //   // This will add an entity to the state, it takes from payload, adds course to entity state map,
-    //   // and will add ID to the separate id array (the second part of the entity adapter that preserves the order of the courses)
-    //   return featureAdapter.addOne(
-    //     action.payload.cartItem,
-    //     state
-    //   );
-
     case ActionTypes.ALL_CART_ITEMS_REQUESTED:
       // Toggle the allCoursesLoaded value when this action is triggered
       return {
@@ -28,12 +20,6 @@ export function featureReducer(state = initialState, action: Actions): State {
           cartItemsLoading: false
         }
       );
-
-    // case ActionTypes.UPDATE_CART_ITEM_PRODUCT_COMPLETE:
-    //   return featureAdapter.updateOne(
-    //     action.payload.cartItem,
-    //     state
-    //   );
 
     case ActionTypes.INCREMENT_CART_ITEM_COMPLETE:
       return featureAdapter.updateOne(
@@ -75,12 +61,6 @@ export function featureReducer(state = initialState, action: Actions): State {
         ...state,
         cartTotalPrice: action.payload.cartTotalPrice
       };
-
-    // case ActionTypes.UPSERT_OFFLINE_CART_ITEMS_COMPLETE:
-    //   return featureAdapter.upsertMany(
-    //     action.payload.offlineCartItems,
-    //     state
-    //   );
 
     case ActionTypes.LOAD_ERROR_DETECTED:
       return {

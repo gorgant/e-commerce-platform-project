@@ -25,11 +25,4 @@ export class CategoryService {
     this.singleCategory$ = this.categoryDoc.valueChanges();
     return this.singleCategory$;
   }
-
-  // get productCategories() {
-  //   this.refreshProductCategories();
-  //   return this.productCategories$;
-  // }
-
-
 }

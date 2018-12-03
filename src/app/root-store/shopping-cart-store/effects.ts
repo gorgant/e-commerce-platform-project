@@ -52,7 +52,7 @@ export class ShoppingCartStoreEffects {
             // Now remove the offline cart because we don't want it to keep loading
             localStorage.removeItem('offlineCart');
             // NEW: This new service batch uploads the offline cart items to the database and returns the updated cart list
-            return this.shoppingCartService.batchedUpsertOfflineCartItems(offlineCart).pipe(
+            return this.shoppingCartService.upsertOfflineCartItems(offlineCart).pipe(
               map(cartItemList => {
                 const updatedCartItems: ShoppingCartItem[] = [];
                 cartItemList.map(cartItem => {
@@ -142,13 +142,6 @@ export class ShoppingCartStoreEffects {
             return new featureActions.IncrementCartItemComplete({cartItem: updatedCartItem});
           })
         );
-      // } else {
-      //   const updatedCartItem: Update<ShoppingCartItem> = {
-      //     id: action.payload.cartItem.cartItemId,
-      //     changes: action.payload.cartItem
-      //   };
-      //   return of(new featureActions.IncrementCartItemComplete({cartItem: updatedCartItem}));
-      // }
     })
   );
 
@@ -198,7 +191,7 @@ export class ShoppingCartStoreEffects {
   @Effect()
   emptyCartEffect$: Observable<Action> = this.actions$.pipe(
     ofType<featureActions.EmptyCartRequested>(featureActions.ActionTypes.EMPTY_CART_REQUESTED),
-    mergeMap(action => this.shoppingCartService.altDeleteAllCartItems().pipe(
+    mergeMap(action => this.shoppingCartService.deleteAllCartItems().pipe(
       map(() => new featureActions.EmptyCartComplete()),
       catchError(error =>
         of(new featureActions.LoadErrorDetected({ error }))

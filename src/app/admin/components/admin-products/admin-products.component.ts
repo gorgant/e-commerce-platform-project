@@ -19,8 +19,6 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   productsLoading$: Observable<boolean>;
 
   constructor(
-    // public productImporter: ProductImporterService,
-    // public categoryImporter: CategoryImporterService,
     private store$: Store<RootStoreState.State>
   ) {
   }
@@ -30,7 +28,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    // Product list initialized in nav bar
+    // Product list already initialized via selector in category filter
     // Load product data into MatTable
     this.storeSubscription = this.store$.select(
       ProductsStoreSelectors.selectAllProducts

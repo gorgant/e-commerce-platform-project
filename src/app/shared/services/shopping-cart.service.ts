@@ -4,9 +4,7 @@ import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Product } from '../models/product';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AppUser } from '../models/app-user';
-import { Store } from '@ngrx/store';
 import { mergeMap, switchMap } from 'rxjs/operators';
-import { RootStoreState, ShoppingCartStoreSelectors, AuthStoreSelectors } from 'src/app/root-store';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 
@@ -27,7 +25,6 @@ export class ShoppingCartService {
 
   constructor(
     private readonly afs: AngularFirestore,
-    // private store$: Store<RootStoreState.State>,
     private authService: AuthService,
     private userService: UserService
     ) {
@@ -43,29 +40,6 @@ export class ShoppingCartService {
       });
     }
 
-  // // This determines if user is logged in
-  // fetchUserData() {
-  //   this.store$.select(AuthStoreSelectors.selectAppUser).subscribe(user => {
-  //     if (user) {
-  //       this.userDoc = this.afs.doc<AppUser>(`users/${user.uid}`);
-  //     } else {
-  //       this.userDoc = null;
-  //     }
-  //   });
-  // }
-
-  // getSingleCartItem(cartItemId: string) {
-
-  //   if (this.userDoc) {
-  //     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-  //     this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItemId);
-  //     this.singleShoppingCartItem$ = this.shoppingCartDoc.valueChanges();
-  //     return this.singleShoppingCartItem$;
-  //   } else {
-  //     return this.store$.select(ShoppingCartStoreSelectors.selectCartItemById(cartItemId));
-  //   }
-  // }
-
   getAllCartItems(): Observable<ShoppingCartItem[]> {
     // Retreive cart data from database
     this.userDoc = this.userService.userDoc;
@@ -75,29 +49,15 @@ export class ShoppingCartService {
     return this.shoppingCartItems$;
   }
 
-  // upsertOfflineCartItems(cartItems: ShoppingCartItem[]) {
-  //   if (this.userDoc) {
-  //     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-  //     cartItems.map(item => {
-  //       this.shoppingCartDoc = this.shoppingCartCollection.doc(item.cartItemId);
-  //       this.shoppingCartDoc.set(item, {merge: true});
-  //     });
-  //   }
-  // }
-
   // Must use the firestore API for batch calls
-  batchedUpsertOfflineCartItems(offlineCartItems: ShoppingCartItem[]): Observable<ShoppingCartItem[]> {
+  upsertOfflineCartItems(offlineCartItems: ShoppingCartItem[]): Observable<ShoppingCartItem[]> {
     if (this.loggedIn) {
       const batch = this.afs.firestore.batch();
-      // const user: AppUser = JSON.parse(localStorage.getItem('user'));
-      // const userRef = this.afs.firestore.doc(user.uid);
-      // const shoppingCartCol = userRef.collection('shoppingCartCol');
 
       this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
 
       offlineCartItems.map(item => {
-        // const itemRef = shoppingCartCol.doc(item.cartItemId);
         const itemRef = this.shoppingCartCollection.ref.doc(item.cartItemId);
         batch.set(itemRef, item, {merge: true});
       });
@@ -185,7 +145,11 @@ export class ShoppingCartService {
     return of(cartItemId);
   }
 
-  altDeleteAllCartItems(): Observable<void> {
+  deleteAllCartItems(): Observable<void> {
+    // Dump the local storage
+    localStorage.removeItem('offlineCart');
+
+    // Remove from database if logged in
     if (this.loggedIn) {
       console.log('Logged in, removing all cart items from db');
       this.userDoc = this.userService.userDoc;

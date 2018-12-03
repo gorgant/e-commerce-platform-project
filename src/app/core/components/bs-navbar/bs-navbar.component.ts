@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { UserService } from 'src/app/shared/services/user.service';
 import { AppUser } from 'src/app/shared/models/app-user';
 import {
   RootStoreState,
@@ -67,6 +66,7 @@ export class BsNavbarComponent implements OnInit {
         // Initialize the cart total price
         this.store$.dispatch(new ShoppingCartStoreActions.CartTotalPriceRequested());
       } else {
+        // This loads the user into the store on a refresh without logout
         this.store$.dispatch(new AuthStoreActions.SaveLoginDataRequestedAction({user: fbUser}));
       }
     });
