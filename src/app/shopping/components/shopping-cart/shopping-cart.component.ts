@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ShoppingCartItem } from 'src/app/shared/models/shopping-cart-item';
-import { Store, select } from '@ngrx/store';
-import { AppState } from 'src/app/reducers';
-import { EmptyCartRequested } from 'src/app/shared/store/shopping-cart.actions';
-import { selectAllCartItems, selectCartItemQuantity, selectCartTotalPrice } from 'src/app/shared/store/shopping-cart.selectors';
+import { Store } from '@ngrx/store';
+import { RootStoreState, ShoppingCartStoreSelectors, ShoppingCartStoreActions } from 'src/app/root-store';
 
 @Component({
   selector: 'shopping-cart',
@@ -17,27 +15,24 @@ export class ShoppingCartComponent implements OnInit {
   cartItemQuantity$: Observable<number>;
   cartTotalPrice$: Observable<number>;
 
-  constructor(private store: Store<AppState>) { }
+  constructor(
+    private store$: Store<RootStoreState.State>
+  ) { }
 
   ngOnInit() {
 
-    // Products, cart items, and item quantity initialized in the nav bar component
+    // Products, cart items, and item quantity already initialized in the nav bar component
     // Fetch cart items from store
-    this.shoppingCartItems$ = this.store.pipe(select(selectAllCartItems));
+    this.shoppingCartItems$ = this.store$.select(ShoppingCartStoreSelectors.selectAllCartItems);
 
     // Query the cart item quantity
-    this.cartItemQuantity$ = this.store.pipe(select(
-      selectCartItemQuantity
-    ));
+    this.cartItemQuantity$ = this.store$.select(ShoppingCartStoreSelectors.selectCartItemQuantity);
 
     // Query the cart total price
-    this.cartTotalPrice$ = this.store.pipe(select(
-      selectCartTotalPrice
-    ));
+    this.cartTotalPrice$ = this.store$.select(ShoppingCartStoreSelectors.selectCartTotalPrice);
   }
 
   emptyCart() {
-    this.store.dispatch(new EmptyCartRequested());
-    localStorage.removeItem('cart');
+    this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
   }
 }

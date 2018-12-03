@@ -4,11 +4,11 @@ import { Update } from '@ngrx/entity';
 import { Product } from 'src/app/shared/models/product';
 
 export enum ActionTypes {
-  CART_ITEM_REQUESTED = '[Product Card] Cart Item Requested',
-  CART_ITEM_LOADED = '[Shopping Cart API] Cart Item Loaded',
+  // CART_ITEM_REQUESTED = '[Product Card] Cart Item Requested',
+  // CART_ITEM_LOADED = '[Shopping Cart API] Cart Item Loaded',
   ALL_CART_ITEMS_REQUESTED = '[Nav Bar] All Cart Items Requsted',
   ALL_CART_ITEMS_LOADED = '[Shopping Cart API] All Cart Items Loaded',
-  UPDATE_CART_ITEM_PRODUCT_COMPLETE = '[Shopping Cart Effects] Updated Cart Item Product',
+  // UPDATE_CART_ITEM_PRODUCT_COMPLETE = '[Shopping Cart Effects] Updated Cart Item Product',
   INCREMENT_CART_ITEM_REQUESTED = '[Quantity Component] Increment Cart Item Requested',
   INCREMENT_CART_ITEM_COMPLETE = '[Shopping Cart API] Cart Item Incremented',
   DECREMENT_CART_ITEM_REQUESTED = '[Quantity Component] Decrement Cart Item Requested',
@@ -27,17 +27,17 @@ export enum ActionTypes {
   LOAD_ERROR_DETECTED = '[Shopoping Cart API] Error loading'
 }
 
-export class CartItemRequested implements Action {
-  readonly type = ActionTypes.CART_ITEM_REQUESTED;
+// export class CartItemRequested implements Action {
+//   readonly type = ActionTypes.CART_ITEM_REQUESTED;
 
-  constructor(public payload: {cartItemId: string}) {}
-}
+//   constructor(public payload: {cartItemId: string}) {}
+// }
 
-export class CartItemLoaded implements Action {
-  readonly type = ActionTypes.CART_ITEM_LOADED;
+// export class CartItemLoaded implements Action {
+//   readonly type = ActionTypes.CART_ITEM_LOADED;
 
-  constructor(public payload: {cartItem: ShoppingCartItem}) {}
-}
+//   constructor(public payload: {cartItem: ShoppingCartItem}) {}
+// }
 
 export class AllCartItemsRequested implements Action {
   readonly type = ActionTypes.ALL_CART_ITEMS_REQUESTED;
@@ -49,11 +49,11 @@ export class AllCartItemsLoaded implements Action {
   constructor(public payload: {cartItems: ShoppingCartItem[]}) {}
 }
 
-export class UpdateCartItemProductComplete implements Action {
-  readonly type = ActionTypes.UPDATE_CART_ITEM_PRODUCT_COMPLETE;
+// export class UpdateCartItemProductComplete implements Action {
+//   readonly type = ActionTypes.UPDATE_CART_ITEM_PRODUCT_COMPLETE;
 
-  constructor(public payload: {cartItem: Update<ShoppingCartItem>}) {}
-}
+//   constructor(public payload: {cartItem: Update<ShoppingCartItem>}) {}
+// }
 
 export class IncrementCartItemRequested implements Action {
   readonly type = ActionTypes.INCREMENT_CART_ITEM_REQUESTED;
@@ -144,11 +144,11 @@ export class LoadErrorDetected implements Action {
 }
 
 export type Actions =
+// CartItemRequested |
+// CartItemLoaded |
   AllCartItemsRequested |
   AllCartItemsLoaded |
-  CartItemRequested |
-  CartItemLoaded |
-  UpdateCartItemProductComplete |
+  // UpdateCartItemProductComplete |
   IncrementCartItemRequested |
   IncrementCartItemComplete |
   DecrementCartItemRequested |

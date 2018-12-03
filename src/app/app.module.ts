@@ -12,13 +12,8 @@ import { AdminModule } from './admin/admin.module';
 import { CoreModule } from './core/core.module';
 import { ShoppingModule } from './shopping/shopping.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { StoreModule } from '@ngrx/store';
-import { reducers, metaReducers } from './reducers';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { EffectsModule } from '@ngrx/effects';
-import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { CustomSerializer } from './shared/utils/utils';
 import { RootStoreModule } from './root-store';
+import { AuthModule } from './auth/auth.module';
 
 
 @NgModule({
@@ -30,18 +25,14 @@ import { RootStoreModule } from './root-store';
     NgbModule,
     BrowserAnimationsModule,
     SharedModule,
-    AdminModule,
-    ShoppingModule,
+    // AdminModule,
+    // ShoppingModule,
+    // AuthModule,
     CoreModule,
     AngularFireModule.initializeApp(environment.firebase),
     AppRoutingModule,
-    StoreModule.forRoot(reducers, { metaReducers }),
-    !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([]),
-    StoreRouterConnectingModule.forRoot({stateKey: 'router'}),
     RootStoreModule
   ],
-  providers: [{ provide: RouterStateSerializer, useClass: CustomSerializer }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

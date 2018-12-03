@@ -13,5 +13,6 @@ import { AuthStoreEffects } from './effects';
     EffectsModule.forFeature([AuthStoreEffects])
   ],
   providers: [AuthStoreEffects]
+
 })
 export class AuthStoreModule { }

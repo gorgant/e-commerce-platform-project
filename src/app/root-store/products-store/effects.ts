@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { RootStoreState, ProductsStoreSelectors } from '..';
-import { Store, Action, select } from '@ngrx/store';
+import { RootStoreState } from '..';
+import { Store, Action } from '@ngrx/store';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import * as featureActions from './actions';
+import * as featureSelectors from './selectors';
 import { ProductService } from 'src/app/shared/services/product.service';
 import { mergeMap, map, withLatestFrom, filter, startWith, switchMap, catchError } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Update } from '@ngrx/entity';
 import { Product } from 'src/app/shared/models/product';
+import { selectProductsLoading } from './selectors';
 
 @Injectable()
 export class ProductStoreEffects {
@@ -16,7 +18,7 @@ export class ProductStoreEffects {
   constructor(
     private actions$: Actions,
     private productService: ProductService,
-    private store: Store<RootStoreState.State>
+    private store$: Store<RootStoreState.State>
     ) {}
 
   // @Effect()
@@ -69,7 +71,7 @@ export class ProductStoreEffects {
       featureActions.ActionTypes.ALL_PRODUCTS_REQUESTED
     ),
     // This combines the previous observable with the current one
-    withLatestFrom(this.store.pipe(select(ProductsStoreSelectors.selectProductsLoading))),
+    withLatestFrom(this.store$.select(featureSelectors.selectProductsLoading)),
     // Ingest both observable values and filter out the observable and only trigger if the
     // courses haven't been loaded (only true makes it through)
     filter(([action, productsLoading]) => productsLoading),

@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { Observable, of as observableOf } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import * as authActions from './actions';
+import * as featureActions from './actions';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/shared/services/user.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
@@ -20,8 +20,8 @@ export class AuthStoreEffects {
   @Effect()
   saveLoginDataRequestedEffect$: Observable<Action> = this.actions$.pipe(
     // This is fired in the login-guard after redirect is complete
-    ofType<authActions.SaveLoginDataRequestedAction>(
-      authActions.ActionTypes.SAVE_LOGIN_DATA_REQUESTED
+    ofType<featureActions.SaveLoginDataRequestedAction>(
+      featureActions.ActionTypes.SAVE_LOGIN_DATA_REQUESTED
     ),
     switchMap(action => {
       console.log('Submitting request to user service');
@@ -30,11 +30,11 @@ export class AuthStoreEffects {
             map(
               user => {
                 console.log('Dispatching Login Success', user);
-                return new authActions.SaveLoginDataCompletedAction({user});
+                return new featureActions.SaveLoginDataCompletedAction({user});
               }
             ),
               catchError(error =>
-                observableOf(new authActions.SaveLoginDataFailedAction({ error }))
+                observableOf(new featureActions.SaveLoginDataFailedAction({ error }))
               )
           );
     })
@@ -42,13 +42,13 @@ export class AuthStoreEffects {
 
   @Effect({dispatch: false})
   logOutEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<authActions.LoggedOut>(
-      authActions.ActionTypes.LOGGED_OUT
+    ofType<featureActions.LoggedOut>(
+      featureActions.ActionTypes.LOGGED_OUT
     ),
     tap(action => {
       console.log('Submitting logout request to auth service');
       this.authService.logout();
-      this.router.navigate(['home']);
+      this.router.navigate(['']);
     })
   );
 

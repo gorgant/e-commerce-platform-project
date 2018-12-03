@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-import { AppState } from 'src/app/reducers';
+import { Store } from '@ngrx/store';
 import { Product } from 'src/app/shared/models/product';
-import { selectFilteredProducts } from 'src/app/shared/store/product.selectors';
-import { selectFilterCategoryValue } from 'src/app/shared/store/category.selectors';
 import { switchMap } from 'rxjs/operators';
+import { RootStoreState, CategoriesStoreSelectors, ProductsStoreSelectors } from 'src/app/root-store';
 
 @Component({
   selector: 'products',
@@ -16,16 +14,17 @@ export class ProductsComponent implements OnInit {
 
   filteredProducts$: Observable<Product[]> = of([]);
 
-  constructor(private store: Store<AppState>) { }
+  constructor(
+    private store$: Store<RootStoreState.State>
+  ) { }
 
   ngOnInit() {
 
-    // Products store initialized in navbar
+    // Products store already initialized in navbar
     // Set the filtered products list based on the filter value in the store (set in the product-filter component)
-    this.filteredProducts$ = this.store.pipe(
-      select(selectFilterCategoryValue),
+    this.filteredProducts$ = this.store$.select(CategoriesStoreSelectors.selectFilterCategoryValue).pipe(
       switchMap(catValue => {
-        return this.store.pipe(select(selectFilteredProducts(catValue)));
+        return this.store$.select(ProductsStoreSelectors.selectFilteredProducts(catValue));
       })
     );
   }

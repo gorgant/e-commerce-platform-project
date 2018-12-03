@@ -13,26 +13,6 @@ export class UserService {
 
   constructor(private afs: AngularFirestore) { }
 
-  // retrieveUserData(user) {
-  //   this.currentUserDoc = this.afs.doc<AppUser>(`users/${user.uid}`);
-  //   this.currentUser$ = this.currentUserDoc.valueChanges();
-  //   return this.currentUser$;
-  // }
-
-  // storeUserData(user: firebase.User) {
-  //   const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-
-  //   const data: AppUser = {
-  //     uid: user.uid,
-  //     email: user.email,
-  //     // isAdmin: undefined,
-  //     displayName: user.displayName,
-  //     photoURL: user.photoURL
-  //   };
-
-  //   return userRef.set(data, { merge: true});
-  // }
-
   altStoreUserData(fbUser: firebase.User): Observable<AppUser> {
 
     console.log('Storing firebase data', fbUser);
@@ -55,16 +35,4 @@ export class UserService {
       })
     );
   }
-
-  // get localStorageUserData(): AppUser {
-  //   const userData = localStorage.getItem('user');
-  //   let user: AppUser;
-  //   if (userData) {
-  //     user = JSON.parse(userData);
-  //   }
-  //   return user;
-  // }
-
-
-
 }

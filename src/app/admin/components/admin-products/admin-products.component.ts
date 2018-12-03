@@ -2,11 +2,8 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Product } from 'src/app/shared/models/product';
 import { Subscription, Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-import { AppState } from 'src/app/reducers';
-import { selectAllProducts, selectAllProductsLoaded } from 'src/app/shared/store/product.selectors';
-import { ProductImporterService } from 'src/app/shared/services/product-importer.service';
-import { CategoryImporterService } from 'src/app/shared/services/category-importer.service';
+import { Store } from '@ngrx/store';
+import { RootStoreState, ProductsStoreSelectors } from 'src/app/root-store';
 
 @Component({
   selector: 'admin-products',
@@ -19,12 +16,13 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['itemNo', 'title', 'price', 'edit'];
   dataSource: MatTableDataSource<Product>;
 
-  productsLoaded$: Observable<boolean>;
+  productsLoading$: Observable<boolean>;
 
   constructor(
     // public productImporter: ProductImporterService,
     // public categoryImporter: CategoryImporterService,
-    private store: Store<AppState>) {
+    private store$: Store<RootStoreState.State>
+  ) {
   }
 
   @ViewChild(MatSort) sort: MatSort;
@@ -34,14 +32,17 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 
     // Product list initialized in nav bar
     // Load product data into MatTable
-    this.storeSubscription = this.store.pipe(select(selectAllProducts))
-      .subscribe(products => {
-        this.dataSource = new MatTableDataSource(products);
-        this.dataSource.paginator = this.paginator;
-        setTimeout(() => this.dataSource.sort = this.sort);
-      });
+    this.storeSubscription = this.store$.select(
+      ProductsStoreSelectors.selectAllProducts
+    ).subscribe(products => {
+      this.dataSource = new MatTableDataSource(products);
+      this.dataSource.paginator = this.paginator;
+      setTimeout(() => this.dataSource.sort = this.sort);
+    });
 
-    this.productsLoaded$ = this.store.pipe(select(selectAllProductsLoaded));
+    this.productsLoading$ = this.store$.select(
+      ProductsStoreSelectors.selectProductsLoading
+    );
   }
 
   applyFilter(filterValue: string) {

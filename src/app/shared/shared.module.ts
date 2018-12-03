@@ -8,21 +8,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ProductCardComponent } from './components/product-card/product-card.component';
 import { ProductQuantityComponent } from './components/product-quantity/product-quantity.component';
-import { AuthGuardService } from './services/auth-guard.service';
+import { AuthGuardService } from './services/route-guards/auth-guard.service';
 import { ProductService } from './services/product.service';
 import { ShoppingCartService } from './services/shopping-cart.service';
 import { UserService } from './services/user.service';
-import { EffectsModule } from '@ngrx/effects';
-import { ProductEffects } from './store/product.effects';
-import { StoreModule } from '@ngrx/store';
-import { productsReducer } from './store/product.reducers';
 import { ProductSingleResolver } from './services/product-single.resolver';
-import { productCategoriesReducer } from './store/category.reducers';
-import { CategoryEffects } from './store/category.effects';
 import { CategoryService } from './services/category.service';
-import { cartItemsReducer } from './store/shopping-cart.reducers';
-import { ShoppingCartEffects } from './store/shopping-cart.effects';
-import { LoginRedirectGuardService } from './services/login-redirect-guard.service';
+import { LoginGuardService } from './services/route-guards/login-guard.service';
+import { AdminAuthGuardService } from './services/route-guards/admin-auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -35,13 +28,6 @@ import { LoginRedirectGuardService } from './services/login-redirect-guard.servi
     AngularFirestoreModule,
     NgbModule,
     ReactiveFormsModule,
-    // The first argument identifies the property under which the feature state will be visible in dev tools
-    StoreModule.forFeature('products', productsReducer),
-    EffectsModule.forFeature([ProductEffects]),
-    StoreModule.forFeature('categories', productCategoriesReducer),
-    EffectsModule.forFeature([CategoryEffects]),
-    StoreModule.forFeature('cartItems', cartItemsReducer),
-    EffectsModule.forFeature([ShoppingCartEffects]),
   ],
   exports: [
     ProductCardComponent,
@@ -61,7 +47,8 @@ import { LoginRedirectGuardService } from './services/login-redirect-guard.servi
     UserService,
     ProductSingleResolver,
     CategoryService,
-    LoginRedirectGuardService
+    LoginGuardService,
+    AdminAuthGuardService
   ]
 })
 export class SharedModule { }

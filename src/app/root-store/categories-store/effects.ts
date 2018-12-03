@@ -4,9 +4,10 @@ import { Action, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 
 import * as featureActions from './actions';
+import * as featureSelectors from './selectors';
 import { mergeMap, map, withLatestFrom, filter, catchError, startWith, switchMap } from 'rxjs/operators';
 import { CategoryService } from 'src/app/shared/services/category.service';
-import { RootStoreState, CategoriesStoreSelectors } from '..';
+import { RootStoreState } from '..';
 
 @Injectable()
 export class CategoryStoreEffects {
@@ -63,13 +64,13 @@ export class CategoryStoreEffects {
     ofType<featureActions.AllCategoriesRequested>(
       featureActions.ActionTypes.ALL_CATEGORIES_REQUESTED),
     // This combines the previous observable with the current one
-    withLatestFrom(this.store$.select(CategoriesStoreSelectors.selectCategoriesLoading)),
+    withLatestFrom(this.store$.select(featureSelectors.selectCategoriesLoading)),
     // Ingest both observable values and filter out the observable and only trigger if the
     // courses haven't been loaded (only true makes it through)
     filter(([action, categoriesLoading]) => categoriesLoading),
     startWith(new featureActions.AllCategoriesRequested()),
     // Call api for data
-    switchMap(action => this.categoryService.refreshProductCategories().pipe(
+    switchMap(action => this.categoryService.getAllProductCategories().pipe(
       // Take results and trigger an action
       map(categories => new featureActions.AllCategoriesLoaded({categories})),
       catchError(error =>

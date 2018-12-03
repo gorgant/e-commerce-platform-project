@@ -2,19 +2,19 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AdminProductsComponent } from './components/admin-products/admin-products.component';
 import { AdminOrdersComponent } from './components/admin-orders/admin-orders.component';
-import { AuthGuardService } from '../shared/services/auth-guard.service';
-import { AdminAuthGuardService } from './services/admin-auth-guard.service';
+import { AuthGuardService } from '../shared/services/route-guards/auth-guard.service';
+import { AdminAuthGuardService } from '../shared/services/route-guards/admin-auth-guard.service';
 import { ProductFormComponent } from './components/product-form/product-form.component';
 import { ProductSingleResolver } from '../shared/services/product-single.resolver';
 
 const adminRoutes: Routes = [
   {
-    path: 'admin/products/new',
+    path: 'products/new',
     component: ProductFormComponent,
     canActivate: [AuthGuardService, AdminAuthGuardService]
   },
   {
-    path: 'admin/products/:id',
+    path: 'products/:id',
     component: ProductFormComponent,
     canActivate: [AuthGuardService, AdminAuthGuardService],
     resolve: {
@@ -22,15 +22,20 @@ const adminRoutes: Routes = [
     }
   },
   {
-    path: 'admin/products',
+    path: 'products',
     component: AdminProductsComponent,
     canActivate: [AuthGuardService, AdminAuthGuardService],
   },
   {
-    path: 'admin/orders',
+    path: 'orders',
     component: AdminOrdersComponent,
     canActivate: [AuthGuardService, AdminAuthGuardService]
   },
+  // {
+  //   path: '/admin',
+  //   redirectTo: 'products',
+  //   pathMatch: 'full'
+  // },
 ];
 
 @NgModule({

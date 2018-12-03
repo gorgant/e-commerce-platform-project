@@ -6,6 +6,7 @@ import { ProductFormComponent } from './components/product-form/product-form.com
 import { AdminRoutingModule } from './admin-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { MatComponentsModule } from '../shared/mat-components.module';
+import { AdminAuthGuardService } from '../shared/services/route-guards/admin-auth-guard.service';
 
 @NgModule({
   declarations: [

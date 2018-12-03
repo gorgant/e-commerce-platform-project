@@ -2,10 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProductCategory } from 'src/app/shared/models/product-category';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { AppState } from 'src/app/reducers';
-import { Store, select } from '@ngrx/store';
-import { FilterCategorySelected } from 'src/app/shared/store/category.actions';
-import { selectAllCategories } from 'src/app/shared/store/category.selectors';
+import { Store } from '@ngrx/store';
+import { RootStoreState, CategoriesStoreSelectors, CategoriesStoreActions } from 'src/app/root-store';
 
 
 @Component({
@@ -23,17 +21,14 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private store: Store<AppState>
+    private store$: Store<RootStoreState.State>
     ) { }
 
   ngOnInit() {
 
-    // Categories store initialized in nav bar component
+    // Categories store already initialized in nav bar component
     // Load the product categories
-    this.productCategories$ = this.store
-    .pipe(
-      select(selectAllCategories)
-    );
+    this.productCategories$ = this.store$.select(CategoriesStoreSelectors.selectAllCategories);
 
     // Set the active filter based on the query parameters
     this.queryParamSubscription = this.route.queryParamMap.subscribe(
@@ -43,7 +38,7 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
         } else {
           this.paramsCatId = 'allCategories';
         }
-        this.store.dispatch(new FilterCategorySelected({categoryId: this.paramsCatId}));
+        this.store$.dispatch(new CategoriesStoreActions.FilterCategorySelected({categoryId: this.paramsCatId}));
       }
     );
   }

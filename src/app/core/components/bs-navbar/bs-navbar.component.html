@@ -6,17 +6,17 @@
   <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarsDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a routerLink="/shopping-cart" class="nav-link" >Shopping Cart <span class="badge badge-dark">{{ cartItemQuantity$ | async }}</span></a>
+        <a routerLink="/shopping/shopping-cart" class="nav-link" >Shopping Cart <span class="badge badge-dark">{{ cartItemQuantity$ | async }}</span></a>
       </li>
-      <div *ngIf="isLoggedIn$ | async; then authenticated else guest">
+      <div *ngIf="appUser$ | async; then authenticated else guest">
         <!-- template will replace this div -->
       </div>
       <ng-template #authenticated>
-          <li class="nav-item dropdown" ngbDropdown *ngIf="isLoggedIn$ | async">
-            <a class="nav-link dropdown-toggle" id="id01" ngbDropdownToggle>{{ localUser.displayName }}</a>
+          <li class="nav-item dropdown" ngbDropdown *ngIf="(appUser$ | async) as user">
+            <a class="nav-link dropdown-toggle" id="id01" ngbDropdownToggle>{{ user.displayName }}</a>
             <div class="dropdown-menu" aria-labelledby="id01" ngbDropdownMenu>
-              <a class="dropdown-item" routerLink="/my-orders">My Orders</a>
-              <ng-container *ngIf="localUser.isAdmin">
+              <a class="dropdown-item" routerLink="/shopping/my-orders">My Orders</a>
+              <ng-container *ngIf="user && user.isAdmin">
                 <a class="dropdown-item" routerLink="/admin/orders">Manage Orders</a>
                 <a class="dropdown-item" routerLink="/admin/products">Manage Products</a>
               </ng-container>
@@ -26,10 +26,10 @@
       </ng-template>
       <ng-template #guest>
         <li class="nav-item" >
-          <a routerLink="/login" class="nav-link">Login</a>
+          <a routerLink="/auth/login" class="nav-link">Login</a>
         </li>
       </ng-template>
-      <a routerLink="" class="nav-link" (click)="logout()">Backup Log Out</a>
+      <a routerLink="/" class="nav-link" (click)="logout()">Backup Log Out</a>
     </ul>
   </div>
 </nav>

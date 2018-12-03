@@ -6,17 +6,26 @@ import { EffectsModule } from '@ngrx/effects';
 import { ProductsStoreModule } from './products-store';
 import { ShoppingCartStoreModule } from './shopping-cart-store/shopping-cart-store.module';
 import { AuthStoreModule } from './auth-store/auth-store.module';
+import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router-store';
+import { CustomSerializer } from '../shared/utils/utils';
+import { environment } from 'src/environments/environment';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
+    AuthStoreModule,
     CategoriesStoreModule,
     ProductsStoreModule,
     ShoppingCartStoreModule,
-    AuthStoreModule,
     StoreModule.forRoot({}),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([]),
-  ]
+    StoreRouterConnectingModule.forRoot({stateKey: 'router'}),
+  ],
+  providers: [
+    { provide: RouterStateSerializer, useClass: CustomSerializer },
+  ],
 })
 export class RootStoreModule { }
