@@ -11,6 +11,7 @@ import { RootStoreState, ShoppingCartStoreActions } from 'src/app/root-store';
 export class AuthService {
 
   private currentFirebaseUser$: Observable<firebase.User>;
+  private loggedInStatus: boolean;
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -18,6 +19,13 @@ export class AuthService {
     ) {
       // This is used to set the initial login state in the Store
       this.currentFirebaseUser$ = this.afAuth.authState;
+      this.afAuth.authState.subscribe(user => {
+        if (user) {
+          this.loggedInStatus = true;
+        } else {
+          this.loggedInStatus = false;
+        }
+      });
     }
 
   login() {
@@ -32,6 +40,10 @@ export class AuthService {
 
   logout() {
     this.afAuth.auth.signOut();
+  }
+
+  get isLoggedIn() {
+    return this.loggedInStatus;
   }
 
   get firebaseUser$() {

@@ -28,30 +28,57 @@ export class ShoppingCartService {
     private authService: AuthService,
     private userService: UserService
     ) {
-      // Can't use the Root Store for this because circular dependencies
-      this.authService.firebaseUser$.subscribe(user => {
-        if (user) {
-          console.log('Cart detects user is logged in');
-          this.loggedIn = true;
-        } else {
-          console.log('Cart detects user is logged out');
-          this.loggedIn = false;
-        }
-      });
+      // // Can't use the Root Store for this because circular dependencies
+      // this.authService.firebaseUser$.subscribe(user => {
+      //   if (user) {
+      //     console.log('Cart detects user is logged in');
+      //     this.authService.isLoggedIn = true;
+      //   } else {
+      //     console.log('Cart detects user is logged out');
+      //     this.authService.isLoggedIn = false;
+      //   }
+      // });
     }
 
+  // getAllCartItems(): Observable<ShoppingCartItem[]> {
+  //   // Retreive cart data from database
+  //   this.userDoc = this.userService.userDoc;
+  //   this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+  //   this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
+  //   // Return the shopping cart items with the product inserted
+  //   return this.shoppingCartItems$;
+  // }
+
   getAllCartItems(): Observable<ShoppingCartItem[]> {
-    // Retreive cart data from database
-    this.userDoc = this.userService.userDoc;
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
+    if (this.authService.isLoggedIn) {
+      console.log('AuthService says is logged in');
+      // Retreive cart data from database
+      this.userDoc = this.userService.userDoc;
+      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
+    }
     // Return the shopping cart items with the product inserted
     return this.shoppingCartItems$;
   }
 
+  // getAllCartItems(): Observable<ShoppingCartItem[]> {
+  //   // Retreive cart data from database
+  //   this.userDoc = this.userService.userDoc;
+  //   this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+  //   const shoppingCartItems: ShoppingCartItem[] = [];
+  //   this.shoppingCartCollection.ref.onSnapshot(snapshot => {
+  //     snapshot.forEach(doc => {
+  //       shoppingCartItems.push(doc.data() as ShoppingCartItem);
+  //     });
+  //   });
+  //   console.log(shoppingCartItems);
+  //   this.shoppingCartItems$ = of(shoppingCartItems);
+  //   return this.shoppingCartItems$;
+  // }
+
   // Must use the firestore API for batch calls
   upsertOfflineCartItems(offlineCartItems: ShoppingCartItem[]): Observable<ShoppingCartItem[]> {
-    if (this.loggedIn) {
+    if (this.authService.isLoggedIn) {
       const batch = this.afs.firestore.batch();
 
       this.userDoc = this.userService.userDoc;
@@ -83,7 +110,7 @@ export class ShoppingCartService {
       product: cartItem.product
     };
 
-    if (this.loggedIn) {
+    if (this.authService.isLoggedIn) {
       this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
@@ -103,7 +130,7 @@ export class ShoppingCartService {
       product: cartItem.product
     };
 
-    if (this.loggedIn) {
+    if (this.authService.isLoggedIn) {
       this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
@@ -124,7 +151,7 @@ export class ShoppingCartService {
       product: product
     };
 
-    if (this.loggedIn) {
+    if (this.authService.isLoggedIn) {
       this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartCollection.doc(cartItem.cartItemId).set(cartItem);
@@ -135,7 +162,7 @@ export class ShoppingCartService {
   }
 
   deleteCartItem(cartItemId: string) {
-    if (this.loggedIn) {
+    if (this.authService.isLoggedIn) {
       this.userDoc = this.userService.userDoc;
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartCollection.doc(cartItemId).delete();
@@ -150,7 +177,7 @@ export class ShoppingCartService {
     localStorage.removeItem('offlineCart');
 
     // Remove from database if logged in
-    if (this.loggedIn) {
+    if (this.authService.isLoggedIn) {
       console.log('Logged in, removing all cart items from db');
       this.userDoc = this.userService.userDoc;
       const batch = this.afs.firestore.batch();
