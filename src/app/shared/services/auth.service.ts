@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
 import * as firebase from 'firebase';
-import { RootStoreState, ShoppingCartStoreActions } from 'src/app/root-store';
 
 // Provided in shared module to prevent circular dependencies
 @Injectable()
@@ -12,6 +10,9 @@ export class AuthService {
 
   private currentFirebaseUser$: Observable<firebase.User>;
   private loggedInStatus: boolean;
+
+  // This is used to unsubscribe from observables (using takeWhile) throughout the app
+  private ngUnsubscribe$: Subject<void> = new Subject();
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -39,6 +40,8 @@ export class AuthService {
   }
 
   logout() {
+    this.ngUnsubscribe$.next();
+    this.ngUnsubscribe$.complete();
     this.afAuth.auth.signOut();
   }
 
@@ -48,5 +51,9 @@ export class AuthService {
 
   get firebaseUser$() {
     return this.currentFirebaseUser$;
+  }
+
+  get unsubTrigger$() {
+    return this.ngUnsubscribe$;
   }
 }

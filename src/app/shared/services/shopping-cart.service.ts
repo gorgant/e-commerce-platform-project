@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, from } from 'rxjs';
+import { Observable, of, from, Subscription } from 'rxjs';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Product } from '../models/product';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { AppUser } from '../models/app-user';
-import { mergeMap, switchMap } from 'rxjs/operators';
+import { mergeMap, switchMap, map, takeUntil } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 
-// Provided in shared module to prevent circular dependency
 @Injectable()
 
 export class ShoppingCartService {
@@ -21,60 +20,21 @@ export class ShoppingCartService {
   private shoppingCartCollection: AngularFirestoreCollection<ShoppingCartItem>;
   shoppingCartItems$: Observable<ShoppingCartItem[]>;
 
-  loggedIn: boolean;
-
   constructor(
     private readonly afs: AngularFirestore,
     private authService: AuthService,
     private userService: UserService
-    ) {
-      // // Can't use the Root Store for this because circular dependencies
-      // this.authService.firebaseUser$.subscribe(user => {
-      //   if (user) {
-      //     console.log('Cart detects user is logged in');
-      //     this.authService.isLoggedIn = true;
-      //   } else {
-      //     console.log('Cart detects user is logged out');
-      //     this.authService.isLoggedIn = false;
-      //   }
-      // });
-    }
-
-  // getAllCartItems(): Observable<ShoppingCartItem[]> {
-  //   // Retreive cart data from database
-  //   this.userDoc = this.userService.userDoc;
-  //   this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-  //   this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
-  //   // Return the shopping cart items with the product inserted
-  //   return this.shoppingCartItems$;
-  // }
+    ) {  }
 
   getAllCartItems(): Observable<ShoppingCartItem[]> {
-    if (this.authService.isLoggedIn) {
-      console.log('AuthService says is logged in');
-      // Retreive cart data from database
-      this.userDoc = this.userService.userDoc;
-      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-      this.shoppingCartItems$ = this.shoppingCartCollection.valueChanges();
-    }
-    // Return the shopping cart items with the product inserted
-    return this.shoppingCartItems$;
+    // Retreive cart data from database
+    this.userDoc = this.userService.userDoc;
+    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+    return this.shoppingCartCollection.valueChanges().pipe(
+      takeUntil(this.authService.unsubTrigger$),
+      map(cartItems => cartItems)
+    );
   }
-
-  // getAllCartItems(): Observable<ShoppingCartItem[]> {
-  //   // Retreive cart data from database
-  //   this.userDoc = this.userService.userDoc;
-  //   this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-  //   const shoppingCartItems: ShoppingCartItem[] = [];
-  //   this.shoppingCartCollection.ref.onSnapshot(snapshot => {
-  //     snapshot.forEach(doc => {
-  //       shoppingCartItems.push(doc.data() as ShoppingCartItem);
-  //     });
-  //   });
-  //   console.log(shoppingCartItems);
-  //   this.shoppingCartItems$ = of(shoppingCartItems);
-  //   return this.shoppingCartItems$;
-  // }
 
   // Must use the firestore API for batch calls
   upsertOfflineCartItems(offlineCartItems: ShoppingCartItem[]): Observable<ShoppingCartItem[]> {
