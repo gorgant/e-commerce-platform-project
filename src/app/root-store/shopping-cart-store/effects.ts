@@ -54,18 +54,13 @@ export class ShoppingCartStoreEffects {
             // This new service batch uploads the offline cart items to the database and returns the updated cart list
             return this.shoppingCartService.upsertOfflineCartItems(offlineCart).pipe(
               map(cartItemList => {
-                const updatedCartItems: ShoppingCartItem[] = [];
-                cartItemList.map(cartItem => {
+                // Update product without mutating the original array
+                const updatedCartItems: ShoppingCartItem[] = cartItemList.map(cartItem => {
                   this.storeSubscription = this.store$.select(selectProductById(cartItem.productId))
-                    .subscribe(product => {
-                      const itemWithProduct: ShoppingCartItem = {
-                          cartItemId: cartItem.cartItemId,
-                          productId: cartItem.productId,
-                          quantity: cartItem.quantity,
-                          product: product
-                      };
-                    updatedCartItems.push(itemWithProduct);
+                    .subscribe(extractedProduct => {
+                      cartItem = {...cartItem, product: extractedProduct};
                   });
+                  return cartItem;
                 });
               return new featureActions.AllCartItemsLoaded({cartItems: updatedCartItems});
               })
@@ -75,18 +70,13 @@ export class ShoppingCartStoreEffects {
             console.log('No offline cart found, pulling cart directly from databse');
             return this.shoppingCartService.getAllCartItems().pipe(
               map(cartItemList => {
-                const updatedCartItems: ShoppingCartItem[] = [];
-                cartItemList.map(cartItem => {
+                // Update product without mutating the original array
+                const updatedCartItems: ShoppingCartItem[] = cartItemList.map(cartItem => {
                   this.storeSubscription = this.store$.select(selectProductById(cartItem.productId))
-                    .subscribe(product => {
-                      const itemWithProduct: ShoppingCartItem = {
-                          cartItemId: cartItem.cartItemId,
-                          productId: cartItem.productId,
-                          quantity: cartItem.quantity,
-                          product: product
-                      };
-                    updatedCartItems.push(itemWithProduct);
+                    .subscribe(extractedProduct => {
+                      cartItem = {...cartItem, product: extractedProduct};
                   });
+                  return cartItem;
                 });
               return new featureActions.AllCartItemsLoaded({cartItems: updatedCartItems});
               })
@@ -102,18 +92,13 @@ export class ShoppingCartStoreEffects {
           }
           return of(cartItems).pipe(
             map(cartItemList => {
-              const updatedCartItems: ShoppingCartItem[] = [];
-              cartItemList.map(cartItem => {
+              // Update product without mutating the original array
+              const updatedCartItems: ShoppingCartItem[] = cartItemList.map(cartItem => {
                 this.storeSubscription = this.store$.select(selectProductById(cartItem.productId))
-                  .subscribe(product => {
-                    const itemWithProduct: ShoppingCartItem = {
-                        cartItemId: cartItem.cartItemId,
-                        productId: cartItem.productId,
-                        quantity: cartItem.quantity,
-                        product: product
-                    };
-                  updatedCartItems.push(itemWithProduct);
+                  .subscribe(extractedProduct => {
+                    cartItem = {...cartItem, product: extractedProduct};
                 });
+                return cartItem;
               });
             return new featureActions.AllCartItemsLoaded({cartItems: updatedCartItems});
             })
