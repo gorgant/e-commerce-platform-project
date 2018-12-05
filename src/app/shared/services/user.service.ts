@@ -15,7 +15,6 @@ export class UserService {
 
   altStoreUserData(fbUser: firebase.User): Observable<AppUser> {
 
-    console.log('Storing firebase data', fbUser);
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${fbUser.uid}`);
 
     const appUser: AppUser = {
@@ -28,7 +27,6 @@ export class UserService {
 
     return from(userRef.set(appUser, { merge: true})).pipe(
       mergeMap(() => {
-        console.log('Retreiving user data from Firestore', appUser);
         this.currentUserDoc = this.afs.doc<AppUser>(`users/${fbUser.uid}`);
         this.currentUser$ = this.currentUserDoc.valueChanges();
         return this.currentUser$;

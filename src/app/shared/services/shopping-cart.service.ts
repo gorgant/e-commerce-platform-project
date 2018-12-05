@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, from, Subscription } from 'rxjs';
+import { Observable, of, from } from 'rxjs';
 import { ShoppingCartItem } from '../models/shopping-cart-item';
 import { Product } from '../models/product';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/firestore';
@@ -31,8 +31,12 @@ export class ShoppingCartService {
     this.userDoc = this.userService.userDoc;
     this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     return this.shoppingCartCollection.valueChanges().pipe(
+      // If logged out, this triggers unsub of this observable
       takeUntil(this.authService.unsubTrigger$),
-      map(cartItems => cartItems)
+      map(cartItems => {
+        console.log('Retrieving all cart items from db');
+        return cartItems;
+      })
     );
   }
 
@@ -75,6 +79,7 @@ export class ShoppingCartService {
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
       this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
       this.shoppingCartDoc.update(updatedCartItem);
+      console.log('Incremented quantity in db');
     }
 
     console.log('Incremented quantity', updatedCartItem);
@@ -133,12 +138,12 @@ export class ShoppingCartService {
   }
 
   deleteAllCartItems(): Observable<void> {
+    console.log('Removing all cart items');
     // Dump the local storage
     localStorage.removeItem('offlineCart');
 
     // Remove from database if logged in
     if (this.authService.isLoggedIn) {
-      console.log('Logged in, removing all cart items from db');
       this.userDoc = this.userService.userDoc;
       const batch = this.afs.firestore.batch();
       this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
@@ -151,7 +156,6 @@ export class ShoppingCartService {
         }),
       );
     } else {
-      console.log('Logged out, removing all cart items locally');
       return of(null);
     }
   }

@@ -34,49 +34,46 @@ export class BsNavbarComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // Retreive the app user from Store
     this.appUser$ = this.store$.select(
       AuthStoreSelectors.selectAppUser
     );
-
-    // Load cart products if logged in,
-    this.appUser$.subscribe(appUser => {
-      if (appUser) {
-        // Initialize the product list
-        this.store$.dispatch(new ProductsStoreActions.AllProductsRequested());
-        // Initialize the shopping cart
-        this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
-        // Initialize the cart quantity
-        this.store$.dispatch(new ShoppingCartStoreActions.CartQuantityRequested());
-        // Initialize the cart total price
-        this.store$.dispatch(new ShoppingCartStoreActions.CartTotalPriceRequested());
-        // Initialize the product categories
-        this.store$.dispatch(new CategoriesStoreActions.AllCategoriesRequested());
-        this.appUserInStore = true;
-      } else {
-        this.appUserInStore = false;
-      }
-    });
-
-    // Logout happens faster in the store than in the authservice so this is used to delay empty cart until auth is ready
-    this.authService.firebaseUser$.subscribe(fbUser => {
-      if (!fbUser && !this.appUserInStore) {
-      this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
-        // Initialize the cart quantity
-        this.store$.dispatch(new ShoppingCartStoreActions.CartQuantityRequested());
-        // Initialize the cart total price
-        this.store$.dispatch(new ShoppingCartStoreActions.CartTotalPriceRequested());
-      } else {
-        // This loads the user into the store on a refresh without logout
-        this.store$.dispatch(new AuthStoreActions.SaveLoginDataRequestedAction({user: fbUser}));
-      }
-    });
-
 
     // Query the cart item quantity
     this.cartItemQuantity$ = this.store$.select(
       ShoppingCartStoreSelectors.selectCartItemQuantity
     );
 
+    // Initialize the cart quantity
+    this.store$.dispatch(new ShoppingCartStoreActions.CartQuantityRequested());
+    // Initialize the cart total price
+    this.store$.dispatch(new ShoppingCartStoreActions.CartTotalPriceRequested());
+
+    // Helpers based on Store user (relies on auth at login, empties faster than auth on logout)
+    this.appUser$.subscribe(appUser => {
+      if (appUser) {
+        // Initialize the shopping cart (Products initialized by categories in filter component)
+        this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
+        // This assists the refresh logic in the auth service fucntion below
+        this.appUserInStore = true;
+      } else {
+        this.appUserInStore = false;
+      }
+    });
+
+    // Helpers based on FB (auth) user (loads faster than store on login, lingers longer than store on logout)
+    this.authService.firebaseUser$.subscribe(fbUser => {
+      if (fbUser && !this.appUserInStore) {
+        // This loads the user into the store on a refresh without logout (which clears store but not FB user)
+        this.store$.dispatch(new AuthStoreActions.SaveLoginDataRequestedAction({user: fbUser}));
+      }
+
+      // Logout happens faster in the store than in the authservice so this is used to delay empty cart until FB user is gone
+      if (!fbUser) {
+        // Empty cart (local only because no connection to Firebase bc no FB user)
+        this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
+      }
+    });
   }
 
   logout() {

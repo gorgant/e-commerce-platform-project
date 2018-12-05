@@ -7,7 +7,7 @@ import { RootStoreState } from '..';
 
 import * as featureActions from './actions';
 import * as featureSelectors from './selectors';
-import { mergeMap, map, catchError, withLatestFrom, filter, tap, switchMap } from 'rxjs/operators';
+import { mergeMap, map, catchError, withLatestFrom, filter } from 'rxjs/operators';
 import { ShoppingCartItem } from 'src/app/shared/models/shopping-cart-item';
 import { Update } from '@ngrx/entity';
 import { selectProductById } from '../products-store/selectors';
@@ -51,7 +51,7 @@ export class ShoppingCartStoreEffects {
             console.log('Offline cart found, extracting offline cart', offlineCart);
             // Now remove the offline cart because we don't want it to keep loading
             localStorage.removeItem('offlineCart');
-            // NEW: This new service batch uploads the offline cart items to the database and returns the updated cart list
+            // This new service batch uploads the offline cart items to the database and returns the updated cart list
             return this.shoppingCartService.upsertOfflineCartItems(offlineCart).pipe(
               map(cartItemList => {
                 const updatedCartItems: ShoppingCartItem[] = [];
@@ -67,7 +67,6 @@ export class ShoppingCartStoreEffects {
                     updatedCartItems.push(itemWithProduct);
                   });
                 });
-                console.log('Dispatching all cart items loaded');
               return new featureActions.AllCartItemsLoaded({cartItems: updatedCartItems});
               })
             );
@@ -89,7 +88,6 @@ export class ShoppingCartStoreEffects {
                     updatedCartItems.push(itemWithProduct);
                   });
                 });
-                console.log('Dispatching all cart items loaded');
               return new featureActions.AllCartItemsLoaded({cartItems: updatedCartItems});
               })
             );
@@ -117,7 +115,6 @@ export class ShoppingCartStoreEffects {
                   updatedCartItems.push(itemWithProduct);
                 });
               });
-              console.log('Dispatching all cart items loaded');
             return new featureActions.AllCartItemsLoaded({cartItems: updatedCartItems});
             })
           );
@@ -130,19 +127,15 @@ export class ShoppingCartStoreEffects {
     ofType<featureActions.IncrementCartItemRequested>(
       featureActions.ActionTypes.INCREMENT_CART_ITEM_REQUESTED
     ),
-    withLatestFrom(this.store$.select(selectAppUser)),
-    mergeMap(([action, user]) => {
-      // if (user) {
-        return this.shoppingCartService.incrementCartItem(action.payload.cartItem).pipe(
-          map(cartItem => {
-            const updatedCartItem: Update<ShoppingCartItem> = {
-              id: cartItem.cartItemId,
-              changes: cartItem
-            };
-            return new featureActions.IncrementCartItemComplete({cartItem: updatedCartItem});
-          })
-        );
-    })
+    mergeMap((action) => this.shoppingCartService.incrementCartItem(action.payload.cartItem).pipe(
+      map(cartItem => {
+        const updatedCartItem: Update<ShoppingCartItem> = {
+          id: cartItem.cartItemId,
+          changes: cartItem
+        };
+        return new featureActions.IncrementCartItemComplete({cartItem: updatedCartItem});
+      })
+    ))
   );
 
   @Effect()
