@@ -7,7 +7,7 @@ import { RootStoreState } from '..';
 
 import * as featureActions from './actions';
 import * as featureSelectors from './selectors';
-import { mergeMap, map, catchError, withLatestFrom, filter } from 'rxjs/operators';
+import { mergeMap, map, catchError, withLatestFrom, filter, tap } from 'rxjs/operators';
 import { ShoppingCartItem } from 'src/app/shared/models/shopping-cart-item';
 import { Update } from '@ngrx/entity';
 import { selectProductById } from '../products-store/selectors';
@@ -171,9 +171,19 @@ export class ShoppingCartStoreEffects {
   );
 
   @Effect()
-  deleteProductEffect$: Observable<Action> = this.actions$.pipe(
+  deleteCartItemEffect$: Observable<Action> = this.actions$.pipe(
     ofType<featureActions.DeleteCartItemRequested>(featureActions.ActionTypes.DELETE_CART_ITEM_REQUESTED),
     mergeMap(action => this.shoppingCartService.deleteCartItem(action.payload.cartItemId).pipe(
+      // Remove final local cart item if it exists (for some reason it doesn't disappear otherwise)
+      tap(() => {
+        const offlineCartData = localStorage.getItem('offlineCart');
+        if (offlineCartData) {
+          const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('offlineCart'));
+          if (offlineCart.length === 1) {
+            localStorage.removeItem('offlineCart');
+          }
+        }
+      }),
       map(cartItemId => new featureActions.DeleteCartItemComplete({cartItemId: cartItemId})),
       catchError(error =>
         of(new featureActions.LoadErrorDetected({ error }))
