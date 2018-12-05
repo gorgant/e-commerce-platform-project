@@ -6,10 +6,11 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import * as featureActions from './actions';
 import * as featureSelectors from './selectors';
 import { ProductService } from 'src/app/shared/services/product.service';
-import { mergeMap, map, withLatestFrom, filter, startWith, switchMap, catchError } from 'rxjs/operators';
+import { mergeMap, map, withLatestFrom, filter, startWith, switchMap, catchError, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { Update } from '@ngrx/entity';
 import { Product } from 'src/app/shared/models/product';
+import { AllCartItemsRequested } from '../shopping-cart-store/actions';
 
 @Injectable()
 export class ProductStoreEffects {
@@ -47,13 +48,19 @@ export class ProductStoreEffects {
     filter(([action, productsLoading]) => productsLoading),
     startWith(new featureActions.AllProductsRequested()),
     // Call api for data
-    switchMap(action => this.productService.getProducts().pipe(
-      // Take results and trigger an action
-      map(products => new featureActions.AllProductsLoaded({products})),
-      catchError(error =>
-        of(new featureActions.LoadErrorDetected({ error }))
-      )
-    )),
+    switchMap(action => {
+      return this.productService.getProducts().pipe(
+        // This updates any existing cart items with the product update
+        tap(() => {
+          this.store$.dispatch(new AllCartItemsRequested);
+        }),
+        // Take results and trigger an action
+        map(products => new featureActions.AllProductsLoaded({products})),
+        catchError(error =>
+          of(new featureActions.LoadErrorDetected({ error }))
+        )
+      );
+    }),
   );
 
   @Effect()
