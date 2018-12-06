@@ -24,6 +24,7 @@ export class AuthService {
         if (user) {
           this.loggedInStatus = true;
         } else {
+          console.log('Detected logout, setting status to false');
           this.loggedInStatus = false;
         }
       });
@@ -40,12 +41,16 @@ export class AuthService {
   }
 
   logout() {
+    console.log('Processing ngUnsubscribe next');
     this.ngUnsubscribe$.next();
+    console.log('Processing ngUnsubscribe complete');
     this.ngUnsubscribe$.complete();
+    console.log('Logging out user from auth');
     this.afAuth.auth.signOut();
   }
 
   get isLoggedIn() {
+    console.log('Providing logged in status as: ', this.loggedInStatus);
     return this.loggedInStatus;
   }
 

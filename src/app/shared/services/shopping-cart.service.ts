@@ -12,25 +12,22 @@ import { UserService } from './user.service';
 
 export class ShoppingCartService {
 
-  private userDoc: AngularFirestoreDocument<AppUser>;
-
-  private shoppingCartDoc: AngularFirestoreDocument<ShoppingCartItem>;
-  singleShoppingCartItem$: Observable<ShoppingCartItem>;
-
-  private shoppingCartCollection: AngularFirestoreCollection<ShoppingCartItem>;
-  shoppingCartItems$: Observable<ShoppingCartItem[]>;
-
   constructor(
     private readonly afs: AngularFirestore,
     private authService: AuthService,
     private userService: UserService
     ) {  }
 
+  getCartCollection(): AngularFirestoreCollection<ShoppingCartItem> {
+    const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
+    const cartCollection = userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+    return cartCollection;
+  }
+
   getAllCartItems(): Observable<ShoppingCartItem[]> {
     // Retreive cart data from database
-    this.userDoc = this.userService.userDoc;
-    this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-    return this.shoppingCartCollection.valueChanges().pipe(
+    const cartCollection = this.getCartCollection();
+    return cartCollection.valueChanges().pipe(
       // If logged out, this triggers unsub of this observable
       takeUntil(this.authService.unsubTrigger$),
       map(cartItems => {
@@ -45,11 +42,10 @@ export class ShoppingCartService {
     if (this.authService.isLoggedIn) {
       const batch = this.afs.firestore.batch();
 
-      this.userDoc = this.userService.userDoc;
-      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
+      const cartCollection = this.getCartCollection();
 
       offlineCartItems.map(item => {
-        const itemRef = this.shoppingCartCollection.ref.doc(item.cartItemId);
+        const itemRef = cartCollection.ref.doc(item.cartItemId);
         batch.set(itemRef, item, {merge: true});
       });
 
@@ -75,10 +71,9 @@ export class ShoppingCartService {
     };
 
     if (this.authService.isLoggedIn) {
-      this.userDoc = this.userService.userDoc;
-      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-      this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
-      this.shoppingCartDoc.update(updatedCartItem);
+      const cartCollection = this.getCartCollection();
+      const cartItemDoc = cartCollection.doc(cartItem.cartItemId);
+      cartItemDoc.update(updatedCartItem);
       console.log('Incremented quantity in db');
     }
 
@@ -96,10 +91,9 @@ export class ShoppingCartService {
     };
 
     if (this.authService.isLoggedIn) {
-      this.userDoc = this.userService.userDoc;
-      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-      this.shoppingCartDoc = this.shoppingCartCollection.doc(cartItem.cartItemId);
-      this.shoppingCartDoc.update(updatedCartItem);
+      const cartCollection = this.getCartCollection();
+      const cartItemDoc = cartCollection.doc(cartItem.cartItemId);
+      cartItemDoc.update(updatedCartItem);
     }
 
     console.log('Decremented quantity', updatedCartItem);
@@ -107,6 +101,8 @@ export class ShoppingCartService {
   }
 
   createCartItem(product: Product) {
+    // This helper dictates whether or not an offlineCartItem should be created in the Effect it is connected to
+    let createOfflineCartItem: boolean;
 
     const cartItem: ShoppingCartItem = {
       // Set cartItem Id to product ID because each cart item is an individual product and this makes easier to search
@@ -117,20 +113,27 @@ export class ShoppingCartService {
     };
 
     if (this.authService.isLoggedIn) {
-      this.userDoc = this.userService.userDoc;
-      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-      this.shoppingCartCollection.doc(cartItem.cartItemId).set(cartItem);
+      const cartCollection = this.getCartCollection();
+      const cartItemDoc = cartCollection.doc(cartItem.cartItemId);
+      cartItemDoc.set(cartItem);
+      createOfflineCartItem = false;
+    } else {
+      createOfflineCartItem = true;
     }
+    const itemPlusLoginStatus = {
+      cartItem: cartItem,
+      createOfflineCartItem: createOfflineCartItem
+    };
 
     console.log('Created cart item', cartItem);
-    return of(cartItem);
+    return of(itemPlusLoginStatus);
   }
 
   deleteCartItem(cartItemId: string) {
     if (this.authService.isLoggedIn) {
-      this.userDoc = this.userService.userDoc;
-      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-      this.shoppingCartCollection.doc(cartItemId).delete();
+      const cartCollection = this.getCartCollection();
+      const cartItemDoc = cartCollection.doc(cartItemId);
+      cartItemDoc.delete();
     }
 
     console.log('Deleted cart item with ID', cartItemId);
@@ -144,10 +147,9 @@ export class ShoppingCartService {
 
     // Remove from database if logged in
     if (this.authService.isLoggedIn) {
-      this.userDoc = this.userService.userDoc;
       const batch = this.afs.firestore.batch();
-      this.shoppingCartCollection = this.userDoc.collection<ShoppingCartItem>('shoppingCartCol');
-      return from(this.shoppingCartCollection.ref.get()).pipe(
+      const cartCollection = this.getCartCollection();
+      return from(cartCollection.ref.get()).pipe(
         switchMap(qry => {
           qry.forEach(doc => {
             batch.delete(doc.ref);

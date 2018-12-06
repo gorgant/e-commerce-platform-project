@@ -35,23 +35,23 @@ export class ProductQuantityComponent implements OnInit, OnDestroy {
 
   addToCart(product: Product) {
     this.store$.dispatch(new ShoppingCartStoreActions.AddCartItemRequested({product: product}));
-    // In offline mode, cart will only update if this is dispatched
-    this.loginSubscription = this.appUser$.subscribe(loggedIn => {
-      if (!loggedIn) {
-        this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
-      }
-    });
+    // // In offline mode, cart will only update if this is dispatched
+    // this.loginSubscription = this.appUser$.subscribe(loggedIn => {
+    //   if (!loggedIn) {
+    //     this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
+    //   }
+    // });
   }
 
   incrementCartItem(cartItem: ShoppingCartItem) {
     this.store$.dispatch(new ShoppingCartStoreActions.IncrementCartItemRequested({cartItem: cartItem}));
 
-    // In offline mode, cart will only update if this is dispatched
-    this.loginSubscription = this.appUser$.subscribe(loggedIn => {
-      if (!loggedIn) {
-        this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
-      }
-    });
+    // // In offline mode, cart will only update if this is dispatched
+    // this.loginSubscription = this.appUser$.subscribe(loggedIn => {
+    //   if (!loggedIn) {
+    //     this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
+    //   }
+    // });
   }
 
   decrementCartItem(cartItem: ShoppingCartItem) {
@@ -62,12 +62,12 @@ export class ProductQuantityComponent implements OnInit, OnDestroy {
       this.store$.dispatch(new ShoppingCartStoreActions.DeleteCartItemRequested({cartItemId: cartItem.cartItemId}));
     }
 
-    // In offline mode, cart will only update if this is dispatched
-    this.loginSubscription = this.appUser$.subscribe(loggedIn => {
-      if (!loggedIn) {
-        this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
-      }
-    });
+    // // In offline mode, cart will only update if this is dispatched
+    // this.loginSubscription = this.appUser$.subscribe(loggedIn => {
+    //   if (!loggedIn) {
+    //     this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
+    //   }
+    // });
   }
 
   ngOnDestroy() {

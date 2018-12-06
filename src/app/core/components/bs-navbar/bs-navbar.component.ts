@@ -39,7 +39,7 @@ export class BsNavbarComponent implements OnInit {
       AuthStoreSelectors.selectAppUser
     );
 
-    // Query the cart item quantity
+    // Query the cart item quantity for the cart badge
     this.cartItemQuantity$ = this.store$.select(
       ShoppingCartStoreSelectors.selectCartItemQuantity
     );
@@ -52,6 +52,7 @@ export class BsNavbarComponent implements OnInit {
     // Helpers based on Store user (relies on auth at login, empties faster than auth on logout)
     this.appUser$.subscribe(appUser => {
       if (appUser) {
+        console.log('Requesting all cart items from nav');
         // Initialize the shopping cart (Products initialized by categories in filter component)
         this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
         // This assists the refresh logic in the auth service fucntion below
@@ -64,12 +65,13 @@ export class BsNavbarComponent implements OnInit {
     // Helpers based on FB (auth) user (loads faster than store on login, lingers longer than store on logout)
     this.authService.firebaseUser$.subscribe(fbUser => {
       if (fbUser && !this.appUserInStore) {
-        // This loads the user into the store on a refresh without logout (which clears store but not FB user)
+        // This loads the user into the store both on login and on a refresh without logout (which clears store but not FB user)
         this.store$.dispatch(new AuthStoreActions.SaveLoginDataRequestedAction({user: fbUser}));
       }
 
       // Logout happens faster in the store than in the authservice so this is used to delay empty cart until FB user is gone
       if (!fbUser) {
+        console.log('No fb user detected, emptying cart');
         // Empty cart (local only because no connection to Firebase bc no FB user)
         this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
       }
@@ -77,6 +79,7 @@ export class BsNavbarComponent implements OnInit {
   }
 
   logout() {
+    console.log('Dispatching logout to store');
     this.store$.dispatch(new AuthStoreActions.LoggedOut());
   }
 

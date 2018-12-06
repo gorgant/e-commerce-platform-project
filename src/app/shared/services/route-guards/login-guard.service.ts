@@ -20,8 +20,7 @@ export class LoginGuardService implements CanActivate {
         // The firebaseuser determines if user is logged in
         // If logged in, block the route with a redirect
         if (user) {
-          this.store$.dispatch(new AuthStoreActions.SaveLoginDataRequestedAction({user}));
-
+          // User data saved to store in the nav bar component rather than here
           console.log('User detected', user);
           const returnUrl = localStorage.getItem('returnUrl');
           // Route user to returnUrl, if none, go to profile

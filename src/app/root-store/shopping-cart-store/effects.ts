@@ -113,6 +113,21 @@ export class ShoppingCartStoreEffects {
       featureActions.ActionTypes.INCREMENT_CART_ITEM_REQUESTED
     ),
     mergeMap((action) => this.shoppingCartService.incrementCartItem(action.payload.cartItem).pipe(
+      tap(updatedCartItem => {
+        const offlineCartData = localStorage.getItem('offlineCart');
+        if (offlineCartData) {
+          const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('offlineCart'));
+          // Return an updated cart with the updated item swapped out
+          const updatedCart = offlineCart.map(item => {
+            if (updatedCartItem.cartItemId === item.cartItemId) {
+              return updatedCartItem;
+            } else {
+              return item;
+            }
+          });
+          localStorage.setItem('offlineCart', JSON.stringify(updatedCart));
+        }
+      }),
       map(cartItem => {
         const updatedCartItem: Update<ShoppingCartItem> = {
           id: cartItem.cartItemId,
@@ -129,6 +144,21 @@ export class ShoppingCartStoreEffects {
       featureActions.ActionTypes.DECREMENT_CART_ITEM_REQUESTED
     ),
     mergeMap(action => this.shoppingCartService.decrementCartItem(action.payload.cartItem).pipe(
+      tap(updatedCartItem => {
+        const offlineCartData = localStorage.getItem('offlineCart');
+        if (offlineCartData) {
+          const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('offlineCart'));
+          // Return an updated cart with the updated item swapped out
+          const updatedCart = offlineCart.map(item => {
+            if (updatedCartItem.cartItemId === item.cartItemId) {
+              return updatedCartItem;
+            } else {
+              return item;
+            }
+          });
+          localStorage.setItem('offlineCart', JSON.stringify(updatedCart));
+        }
+      }),
       map(cartItem => {
         const updatedCartItem: Update<ShoppingCartItem> = {
           id: cartItem.cartItemId,
@@ -148,7 +178,22 @@ export class ShoppingCartStoreEffects {
       featureActions.ActionTypes.ADD_CART_ITEM_REQUESTED
     ),
     mergeMap(action => this.shoppingCartService.createCartItem(action.payload.product).pipe(
-      map(newCartItem => new featureActions.AddCartItemComplete({cartItem: newCartItem})),
+      tap(itemPlusLoginStatus => {
+        // If user is logged in, this will be false
+        if (itemPlusLoginStatus.createOfflineCartItem) {
+          const offlineCartData = localStorage.getItem('offlineCart');
+          let updatedCart: ShoppingCartItem[] = [];
+          if (offlineCartData) {
+            const offlineCart: ShoppingCartItem[] = JSON.parse(localStorage.getItem('offlineCart'));
+              updatedCart = [...offlineCart, itemPlusLoginStatus.cartItem];
+              localStorage.setItem('offlineCart', JSON.stringify(updatedCart));
+          } else {
+            updatedCart = [...updatedCart, itemPlusLoginStatus.cartItem];
+            localStorage.setItem('offlineCart', JSON.stringify(updatedCart));
+          }
+        }
+      }),
+      map(itemPlusLoginStatus => new featureActions.AddCartItemComplete({cartItem: itemPlusLoginStatus.cartItem})),
       catchError(error =>
         of(new featureActions.LoadErrorDetected({ error }))
       )
