@@ -6,9 +6,7 @@ import { AppUser } from 'src/app/shared/models/app-user';
 import {
   RootStoreState,
   AuthStoreSelectors,
-  ProductsStoreActions,
   ShoppingCartStoreActions,
-  CategoriesStoreActions,
   ShoppingCartStoreSelectors,
   AuthStoreActions
 } from 'src/app/root-store';
@@ -52,7 +50,6 @@ export class BsNavbarComponent implements OnInit {
     // Helpers based on Store user (relies on auth at login, empties faster than auth on logout)
     this.appUser$.subscribe(appUser => {
       if (appUser) {
-        console.log('Requesting all cart items from nav');
         // Initialize the shopping cart (Products initialized by categories in filter component)
         this.store$.dispatch(new ShoppingCartStoreActions.AllCartItemsRequested());
         // This assists the refresh logic in the auth service fucntion below
@@ -71,7 +68,6 @@ export class BsNavbarComponent implements OnInit {
 
       // Logout happens faster in the store than in the authservice so this is used to delay empty cart until FB user is gone
       if (!fbUser) {
-        console.log('No fb user detected, emptying cart');
         // Empty cart (local only because no connection to Firebase bc no FB user)
         this.store$.dispatch(new ShoppingCartStoreActions.EmptyCartRequested());
       }
@@ -79,7 +75,6 @@ export class BsNavbarComponent implements OnInit {
   }
 
   logout() {
-    console.log('Dispatching logout to store');
     this.store$.dispatch(new AuthStoreActions.LoggedOut());
   }
 

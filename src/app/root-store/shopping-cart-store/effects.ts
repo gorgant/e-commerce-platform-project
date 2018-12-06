@@ -113,6 +113,7 @@ export class ShoppingCartStoreEffects {
       featureActions.ActionTypes.INCREMENT_CART_ITEM_REQUESTED
     ),
     mergeMap((action) => this.shoppingCartService.incrementCartItem(action.payload.cartItem).pipe(
+      // Update offline cart (if logged in)
       tap(updatedCartItem => {
         const offlineCartData = localStorage.getItem('offlineCart');
         if (offlineCartData) {
@@ -144,6 +145,7 @@ export class ShoppingCartStoreEffects {
       featureActions.ActionTypes.DECREMENT_CART_ITEM_REQUESTED
     ),
     mergeMap(action => this.shoppingCartService.decrementCartItem(action.payload.cartItem).pipe(
+      // Update offline cart (if logged in)
       tap(updatedCartItem => {
         const offlineCartData = localStorage.getItem('offlineCart');
         if (offlineCartData) {
@@ -178,6 +180,7 @@ export class ShoppingCartStoreEffects {
       featureActions.ActionTypes.ADD_CART_ITEM_REQUESTED
     ),
     mergeMap(action => this.shoppingCartService.createCartItem(action.payload.product).pipe(
+      // Update offline cart (if logged in)
       tap(itemPlusLoginStatus => {
         // If user is logged in, this will be false
         if (itemPlusLoginStatus.createOfflineCartItem) {
