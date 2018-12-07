@@ -62,31 +62,22 @@ export class ShoppingCartService {
   }
 
   incrementCartItem(cartItem: ShoppingCartItem) {
-
-    const updatedCartItem: ShoppingCartItem = {
-      cartItemId: cartItem.cartItemId,
-      productId: cartItem.productId,
-      quantity: cartItem.quantity + 1,
-      product: cartItem.product
-    };
-
-    if (this.authService.isLoggedIn) {
-      const cartCollection = this.getCartCollection();
-      const cartItemDoc = cartCollection.doc(cartItem.cartItemId);
-      cartItemDoc.update(updatedCartItem);
-      console.log('Incremented quantity in db');
-    }
-
+    const updatedCartItem: ShoppingCartItem = this.updateItemQuantity(cartItem, + 1);
     console.log('Incremented quantity', updatedCartItem);
     return of(updatedCartItem);
   }
 
   decrementCartItem(cartItem: ShoppingCartItem) {
+    const updatedCartItem: ShoppingCartItem = this.updateItemQuantity(cartItem, -1);
+    console.log('Decremented quantity', updatedCartItem);
+    return of(updatedCartItem);
+  }
 
+  updateItemQuantity(cartItem: ShoppingCartItem, change: number): ShoppingCartItem {
     const updatedCartItem: ShoppingCartItem = {
       cartItemId: cartItem.cartItemId,
       productId: cartItem.productId,
-      quantity: cartItem.quantity - 1,
+      quantity: cartItem.quantity + change,
       product: cartItem.product
     };
 
@@ -96,8 +87,7 @@ export class ShoppingCartService {
       cartItemDoc.update(updatedCartItem);
     }
 
-    console.log('Decremented quantity', updatedCartItem);
-    return of(updatedCartItem);
+    return updatedCartItem;
   }
 
   createCartItem(product: Product) {
