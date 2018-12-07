@@ -18,7 +18,7 @@ export class ShoppingCartService {
     private userService: UserService
     ) {  }
 
-  getCartCollection(): AngularFirestoreCollection<ShoppingCartItem> {
+  private getCartCollection(): AngularFirestoreCollection<ShoppingCartItem> {
     const userDoc: AngularFirestoreDocument<AppUser> = this.userService.userDoc;
     const cartCollection = userDoc.collection<ShoppingCartItem>('shoppingCartCol');
     return cartCollection;
@@ -61,24 +61,22 @@ export class ShoppingCartService {
     }
   }
 
-  incrementCartItem(cartItem: ShoppingCartItem) {
+  incrementCartItem(cartItem: ShoppingCartItem): Observable<ShoppingCartItem> {
     const updatedCartItem: ShoppingCartItem = this.updateItemQuantity(cartItem, + 1);
     console.log('Incremented quantity', updatedCartItem);
     return of(updatedCartItem);
   }
 
-  decrementCartItem(cartItem: ShoppingCartItem) {
+  decrementCartItem(cartItem: ShoppingCartItem): Observable<ShoppingCartItem> {
     const updatedCartItem: ShoppingCartItem = this.updateItemQuantity(cartItem, -1);
     console.log('Decremented quantity', updatedCartItem);
     return of(updatedCartItem);
   }
 
-  updateItemQuantity(cartItem: ShoppingCartItem, change: number): ShoppingCartItem {
+  private updateItemQuantity(cartItem: ShoppingCartItem, change: number): ShoppingCartItem {
     const updatedCartItem: ShoppingCartItem = {
-      cartItemId: cartItem.cartItemId,
-      productId: cartItem.productId,
+      ...cartItem,
       quantity: cartItem.quantity + change,
-      product: cartItem.product
     };
 
     if (this.authService.isLoggedIn) {
@@ -90,7 +88,7 @@ export class ShoppingCartService {
     return updatedCartItem;
   }
 
-  createCartItem(product: Product) {
+  createCartItem(product: Product): Observable<{cartItem: ShoppingCartItem, createOfflineCartItem: boolean }> {
     // This helper dictates whether or not an offlineCartItem should be created in the Effect it is connected to
     let createOfflineCartItem: boolean;
 
@@ -119,7 +117,7 @@ export class ShoppingCartService {
     return of(itemPlusLoginStatus);
   }
 
-  deleteCartItem(cartItemId: string) {
+  deleteCartItem(cartItemId: string): Observable<string> {
     if (this.authService.isLoggedIn) {
       const cartCollection = this.getCartCollection();
       const cartItemDoc = cartCollection.doc(cartItemId);
