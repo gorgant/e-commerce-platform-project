@@ -1,73 +1,71 @@
-<div class="container">
-  <div class="row">
-    <div class="col-sm-6">
-      <!-- Form Section -->
-      <form [formGroup]="productForm" (ngSubmit)="onSave()">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input formControlName="title" type="text" class="form-control" id="title" placeholder="Product title here">
-          <div *ngIf="title.invalid && (title.dirty || title.touched)"
+<div class="row">
+  <div class="col-sm-6">
+    <!-- Form Section -->
+    <form [formGroup]="productForm" (ngSubmit)="onSave()">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input formControlName="title" type="text" class="form-control" id="title" placeholder="Product title here">
+        <div *ngIf="title.invalid && (title.dirty || title.touched)"
+              class="alert alert-danger">
+          <div *ngIf="title.errors['required']">
+            Name is required.
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="price">Price</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
+          <input formControlName="price" type="number" class="form-control" id="price" aria-label="Price">
+        </div>
+        <div *ngIf="price.invalid && (price.dirty || price.touched)"
+              class="alert alert-danger">
+          <div *ngIf="price.errors['required']">
+            Price is required.
+          </div>
+          <div *ngIf="price.errors['min']">
+            Price must be greater than zero.
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory($event.target.value)">
+          <option
+            *ngFor="let category of productCategories$ | async"
+            [value]="category.categoryId">{{ category.categoryName }}</option>
+          </select>
+          <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"
                 class="alert alert-danger">
-            <div *ngIf="title.errors['required']">
-              Name is required.
+            <div *ngIf="categoryId.errors['required']">
+              Category is required.
             </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="price">Price</label>
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text">$</span>
-            </div>
-            <input formControlName="price" type="number" class="form-control" id="price" aria-label="Price">
-          </div>
-          <div *ngIf="price.invalid && (price.dirty || price.touched)"
-                class="alert alert-danger">
-            <div *ngIf="price.errors['required']">
-              Price is required.
-            </div>
-            <div *ngIf="price.errors['min']">
-              Price must be greater than zero.
-            </div>
+      </div>
+      <div class="form-group">
+        <label for="imageUrl">Image URL</label>
+        <input formControlName="imageUrl" type="text" class="form-control" id="imageUrl" placeholder="Input image url">
+        <div *ngIf="imageUrl.invalid && (imageUrl.dirty || imageUrl.touched)"
+              class="alert alert-danger">
+          <div *ngIf="imageUrl.errors['required']">
+            Image is required.
           </div>
         </div>
-        <div class="form-group">
-          <label for="category">Category</label>
-          <select formControlName="categoryId" class="form-control" id="category" (change)="setCategory($event.target.value)">
-            <option
-              *ngFor="let category of productCategories$ | async"
-              [value]="category.categoryId">{{ category.categoryName }}</option>
-            </select>
-            <div *ngIf="categoryId.invalid && (categoryId.dirty || categoryId.touched)"
-                  class="alert alert-danger">
-              <div *ngIf="categoryId.errors['required']">
-                Category is required.
-              </div>
-            </div>
-        </div>
-        <div class="form-group">
-          <label for="imageUrl">Image URL</label>
-          <input formControlName="imageUrl" type="text" class="form-control" id="imageUrl" placeholder="Input image url">
-          <div *ngIf="imageUrl.invalid && (imageUrl.dirty || imageUrl.touched)"
-                class="alert alert-danger">
-            <div *ngIf="imageUrl.errors['required']">
-              Image is required.
-            </div>
-          </div>
-        </div>
-        <button [disabled]="!productForm.valid" type="submit" class="btn btn-primary">Save</button>
-        <button *ngIf="!newProduct" type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
-        <a [routerLink]="['/admin/products']" class="btn btn-link">Cancel</a>
-      </form>
-      <ng-template #loading>
-          Loading Product...
-      </ng-template>
-    </div>
-    <!-- Product Card -->
-    <div class="col-sm-6">
-      <ng-container>
-        <product-card [productForm]="productForm"></product-card>
-      </ng-container>
-    </div>
+      </div>
+      <button [disabled]="!productForm.valid" type="submit" class="btn btn-primary">Save</button>
+      <button *ngIf="!newProduct" type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
+      <a [routerLink]="['/admin/products']" class="btn btn-link">Cancel</a>
+    </form>
+    <ng-template #loading>
+        Loading Product...
+    </ng-template>
+  </div>
+  <!-- Product Card -->
+  <div class="col-sm-6">
+    <ng-container>
+      <product-card [productForm]="productForm"></product-card>
+    </ng-container>
   </div>
 </div>
