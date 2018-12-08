@@ -41,5 +41,5 @@ export const selectFilteredProducts: (categoryId: string) => MemoizedSelector<ob
 
 export const selectProductError: MemoizedSelector<object, any> = createSelector(
   selectProductsState,
-  productState => productState.error
+  productsState => productsState.error
 );

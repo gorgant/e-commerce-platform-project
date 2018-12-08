@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 
 import * as featureActions from './actions';
 import * as featureSelectors from './selectors';
-import { mergeMap, map, withLatestFrom, filter, catchError, startWith, switchMap } from 'rxjs/operators';
+import { map, withLatestFrom, filter, catchError, startWith, switchMap } from 'rxjs/operators';
 import { CategoryService } from 'src/app/shared/services/category.service';
 import { RootStoreState } from '..';
 
@@ -17,21 +17,6 @@ export class CategoryStoreEffects {
     private categoryService: CategoryService,
     private store$: Store<RootStoreState.State>
     ) {}
-
-  @Effect()
-  loadCategoryEffect$: Observable<Action> = this.actions$.pipe(
-    ofType<featureActions.CategoryRequested>(
-      featureActions.ActionTypes.CATEGORY_REQUESTED
-    ),
-    // Using mergeMap instead of switchMap b/c that will ensure multiple requests can run in parallel
-    mergeMap(action => this.categoryService.getSingleProductCategory(action.payload.categoryId).pipe(
-      // Now lets return the result (an observable of the mergmap value) which gets sent to the store and is saved used the reducer
-      map(category => new featureActions.CategoryLoaded({category: category})),
-      catchError(error =>
-        of(new featureActions.LoadErrorDetected({ error }))
-      )
-    )),
-  );
 
   @Effect()
   loadAllProductCategoriesEffect$: Observable<Action> = this.actions$.pipe(

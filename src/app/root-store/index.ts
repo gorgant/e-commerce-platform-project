@@ -6,4 +6,6 @@ export * from './categories-store';
 export * from './products-store';
 export * from './shopping-cart-store';
 export * from './auth-store';
+export * from './orders-store';
+export * from './order-status-store';
 export { RootStoreState, RootStoreSelectors, RootStoreModule };

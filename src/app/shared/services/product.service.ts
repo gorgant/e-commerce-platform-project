@@ -46,12 +46,8 @@ export class ProductService {
     const autoId = this.afs.createId();
     // Create a new product with the Firestore id
     const updatedProduct: Product = {
+      ...product,
       productId: autoId,
-      title: product.title,
-      price: product.price,
-      categoryId: product.categoryId,
-      categoryValue: product.categoryValue,
-      imageUrl: product.imageUrl
     };
     this.productsCollection = this.afs.collection<Product>('products');
     this.productsCollection.doc(autoId).set(updatedProduct);
@@ -67,12 +63,12 @@ export class ProductService {
     return of(productId);
   }
 
-  applyCategoryFilter(productCategory: ProductCategory) {
-    this.filteredProductList$ = this.products$.pipe(
-      map(products => {
-        return products.filter(product => {
-          return product.categoryValue === productCategory.categoryValue;
-        });
-    }));
-  }
+  // applyCategoryFilter(productCategory: ProductCategory) {
+  //   this.filteredProductList$ = this.products$.pipe(
+  //     map(products => {
+  //       return products.filter(product => {
+  //         return product.categoryValue === productCategory.categoryValue;
+  //       });
+  //   }));
+  // }
 }

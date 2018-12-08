@@ -1,21 +1,21 @@
-import { initialState, featureAdapter, State } from './state';
-import { ActionTypes, Actions } from './actions';
+import { initialState, State, featureAdapter } from './state';
+import { Actions, ActionTypes } from './actions';
 
 export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
 
-    case ActionTypes.ALL_CATEGORIES_REQUESTED:
+    case ActionTypes.ALL_ORDER_STATUSES_REQUESTED:
       return {
         ...state,
-        categoriesLoading: true
+        orderStatusesLoading: true
       };
 
-    case ActionTypes.ALL_CATEGORIES_LOADED:
+    case ActionTypes.ALL_ORDER_STATUSES_LOADED:
       return featureAdapter.addAll(
-        action.payload.categories,
+        action.payload.orderStatuses,
         {
           ...state,
-          categoriesLoading: false
+          orderStatusesLoading: false
         }
       );
 
@@ -23,13 +23,13 @@ export function featureReducer(state = initialState, action: Actions): State {
       return {
         ...state,
         error: action.payload.error,
-        categoriesLoading: false
+        orderStatusesLoading: false
       };
 
-    case ActionTypes.FILTER_CATEGORY_SELECTED:
+    case ActionTypes.ORDER_STATUS_SELECTED:
       return {
         ...state,
-        filterCategoryId: action.payload.categoryId
+        filterOrderStatusId: action.payload.orderStatusId
       };
 
     default:

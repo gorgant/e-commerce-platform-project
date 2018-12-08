@@ -4,26 +4,26 @@ import { Actions, ActionTypes } from './actions';
 export function featureReducer(state = initialState, action: Actions): State {
   switch (action.type) {
 
-    case ActionTypes.PRODUCT_LOADED:
+    case ActionTypes.ORDER_LOADED:
       // This will add an entity to the state, it takes from payload, adds course to entity state map,
       // and will add ID to the separate id array (the second part of the entity adapter that preserves the order of the courses)
       return featureAdapter.addOne(
-        action.payload.product,
+        action.payload.order,
         state
       );
 
-    case ActionTypes.ALL_PRODUCTS_REQUESTED:
+    case ActionTypes.ALL_ORDERS_REQUESTED:
       return {
         ...state,
-        productsLoading: true
+        ordersLoading: true
       };
 
-    case ActionTypes.ALL_PRODUCTS_LOADED:
+    case ActionTypes.ALL_ORDERS_LOADED:
       return featureAdapter.addAll(
-        action.payload.products,
+        action.payload.orders,
         {
           ...state,
-          productsLoading: false
+          ordersLoading: false
         }
       );
 
@@ -31,24 +31,24 @@ export function featureReducer(state = initialState, action: Actions): State {
       return {
         ...state,
         error: action.payload.error,
-        productsLoading: false
+        ordersLoading: false
       };
 
-    case ActionTypes.UPDATE_PRODUCT_COMPLETE:
+    case ActionTypes.UPDATE_ORDER_COMPLETE:
       return featureAdapter.updateOne(
-        action.payload.product,
+        action.payload.order,
         state
       );
 
-    case ActionTypes.ADD_PRODUCT_COMPLETE:
+    case ActionTypes.ADD_ORDER_COMPLETE:
       return featureAdapter.addOne(
-        action.payload.product,
+        action.payload.order,
         state
       );
 
-    case ActionTypes.DELETE_PRODUCT_COMPLETE:
+    case ActionTypes.DELETE_ORDER_COMPLETE:
       return featureAdapter.removeOne(
-        action.payload.productId,
+        action.payload.orderId,
         state
       );
 

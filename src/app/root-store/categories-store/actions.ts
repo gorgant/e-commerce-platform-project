@@ -2,24 +2,10 @@ import { Action } from '@ngrx/store';
 import { ProductCategory } from 'src/app/shared/models/product-category';
 
 export enum ActionTypes {
-  CATEGORY_REQUESTED = '[Product Filter] Category Requested',
-  CATEGORY_LOADED = '[Categories API] Category Loaded',
   ALL_CATEGORIES_REQUESTED = '[Nav Bar] All Categories Requested',
   ALL_CATEGORIES_LOADED = '[Categories API] All Categories Loaded',
   LOAD_ERROR_DETECTED = '[Categories API] Error Loading Categories',
   FILTER_CATEGORY_SELECTED = '[Product Filter] Filter Category Selected'
-}
-
-export class CategoryRequested implements Action {
-  readonly type = ActionTypes.CATEGORY_REQUESTED;
-
-  constructor(public payload: {categoryId: string}) {}
-}
-
-export class CategoryLoaded implements Action {
-  readonly type = ActionTypes.CATEGORY_LOADED;
-
-  constructor(public payload: {category: ProductCategory}) {}
 }
 
 export class AllCategoriesRequested implements Action {
@@ -45,8 +31,6 @@ export class FilterCategorySelected implements Action {
 }
 
 export type Actions =
-CategoryRequested |
-CategoryLoaded |
 AllCategoriesRequested |
 AllCategoriesLoaded |
 LoadErrorDetected |

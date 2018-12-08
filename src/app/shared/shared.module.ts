@@ -16,6 +16,8 @@ import { ProductSingleResolver } from './services/product-single.resolver';
 import { CategoryService } from './services/category.service';
 import { LoginGuardService } from './services/route-guards/login-guard.service';
 import { AdminAuthGuardService } from './services/route-guards/admin-auth-guard.service';
+import { OrderService } from './services/order.service';
+import { OrderStatusService } from './services/order-status.service';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { AdminAuthGuardService } from './services/route-guards/admin-auth-guard.
     ProductSingleResolver,
     CategoryService,
     LoginGuardService,
-    AdminAuthGuardService
+    AdminAuthGuardService,
+    OrderService,
+    OrderStatusService
   ]
 })
 export class SharedModule { }

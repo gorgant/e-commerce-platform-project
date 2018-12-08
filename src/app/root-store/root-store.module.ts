@@ -10,6 +10,8 @@ import { StoreRouterConnectingModule, RouterStateSerializer } from '@ngrx/router
 import { CustomSerializer } from '../shared/utils/utils';
 import { environment } from 'src/environments/environment';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { OrdersStoreModule } from './orders-store';
+import { OrderStatusStoreModule } from './order-status-store/order-status-store.module';
 
 @NgModule({
   declarations: [],
@@ -19,6 +21,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
     CategoriesStoreModule,
     ProductsStoreModule,
     ShoppingCartStoreModule,
+    OrdersStoreModule,
+    OrderStatusStoreModule,
     StoreModule.forRoot({}),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([]),
