@@ -12,7 +12,7 @@ export class OrderStatusService {
   constructor(private readonly afs: AngularFirestore) { }
 
   getAllOrderStatuses() {
-    this.orderStatusCollection = this.afs.collection<OrderStatus>('categories', ref => ref.orderBy('orderStatusPosition'));
+    this.orderStatusCollection = this.afs.collection<OrderStatus>('orderStatus', ref => ref.orderBy('orderStatusPosition'));
     this.orderStatuses$ = this.orderStatusCollection.valueChanges();
     return this.orderStatuses$;
   }

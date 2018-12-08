@@ -1,5 +1,5 @@
 export interface OrderStatus {
-  orderStatusId: string;
+  orderStatusId?: string;
   orderStatusName: string;
   orderStatusPosition: number;
 }

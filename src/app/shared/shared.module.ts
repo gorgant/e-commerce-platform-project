@@ -12,7 +12,7 @@ import { AuthGuardService } from './services/route-guards/auth-guard.service';
 import { ProductService } from './services/product.service';
 import { ShoppingCartService } from './services/shopping-cart.service';
 import { UserService } from './services/user.service';
-import { ProductSingleResolver } from './services/product-single.resolver';
+import { ProductSingleResolver } from './services/resolvers/product-single.resolver';
 import { CategoryService } from './services/category.service';
 import { LoginGuardService } from './services/route-guards/login-guard.service';
 import { AdminAuthGuardService } from './services/route-guards/admin-auth-guard.service';

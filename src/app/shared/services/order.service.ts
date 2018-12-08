@@ -38,18 +38,13 @@ export class OrderService {
     return of(order);
   }
 
+  // Auto ID is set in the order submission page (using the generator below) because it's needed there for the url param
   createOrder(order: Order) {
-    const autoId = this.afs.createId();
-    // Create a new order with the Firestore id
-    const updatedOrder: Order = {
-      ...order,
-      orderId: autoId,
-    };
     this.ordersCollection = this.afs.collection<Order>('orders');
-    this.ordersCollection.doc(autoId).set(updatedOrder);
-    console.log('Created order', updatedOrder);
+    this.ordersCollection.doc(order.orderId).set(order);
+    console.log('Created order', order);
     // Convert this return to an observable to be consumed properly by the order effects service
-    return of(updatedOrder);
+    return of(order);
   }
 
   deleteOrder(orderId: string) {
@@ -57,5 +52,9 @@ export class OrderService {
     this.ordersCollection.doc(orderId).delete();
     console.log('Deleted order with ID', orderId);
     return of(orderId);
+  }
+
+  generateOrderId(): string {
+    return this.afs.createId();
   }
 }

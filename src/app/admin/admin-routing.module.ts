@@ -5,7 +5,7 @@ import { AdminOrdersComponent } from './components/admin-orders/admin-orders.com
 import { AuthGuardService } from '../shared/services/route-guards/auth-guard.service';
 import { AdminAuthGuardService } from '../shared/services/route-guards/admin-auth-guard.service';
 import { ProductFormComponent } from './components/product-form/product-form.component';
-import { ProductSingleResolver } from '../shared/services/product-single.resolver';
+import { ProductSingleResolver } from '../shared/services/resolvers/product-single.resolver';
 
 const routes: Routes = [
   {

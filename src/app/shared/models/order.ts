@@ -1,9 +1,12 @@
-import { ShoppingCartItem } from './shopping-cart-item';
+import { DeliveryInfo } from './delivery-info';
+import { OrderItem } from './order-item';
 
 export interface Order {
   orderId?: string;
   userId: string;
-  date: number;
+  orderDate: number;
+  deliveryData: DeliveryInfo;
   orderStatusId: string;
-  orderedItems: ShoppingCartItem[];
+  orderStatusName: string;
+  orderedItems: OrderItem[];
 }
