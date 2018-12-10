@@ -1,1 +1,45 @@
 <!-- <button (click)="orderStatusImporter.launchImport()" class="btn btn-primary">Import Order Statuses</button> -->
+<!-- <div class="col">
+  Test
+</div> -->
+<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+  <table *ngIf="dataSource; else loading" mat-table [dataSource]="dataSource" matSort>
+  
+    <!-- date Column -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Order Date</th>
+      <td mat-cell *matCellDef="let order"> {{ order.orderDate | date : 'short' }} </td>
+    </ng-container>
+  
+    <!-- customer Column -->
+    <ng-container matColumnDef="customer">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Customer </th>
+      <td mat-cell *matCellDef="let order"> {{ order.userId }} </td>
+    </ng-container>
+  
+    <!-- status Column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+      <td mat-cell *matCellDef="let order"> {{ order.orderStatusName }} </td>
+    </ng-container>
+  
+    <!-- view Column -->
+    <ng-container matColumnDef="view">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header></th>
+      <td mat-cell *matCellDef="let order">
+        <a [routerLink]="['/admin/orders', order.orderId]">View</a>
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <ng-template #loading>
+    <mat-spinner></mat-spinner>
+  </ng-template>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

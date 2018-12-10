@@ -16,6 +16,7 @@ export class OrderDetailsResolver implements Resolve<Order> {
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Order> {
     // This params name must match the name used in the route module
     const orderId: string = route.params['id'];
+    console.log('Id from resolver:', orderId);
 
     return this.store$.select(OrdersStoreSelectors.selectOrderById(orderId)).pipe(
       // If order isn't available in store, fetch it from database

@@ -1,5 +1,7 @@
 import { DeliveryInfo } from './delivery-info';
 import { OrderItem } from './order-item';
+import { Store } from '@ngrx/store';
+import { RootStoreModule } from 'src/app/root-store';
 
 export class Order {
   orderId?: string;
@@ -10,7 +12,10 @@ export class Order {
   orderStatusName: string;
   orderItems: OrderItem[];
 
-  constructor(init?: Partial<Order>) {
+  constructor(
+    init?: Partial<Order>,
+    // private store$: Store<RootStoreState.State>
+  ) {
     Object.assign(this, init);
   }
 
@@ -21,4 +26,6 @@ export class Order {
   get orderTotalQuantity(): number {
     return this.orderItems.reduce(((valueStore, item) => valueStore + item.orderItemQuantity), 0);
   }
+
+  // get userName
 }

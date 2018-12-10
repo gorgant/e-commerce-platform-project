@@ -6,12 +6,14 @@ import { ProductFormComponent } from './components/product-form/product-form.com
 import { AdminRoutingModule } from './admin-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { MatComponentsModule } from '../shared/mat-components.module';
+import { OrderFormComponent } from './components/order-form/order-form.component';
 
 @NgModule({
   declarations: [
     AdminOrdersComponent,
     AdminProductsComponent,
     ProductFormComponent,
+    OrderFormComponent,
   ],
   imports: [
     CommonModule,

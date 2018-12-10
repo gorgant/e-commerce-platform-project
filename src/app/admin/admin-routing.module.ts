@@ -6,6 +6,8 @@ import { AuthGuardService } from '../shared/services/route-guards/auth-guard.ser
 import { AdminAuthGuardService } from '../shared/services/route-guards/admin-auth-guard.service';
 import { ProductFormComponent } from './components/product-form/product-form.component';
 import { ProductSingleResolver } from '../shared/services/resolvers/product-single.resolver';
+import { OrderFormComponent } from './components/order-form/order-form.component';
+import { OrderDetailsResolver } from '../shared/services/resolvers/order-details.resolver';
 
 const routes: Routes = [
   {
@@ -27,10 +29,20 @@ const routes: Routes = [
     canActivate: [AuthGuardService, AdminAuthGuardService],
   },
   {
+    path: 'orders/:id',
+    component: OrderFormComponent,
+    canActivate: [AuthGuardService, AdminAuthGuardService],
+    resolve:
+      {
+        orderFromResolver: OrderDetailsResolver
+      },
+  },
+  {
     path: 'orders',
     component: AdminOrdersComponent,
     canActivate: [AuthGuardService, AdminAuthGuardService]
   },
+
   // {
   //   path: '/admin',
   //   redirectTo: 'products',
