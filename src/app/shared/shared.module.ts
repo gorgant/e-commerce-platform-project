@@ -18,11 +18,14 @@ import { LoginGuardService } from './services/route-guards/login-guard.service';
 import { AdminAuthGuardService } from './services/route-guards/admin-auth-guard.service';
 import { OrderService } from './services/order.service';
 import { OrderStatusService } from './services/order-status.service';
+import { OrderDetailsComponent } from './components/order-details/order-details.component';
+import { OrderDetailsResolver } from './services/resolvers/order-details.resolver';
 
 @NgModule({
   declarations: [
     ProductCardComponent,
-    ProductQuantityComponent
+    ProductQuantityComponent,
+    OrderDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -34,6 +37,7 @@ import { OrderStatusService } from './services/order-status.service';
   exports: [
     ProductCardComponent,
     ProductQuantityComponent,
+    OrderDetailsComponent,
     CommonModule,
     ReactiveFormsModule,
     AngularFireAuthModule,
@@ -52,7 +56,8 @@ import { OrderStatusService } from './services/order-status.service';
     LoginGuardService,
     AdminAuthGuardService,
     OrderService,
-    OrderStatusService
+    OrderStatusService,
+    OrderDetailsResolver
   ]
 })
 export class SharedModule { }

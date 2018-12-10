@@ -50,9 +50,9 @@ export class ProductFormComponent implements OnInit, OnDestroy {
     });
 
     // Data here is pulled from the product resolver, which is in turn pulled from the Store
-    if (this.route.snapshot.data['productFS']) {
+    if (this.route.snapshot.data['productFromResolver']) {
       this.newProduct = false;
-      this.product = this.route.snapshot.data['productFS'];
+      this.product = this.route.snapshot.data['productFromResolver'];
       this.productForm.patchValue({
         productId: this.product.productId,
         title: this.product.title,

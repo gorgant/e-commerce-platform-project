@@ -18,7 +18,7 @@ const routes: Routes = [
     component: ProductFormComponent,
     canActivate: [AuthGuardService, AdminAuthGuardService],
     resolve: {
-      productFS: ProductSingleResolver
+      productFromResolver: ProductSingleResolver
     }
   },
   {

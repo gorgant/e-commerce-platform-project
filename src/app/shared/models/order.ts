@@ -9,4 +9,6 @@ export interface Order {
   orderStatusId: string;
   orderStatusName: string;
   orderedItems: OrderItem[];
+  orderTotalPrice: number;
+  orderTotalQuantity: number;
 }

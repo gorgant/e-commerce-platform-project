@@ -83,13 +83,16 @@ export class CheckOutComponent implements OnInit {
       const orderedItems: OrderItem[] = shoppingCartItems.map(item => {
         const orderItemId = this.orderService.generateOrderId();
         const orderItem: OrderItem = {
-          orderedItemId: orderItemId,
+          orderItemId: orderItemId,
           productId: item.productId,
-          orderPrice: item.product.price,
-          orderQuantity: item.quantity
+          orderItemPrice: item.product.price,
+          orderItemQuantity: item.quantity
         };
         return orderItem;
       });
+
+      const totalOrderPrice = orderedItems.reduce(((valueStore, item) => valueStore + (item.orderItemQuantity * item.orderItemPrice)), 0);
+      const totalOrderQuantity = orderedItems.reduce(((valueStore, item) => valueStore + item.orderItemQuantity), 0);
 
       const order: Order = {
         orderId: orderId,
@@ -98,7 +101,9 @@ export class CheckOutComponent implements OnInit {
         deliveryData: deliveryInfo,
         orderStatusId: this.OPEN_ORDER_STATUS_ID,
         orderStatusName: openOrderName.orderStatusName,
-        orderedItems: orderedItems
+        orderedItems: orderedItems,
+        orderTotalPrice: totalOrderPrice,
+        orderTotalQuantity: totalOrderQuantity,
       };
       this.store$.dispatch(new OrdersStoreActions.AddOrderRequested({order}));
       console.log('Form submitted', order);

@@ -1,0 +1,35 @@
+<div class="row">
+  <div class="col-sm-6">
+    <h3>Order Number:</h3>
+    <p>{{ orderWithProducts.orderId }}</p>
+    <h3>Shipping To:</h3>
+    <p>
+      {{ orderWithProducts.deliveryData.address1 }} <br>
+      {{ orderWithProducts.deliveryData.address2 }} <br>
+      {{ orderWithProducts.deliveryData.city }}
+    </p>
+  </div>
+  <div class="col-sm-6">
+    <div class="card card-container">
+        <div class="card-body">
+          <h5 class="card-title">Order Summary</h5>
+          <table class="table">
+            <tbody>
+              <tr *ngFor="let item of orderWithProducts.orderedItems">
+                <td>
+                  {{ item.orderItemQuantity }} x {{ item.product.title }}
+                </td>
+                <td>
+                  {{ item.orderItemPrice*item.orderItemQuantity | currency: 'USD' }}
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <th>Total</th>
+              <th>{{ orderWithProducts.orderTotalPrice | currency: 'USD' }}</th>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+  </div>
+</div>

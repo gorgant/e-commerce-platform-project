@@ -1,6 +1,10 @@
+import { Product } from './product';
+
 export interface OrderItem {
-  orderedItemId: string;
+  orderItemId: string;
   productId: string;
-  orderPrice: number;
-  orderQuantity: number;
+  orderItemPrice: number;
+  orderItemQuantity: number;
+  // This is only used in the components (not intended for database storage)
+  product?: Product;
 }
