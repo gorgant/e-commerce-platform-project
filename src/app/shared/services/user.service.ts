@@ -13,6 +13,10 @@ export class UserService {
 
   constructor(private afs: AngularFirestore) { }
 
+  getUserById(userId: string): Observable<AppUser> {
+    return this.afs.doc<AppUser>(`users/${userId}`).valueChanges();
+  }
+
   altStoreUserData(fbUser: firebase.User): Observable<AppUser> {
 
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${fbUser.uid}`);

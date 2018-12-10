@@ -5,6 +5,8 @@ import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Order } from 'src/app/shared/models/order';
 import { Store } from '@ngrx/store';
 import { RootStoreState, OrdersStoreActions, OrdersStoreSelectors } from 'src/app/root-store';
+import { map, take } from 'rxjs/operators';
+import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'admin-orders',
@@ -21,7 +23,8 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   constructor(
     // public orderStatusImporter: OrderStatusImporter
-    private store$: Store<RootStoreState.State>
+    private store$: Store<RootStoreState.State>,
+    private userService: UserService
   ) { }
 
   @ViewChild(MatSort) sort: MatSort;
@@ -34,7 +37,17 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     // Load product data into MatTable
     this.storeSubscription = this.store$.select(
       OrdersStoreSelectors.selectAllOrders
-    ).subscribe(orders => {
+    )
+    // Add the username to the orders
+    .pipe(
+      map(orders => orders.map(order => {
+        this.userService.getUserById(order.userId)
+        .pipe(take(1))
+        .subscribe(user => order.userName = user.displayName);
+        return order;
+      }))
+    )
+    .subscribe(orders => {
       this.dataSource = new MatTableDataSource(orders);
       this.dataSource.paginator = this.paginator;
       setTimeout(() => this.dataSource.sort = this.sort);
