@@ -8,7 +8,6 @@ import {
   ShoppingCartStoreSelectors,
   OrdersStoreActions,
   OrderStatusStoreSelectors,
-  OrdersStoreSelectors
 } from 'src/app/root-store';
 import { Observable, combineLatest } from 'rxjs';
 import { DeliveryInfo } from 'src/app/shared/models/delivery-info';
@@ -91,20 +90,16 @@ export class CheckOutComponent implements OnInit {
         return orderItem;
       });
 
-      const totalOrderPrice = orderedItems.reduce(((valueStore, item) => valueStore + (item.orderItemQuantity * item.orderItemPrice)), 0);
-      const totalOrderQuantity = orderedItems.reduce(((valueStore, item) => valueStore + item.orderItemQuantity), 0);
-
-      const order: Order = {
+      // Create the order to dispatch to store and database
+      const order: Order = new Order({
         orderId: orderId,
         userId: appUser.uid,
         orderDate: Date.now(),
         deliveryData: deliveryInfo,
         orderStatusId: this.OPEN_ORDER_STATUS_ID,
         orderStatusName: openOrderName.orderStatusName,
-        orderedItems: orderedItems,
-        orderTotalPrice: totalOrderPrice,
-        orderTotalQuantity: totalOrderQuantity,
-      };
+        orderItems: orderedItems,
+      });
       this.store$.dispatch(new OrdersStoreActions.AddOrderRequested({order}));
       console.log('Form submitted', order);
       this.store$.dispatch(new EmptyCartRequested());

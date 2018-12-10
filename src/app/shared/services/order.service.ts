@@ -41,7 +41,7 @@ export class OrderService {
   // Auto ID is set in the order submission page (using the generator below) because it's needed there for the url param
   createOrder(order: Order) {
     this.ordersCollection = this.afs.collection<Order>('orders');
-    this.ordersCollection.doc(order.orderId).set(order);
+    this.ordersCollection.doc(order.orderId).set(Object.assign({}, order));
     console.log('Created order', order);
     // Convert this return to an observable to be consumed properly by the order effects service
     return of(order);

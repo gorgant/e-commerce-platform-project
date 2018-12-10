@@ -15,7 +15,7 @@
           <h5 class="card-title">Order Summary</h5>
           <table class="table">
             <tbody>
-              <tr *ngFor="let item of orderWithProducts.orderedItems">
+              <tr *ngFor="let item of orderWithProducts.orderItems">
                 <td>
                   {{ item.orderItemQuantity }} x {{ item.product.title }}
                 </td>
