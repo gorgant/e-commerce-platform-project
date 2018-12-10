@@ -20,12 +20,12 @@ const routes: Routes = [
   {
     path: 'check-out',
     component: CheckOutComponent,
-    // canActivate: [AuthGuardService]
+    canActivate: [AuthGuardService]
   },
   {
     path: 'order-success/:id',
     component: OrderSuccessComponent,
-    // canActivate: [AuthGuardService],
+    canActivate: [AuthGuardService],
     resolve: {
       orderFromResolver: OrderDetailsResolver
     }

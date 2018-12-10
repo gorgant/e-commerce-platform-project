@@ -14,6 +14,7 @@ export class UserService {
   constructor(private afs: AngularFirestore) { }
 
   getUserById(userId: string): Observable<AppUser> {
+    console.log('retreiving user with id', userId);
     return this.afs.doc<AppUser>(`users/${userId}`).valueChanges();
   }
 

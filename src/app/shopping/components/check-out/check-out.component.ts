@@ -8,6 +8,7 @@ import {
   ShoppingCartStoreSelectors,
   OrdersStoreActions,
   OrderStatusStoreSelectors,
+  OrderStatusStoreActions,
 } from 'src/app/root-store';
 import { Observable, combineLatest } from 'rxjs';
 import { DeliveryInfo } from 'src/app/shared/models/delivery-info';
@@ -55,6 +56,8 @@ export class CheckOutComponent implements OnInit {
       ShoppingCartStoreSelectors.selectAllCartItems
     );
 
+    // // Iniitialize order statuses
+    // this.store$.dispatch(new OrderStatusStoreActions.AllOrderStatusesRequested());
     this.openOrderName$ = this.store$.select(
       OrderStatusStoreSelectors.selectOrderStatusById(this.OPEN_ORDER_STATUS_ID)
     );

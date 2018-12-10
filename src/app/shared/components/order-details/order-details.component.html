@@ -1,3 +1,12 @@
+<div *ngIf="(appUser$ | async) as user" class="row">
+  <div *ngIf="user && user.isAdmin">
+    <div class="col">
+      <h3>Customer Details</h3>
+      <p>Customer Name: {{ customerData.displayName }}</p>
+      <p>Customer Email: {{ customerData.email }}</p>
+    </div>
+  </div>
+</div>
 <div class="row">
   <div class="col-sm-6">
     <h3>Order Number:</h3>

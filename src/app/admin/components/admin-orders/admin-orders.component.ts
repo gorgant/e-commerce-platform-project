@@ -1,12 +1,9 @@
-import { OrderStatusImporter } from 'src/app/shared/services/importers/order-status-importer.service';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { Order } from 'src/app/shared/models/order';
 import { Store } from '@ngrx/store';
 import { RootStoreState, OrdersStoreActions, OrdersStoreSelectors } from 'src/app/root-store';
-import { map, take } from 'rxjs/operators';
-import { UserService } from 'src/app/shared/services/user.service';
 
 @Component({
   selector: 'admin-orders',
@@ -16,7 +13,7 @@ import { UserService } from 'src/app/shared/services/user.service';
 export class AdminOrdersComponent implements OnInit, OnDestroy {
 
   storeSubscription: Subscription;
-  displayedColumns: string[] = ['date', 'customer', 'status',  'view'];
+  displayedColumns: string[] = ['date', 'orderId', 'status',  'view'];
   dataSource: MatTableDataSource<Order>;
 
   ordersLoading$: Observable<boolean>;
@@ -24,7 +21,6 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
   constructor(
     // public orderStatusImporter: OrderStatusImporter
     private store$: Store<RootStoreState.State>,
-    private userService: UserService
   ) { }
 
   @ViewChild(MatSort) sort: MatSort;
@@ -38,19 +34,22 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
     this.storeSubscription = this.store$.select(
       OrdersStoreSelectors.selectAllOrders
     )
-    // Add the username to the orders
-    .pipe(
-      map(orders => orders.map(order => {
-        this.userService.getUserById(order.userId)
-        .pipe(take(1))
-        .subscribe(user => order.userName = user.displayName);
-        return order;
-      }))
-    )
     .subscribe(orders => {
       this.dataSource = new MatTableDataSource(orders);
       this.dataSource.paginator = this.paginator;
-      setTimeout(() => this.dataSource.sort = this.sort);
+
+      // Timeout required to ensure data is loaded before sort takes place
+      setTimeout(() => {
+        // Sort data
+        this.dataSource.sort = this.sort;
+        // Cast the date string in a date object so that it sorts properly (otherwise won't sort by date)
+        this.dataSource.sortingDataAccessor = (item, property) => {
+          switch (property) {
+            case 'date': return new Date(item.orderDate);
+            default: return item[property];
+          }
+        };
+      });
     });
 
     this.ordersLoading$ = this.store$.select(
