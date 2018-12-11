@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
+import { AppUser } from '../../models/app-user';
+import { AuthService } from '../auth.service';
 
 // Provided in shared module to prevent circular dependencies
 @Injectable()
@@ -11,19 +13,20 @@ export class AuthGuardService implements CanActivate {
 
   constructor(
     private router: Router,
-    private store$: Store<RootStoreState.State>
+    // Store is too slow to register login, must use auth service for this
+    private authService: AuthService
     ) { }
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> {
-      return this.store$.select(AuthStoreSelectors.selectAppUser).pipe(
+      return this.authService.firebaseUser$.pipe(
         map(user => {
           if (user) {
             return true;
           } else {
             console.log('Access denied -- must log in first', state.url);
-            this.router.navigate(['/'], { queryParams: { returnUrl: state.url } });
+            this.router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
           }
         })
       );

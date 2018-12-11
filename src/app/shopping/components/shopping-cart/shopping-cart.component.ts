@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ShoppingCartItem } from 'src/app/shared/models/shopping-cart-item';
 import { Store } from '@ngrx/store';
-import { RootStoreState, ShoppingCartStoreSelectors, ShoppingCartStoreActions } from 'src/app/root-store';
+import { RootStoreState, ShoppingCartStoreSelectors, ShoppingCartStoreActions, AuthStoreSelectors } from 'src/app/root-store';
+import { AppUser } from 'src/app/shared/models/app-user';
+import { take } from 'rxjs/operators';
+import { Router, ActivatedRoute, RouterStateSnapshot } from '@angular/router';
 
 @Component({
   selector: 'shopping-cart',
@@ -11,15 +14,21 @@ import { RootStoreState, ShoppingCartStoreSelectors, ShoppingCartStoreActions } 
 })
 export class ShoppingCartComponent implements OnInit {
 
+  appUser$: Observable<AppUser>;
   shoppingCartItems$: Observable<ShoppingCartItem[]>;
   cartItemQuantity$: Observable<number>;
   cartTotalPrice$: Observable<number>;
 
+
   constructor(
-    private store$: Store<RootStoreState.State>
+    private store$: Store<RootStoreState.State>,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
+    // Retreive the app user from Store
+    this.appUser$ = this.store$.select(AuthStoreSelectors.selectAppUser);
 
     // Products, cart items, and item quantity already initialized in the nav bar component
     // Fetch cart items from store
