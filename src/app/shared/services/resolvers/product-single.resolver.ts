@@ -17,7 +17,8 @@ export class ProductSingleResolver implements Resolve<Product> {
     const productId: string = route.params['id'];
 
     return this.store$.select(ProductsStoreSelectors.selectProductById(productId)).pipe(
-      // If product isn't available in store, fetch it from database
+      // If order isn't available in store (which it isn't if site loads on this page, which causes auth to load faster than store),
+      // fetch it from database
       tap(product => {
         if (!product) {
           this.store$.dispatch(new ProductsStoreActions.ProductRequested({productId}));

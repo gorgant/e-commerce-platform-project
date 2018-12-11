@@ -33,7 +33,7 @@
           </div>
         </div>
       </div>
-      <button [disabled]="!checkoutForm.valid" type="submit" class="btn btn-primary">Place Order</button>
+      <button [disabled]="!checkoutForm.valid || (shoppingCartItems$ | async).length < 1" type="submit" class="btn btn-primary">Place Order</button>
     </form>
   </div>
   <div class="col-sm-6">

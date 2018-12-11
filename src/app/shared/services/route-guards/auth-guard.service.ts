@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Store } from '@ngrx/store';
-import { RootStoreState, AuthStoreSelectors } from 'src/app/root-store';
-import { AppUser } from '../../models/app-user';
 import { AuthService } from '../auth.service';
 
 // Provided in shared module to prevent circular dependencies

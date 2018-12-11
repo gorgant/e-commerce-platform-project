@@ -1,4 +1,7 @@
-<h2>Shopping Cart</h2>
+<h2>
+  Shopping Cart
+  <button (click)="emptyCart()" class="btn btn-link">Empty Shopping Cart</button>
+</h2>
 <p>
   You have {{ cartItemQuantity$ | async }} items in your shopping cart
 </p>
@@ -32,5 +35,5 @@
     </tr>
   </tfoot>
 </table>
-<button (click)="emptyCart()" class="btn btn-danger">Empty Shopping Cart</button>
-<button routerLink="../check-out" class="btn btn-primary">Check Out</button>
+
+<button routerLink="../check-out" [disabled]="(shoppingCartItems$ | async).length < 1" type="submit" class="btn btn-primary" class="btn btn-primary">Check Out</button>

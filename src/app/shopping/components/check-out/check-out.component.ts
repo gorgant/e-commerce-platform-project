@@ -56,8 +56,6 @@ export class CheckOutComponent implements OnInit {
       ShoppingCartStoreSelectors.selectAllCartItems
     );
 
-    // // Iniitialize order statuses
-    // this.store$.dispatch(new OrderStatusStoreActions.AllOrderStatusesRequested());
     this.openOrderName$ = this.store$.select(
       OrderStatusStoreSelectors.selectOrderStatusById(this.OPEN_ORDER_STATUS_ID)
     );
