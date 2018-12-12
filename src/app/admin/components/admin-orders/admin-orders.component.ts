@@ -46,6 +46,7 @@ export class AdminOrdersComponent implements OnInit, OnDestroy {
         this.dataSource.sortingDataAccessor = (item, property) => {
           switch (property) {
             case 'date': return new Date(item.orderDate);
+            case 'status': return item.orderStatusName;
             default: return item[property];
           }
         };

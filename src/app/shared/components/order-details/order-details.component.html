@@ -1,8 +1,8 @@
 
-<div class="row">
+<div *ngIf="(order$ | async) as orderWithProducts" class="row">
   <div class="col-sm-6">
     <div *ngIf="(appUser$ | async) as user">
-      <div *ngIf="user && user.isAdmin">
+      <div *ngIf="user && user.isAdmin && (customer$ | async) as customerData">
         <h3>Customer Details</h3>
         <p>
           Name: {{ customerData.displayName }} <br>

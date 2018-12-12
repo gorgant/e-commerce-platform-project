@@ -7,7 +7,6 @@ import { AdminAuthGuardService } from '../shared/services/route-guards/admin-aut
 import { ProductFormComponent } from './components/product-form/product-form.component';
 import { ProductSingleResolver } from '../shared/services/resolvers/product-single.resolver';
 import { OrderFormComponent } from './components/order-form/order-form.component';
-import { OrderDetailsResolver } from '../shared/services/resolvers/order-details.resolver';
 
 const routes: Routes = [
   {
@@ -32,10 +31,6 @@ const routes: Routes = [
     path: 'orders/:id',
     component: OrderFormComponent,
     canActivate: [AuthGuardService, AdminAuthGuardService],
-    resolve:
-      {
-        orderFromResolver: OrderDetailsResolver
-      }
   },
   {
     path: 'orders',
