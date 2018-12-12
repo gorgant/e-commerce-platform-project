@@ -1,14 +1,15 @@
-<div *ngIf="(appUser$ | async) as user" class="row">
-  <div *ngIf="user && user.isAdmin">
-    <div class="col">
-      <h3>Customer Details</h3>
-      <p>Customer Name: {{ customerData.displayName }}</p>
-      <p>Customer Email: {{ customerData.email }}</p>
-    </div>
-  </div>
-</div>
+
 <div class="row">
   <div class="col-sm-6">
+    <div *ngIf="(appUser$ | async) as user">
+      <div *ngIf="user && user.isAdmin">
+        <h3>Customer Details</h3>
+        <p>
+          Name: {{ customerData.displayName }} <br>
+          Email: {{ customerData.email }}
+        </p>
+      </div>
+    </div>
     <h3>Order Number:</h3>
     <p>{{ orderWithProducts.orderId }}</p>
     <h3>Shipping To:</h3>
@@ -18,8 +19,18 @@
       {{ orderWithProducts.deliveryData.address2 }} <br>
       {{ orderWithProducts.deliveryData.city }}
     </p>
+    <button 
+      (click)="editOrder()"
+      class="btn btn-warning">
+        Edit Order Details
+    </button>
   </div>
   <div class="col-sm-6">
+    <div *ngIf="(appUser$ | async) as user">
+        <div *ngIf="user && user.isAdmin">
+          <h3>Order Status: {{ orderWithProducts.orderStatusName }}</h3>
+        </div>
+    </div>
     <div class="card card-container">
         <div class="card-body">
           <h5 class="card-title">Order Summary</h5>
@@ -43,3 +54,4 @@
       </div>
   </div>
 </div>
+<router-outlet></router-outlet>

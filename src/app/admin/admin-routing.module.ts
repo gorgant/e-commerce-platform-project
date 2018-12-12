@@ -35,7 +35,7 @@ const routes: Routes = [
     resolve:
       {
         orderFromResolver: OrderDetailsResolver
-      },
+      }
   },
   {
     path: 'orders',

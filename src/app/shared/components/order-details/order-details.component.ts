@@ -7,6 +7,8 @@ import { OrderItem } from '../../models/order-item';
 import { ActivatedRoute } from '@angular/router';
 import { AppUser } from '../../models/app-user';
 import { Observable } from 'rxjs';
+import { MatDialogConfig, MatDialog } from '@angular/material';
+import { EditOrderDetailsDialogueComponent } from '../edit-order-details-dialogue/edit-order-details-dialogue.component';
 
 @Component({
   selector: 'order-details',
@@ -22,7 +24,8 @@ export class OrderDetailsComponent implements OnInit {
 
   constructor(
     private store$: Store<RootStoreState.State>,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -48,6 +51,18 @@ export class OrderDetailsComponent implements OnInit {
 
     // Assign data to variable that is accessed by template
     this.orderWithProducts = new Order({...order, orderItems: itemsWithProducts});
+  }
+
+  editOrder() {
+    const dialogConfig = new MatDialogConfig();
+
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.width = '400px';
+
+    dialogConfig.data = this.orderWithProducts;
+
+    const dialogRef = this.dialog.open(EditOrderDetailsDialogueComponent, dialogConfig);
   }
 
 }

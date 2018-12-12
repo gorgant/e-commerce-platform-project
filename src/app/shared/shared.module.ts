@@ -20,30 +20,41 @@ import { OrderService } from './services/order.service';
 import { OrderStatusService } from './services/order-status.service';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
 import { OrderDetailsResolver } from './services/resolvers/order-details.resolver';
+import { RouterModule } from '@angular/router';
+import { EditOrderDetailsDialogueComponent } from './components/edit-order-details-dialogue/edit-order-details-dialogue.component';
+import { AngularMaterialModule } from './angular-material.module';
 
 @NgModule({
   declarations: [
     ProductCardComponent,
     ProductQuantityComponent,
-    OrderDetailsComponent
+    OrderDetailsComponent,
+    EditOrderDetailsDialogueComponent,
   ],
   imports: [
     CommonModule,
+    AngularMaterialModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
     NgbModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
   exports: [
     ProductCardComponent,
     ProductQuantityComponent,
     OrderDetailsComponent,
+    EditOrderDetailsDialogueComponent,
     CommonModule,
+    AngularMaterialModule,
     ReactiveFormsModule,
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
     NgbModule
+  ],
+  entryComponents: [
+    EditOrderDetailsDialogueComponent
   ],
   providers: [
     ProductService,

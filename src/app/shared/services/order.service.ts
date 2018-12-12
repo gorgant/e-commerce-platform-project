@@ -32,7 +32,8 @@ export class OrderService {
 
   saveOrder(order: Order) {
     this.getSingleOrder(order.orderId);
-    this.orderDoc.update(order);
+    // Convert class to an object that can be consumed by firestore
+    this.orderDoc.update(Object.assign({}, order));
     console.log('Saved order', order);
     // Convert this return to an observable to be consumed properly by the order effects service
     return of(order);
@@ -41,6 +42,7 @@ export class OrderService {
   // Auto ID is set in the order submission page (using the generator below) because it's needed there for the url param
   createOrder(order: Order) {
     this.ordersCollection = this.afs.collection<Order>('orders');
+    // Convert class to an object that can be consumed by firestore
     this.ordersCollection.doc(order.orderId).set(Object.assign({}, order));
     console.log('Created order', order);
     // Convert this return to an observable to be consumed properly by the order effects service
