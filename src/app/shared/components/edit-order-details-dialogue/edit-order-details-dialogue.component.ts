@@ -8,11 +8,12 @@ import {
   OrdersStoreSelectors
 } from 'src/app/root-store';
 import { OrderStatus } from '../../models/order-status';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { DeliveryInfo } from '../../models/delivery-info';
 import { Order } from '../../models/order';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { take } from 'rxjs/operators';
+import { orderFormValidationMessages } from '../../models/order-form-validation-messages';
 
 @Component({
   selector: 'edit-order-details-dialogue',
@@ -23,6 +24,8 @@ export class EditOrderDetailsDialogueComponent implements OnInit {
 
   orderDetailsForm: FormGroup;
   orderStatuses$: Observable<OrderStatus[]>;
+
+  ORDER_FORM_VALIDATION_MESSAGES = orderFormValidationMessages;
 
 
 
@@ -40,7 +43,7 @@ export class EditOrderDetailsDialogueComponent implements OnInit {
       address1: ['', Validators.required],
       address2: [''],
       city: ['', Validators.required],
-      orderStatusId: [''],
+      orderStatusId: ['', Validators.required],
       orderStatusName: ['']
     });
 
@@ -96,6 +99,7 @@ export class EditOrderDetailsDialogueComponent implements OnInit {
   }
 
   // These getters are used for easy access in the HTML template
+  get orderStatus() { return this.orderDetailsForm.get('orderStatusId'); }
   get name() { return this.orderDetailsForm.get('name'); }
   get address1() { return this.orderDetailsForm.get('address1'); }
   get address2() { return this.orderDetailsForm.get('address2'); }

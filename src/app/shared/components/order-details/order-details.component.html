@@ -19,11 +19,15 @@
       {{ orderWithProducts.deliveryData.address2 }} <br>
       {{ orderWithProducts.deliveryData.city }}
     </p>
-    <button 
-      (click)="editOrder()"
-      class="btn btn-warning">
-        Edit Order Details
-    </button>
+    <div *ngIf="(appUser$ | async) as user">
+      <div *ngIf="user && user.isAdmin && (customer$ | async) as customerData">
+        <button 
+          (click)="editOrder()"
+          class="btn btn-warning">
+            Edit Order Details
+        </button>
+      </div>
+    </div>
   </div>
   <div class="col-sm-6">
     <div *ngIf="(appUser$ | async) as user">
