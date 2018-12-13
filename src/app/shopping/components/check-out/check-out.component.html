@@ -1,41 +1,48 @@
 <div class="row">
   <div class="col-sm-6">
     <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input formControlName="name" type="text" class="form-control" id="name" placeholder="Full name">
-        <div *ngIf="name.invalid && (name.dirty || name.touched)"
-              class="alert alert-danger">
-          <div *ngIf="name.errors['required']">
-            Name is required.
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="address1">Address</label>
-        <input formControlName="address1" type="text" class="form-control" id="address1" placeholder="Street and number, P.O. box, c/o.">
-        <div *ngIf="address1.invalid && (address1.dirty || address1.touched)"
-              class="alert alert-danger">
-          <div *ngIf="address1.errors['required']">
-            Address is required.
-          </div>
-        </div>
-        <label for="address2"></label>
-        <input formControlName="address2" type="text" class="form-control" id="address2" placeholder="Apartment, suite, unit, building, floor, etc.">
-      </div>
-      <div class="form-group">
-        <label for="city">City</label>
-        <input formControlName="city" type="text" class="form-control" id="city">
-        <div *ngIf="city.invalid && (city.dirty || city.touched)"
-              class="alert alert-danger">
-          <div *ngIf="city.errors['required']">
-            City is required.
-          </div>
-        </div>
-      </div>
-      <button [disabled]="!checkoutForm.valid || (shoppingCartItems$ | async).length < 1" type="submit" class="btn btn-primary">Place Order</button>
-    </form>
-  </div>
+        <mat-form-field>
+          <input 
+            matInput
+            placeholder="Full Name"
+            formControlName="name">
+          <mat-error *ngFor="let validation of CHECKOUT_FORM_VALIDATION_MESSAGES.name">
+            <mat-error *ngIf="name.hasError(validation.type) && name.invalid && (name.dirty || name.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input 
+            matInput
+            placeholder="Address"
+            formControlName="address1">
+          <mat-error *ngFor="let validation of CHECKOUT_FORM_VALIDATION_MESSAGES.address1">
+            <mat-error *ngIf="address1.hasError(validation.type) && address1.invalid && (address1.dirty || address1.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input 
+            matInput
+            placeholder="Address2"
+            formControlName="address2">
+        </mat-form-field>
+        <mat-form-field>
+          <input 
+            matInput
+            placeholder="City"
+            formControlName="city">
+          <mat-error *ngFor="let validation of CHECKOUT_FORM_VALIDATION_MESSAGES.city">
+            <mat-error *ngIf="city.hasError(validation.type) && city.invalid && (city.dirty || city.touched)">{{ validation.message }}</mat-error>
+          </mat-error>
+        </mat-form-field>
+        <button
+          [disabled]="checkoutForm.invalid || (shoppingCartItems$ | async).length < 1"
+          mat-raised-button
+          color="primary"
+          type="submit">
+            Place Order
+        </button>
+      </form>
+    </div>
   <div class="col-sm-6">
       <shopping-cart-summary></shopping-cart-summary>
   </div>

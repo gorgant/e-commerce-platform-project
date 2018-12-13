@@ -13,7 +13,7 @@ import { DeliveryInfo } from '../../models/delivery-info';
 import { Order } from '../../models/order';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { take } from 'rxjs/operators';
-import { orderFormValidationMessages } from '../../models/order-form-validation-messages';
+import { orderFormValidationMessages } from '../../models/validation-messages';
 
 @Component({
   selector: 'edit-order-details-dialogue',

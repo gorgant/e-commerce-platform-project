@@ -20,6 +20,7 @@ import { OrderStatus } from 'src/app/shared/models/order-status';
 import { OrderService } from 'src/app/shared/services/order.service';
 import { OrderItem } from 'src/app/shared/models/order-item';
 import { EmptyCartRequested } from 'src/app/root-store/shopping-cart-store/actions';
+import { checkoutValidationMessages } from 'src/app/shared/models/validation-messages';
 
 @Component({
   selector: 'check-out',
@@ -37,6 +38,8 @@ export class CheckOutComponent implements OnInit {
   checkoutForm: FormGroup;
 
   OPEN_ORDER_STATUS_ID = 'dJWqocoLTKoZgKNDUCRn';
+
+  CHECKOUT_FORM_VALIDATION_MESSAGES = checkoutValidationMessages;
 
 
   constructor(
