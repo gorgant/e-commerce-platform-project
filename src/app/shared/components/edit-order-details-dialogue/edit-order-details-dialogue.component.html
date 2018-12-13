@@ -1,75 +1,9 @@
-<!-- <div class="row">
-  <div class="col">
-    <form [formGroup]="checkoutForm">
-      <div class="form-group">
-        <label for="orderStatus">Order Status</label>
-        <select formControlName="orderStatusId" class="form-control" id="orderStatus" (change)="setOrderStatus($event.target.value)">
-          <option
-            *ngFor="let orderStatus of orderStatuses$ | async"
-            [value]="orderStatus.orderStatusId">{{ orderStatus.orderStatusName }}</option>
-          </select>
-          <div *ngIf="orderStatusId.invalid && (orderStatusId.dirty || orderStatusId.touched)"
-                class="alert alert-danger">
-            <div *ngIf="orderStatusId.errors['required']">
-              Order Status is required.
-            </div>
-          </div>
-      </div>
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input formControlName="name" type="text" class="form-control" id="name" placeholder="Full name">
-        <div *ngIf="name.invalid && (name.dirty || name.touched)"
-              class="alert alert-danger">
-          <div *ngIf="name.errors['required']">
-            Name is required.
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="address1">Address</label>
-        <input formControlName="address1" type="text" class="form-control" id="address1" placeholder="Street and number, P.O. box, c/o.">
-        <div *ngIf="address1.invalid && (address1.dirty || address1.touched)"
-              class="alert alert-danger">
-          <div *ngIf="address1.errors['required']">
-            Address is required.
-          </div>
-        </div>
-        <label for="address2"></label>
-        <input formControlName="address2" type="text" class="form-control" id="address2" placeholder="Apartment, suite, unit, building, floor, etc.">
-      </div>
-      <div class="form-group">
-        <label for="city">City</label>
-        <input formControlName="city" type="text" class="form-control" id="city">
-        <div *ngIf="city.invalid && (city.dirty || city.touched)"
-              class="alert alert-danger">
-          <div *ngIf="city.errors['required']">
-            City is required.
-          </div>
-        </div>
-      </div>
-      <button 
-        (click)="save()"
-        class="btn btn-primary">
-          Save Edits
-      </button>      
-      <a 
-        (click)="close()"
-        class="btn btn-link">
-          Cancel
-    </a>
-    </form>
-  </div>
-</div> -->
-
-
 <h2 mat-dialog-title>Edit Order Details</h2>
 <mat-dialog-content [formGroup]="orderDetailsForm">
   <mat-form-field>
     <mat-select 
       placeholder="Select Order Status"
-      formControlName="orderStatusId"
-      
-      >
+      formControlName="orderStatusId">
       <mat-option 
         *ngFor="let orderStatus of orderStatuses$ | async"
         [value]="orderStatus.orderStatusId">
