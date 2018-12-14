@@ -23,6 +23,8 @@ export class OrderDetailsComponent implements OnInit {
   customer$: Observable<AppUser>;
   order$: Observable<Order>;
 
+  orderAmount: number;
+
   constructor(
     private store$: Store<RootStoreState.State>,
     private route: ActivatedRoute,
@@ -47,6 +49,8 @@ export class OrderDetailsComponent implements OnInit {
       }),
       tap(order => {
         this.customer$ = this.userService.getUserById(order.userId);
+        // Calculate here, if calculating in template it causes infinite loop w observable change detection
+        this.orderAmount = order.orderTotalPrice;
       })
     );
   }

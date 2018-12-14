@@ -19,10 +19,12 @@ export class Order {
   }
 
   get orderTotalPrice(): number {
+    console.log('Calculating total order price', this.orderId);
     return this.orderItems.reduce(((valueStore, item) => valueStore + (item.orderItemQuantity * item.orderItemPrice)), 0);
   }
 
   get orderTotalQuantity(): number {
+    console.log('Calculating total order quantity', this.orderId);
     return this.orderItems.reduce(((valueStore, item) => valueStore + item.orderItemQuantity), 0);
   }
 }

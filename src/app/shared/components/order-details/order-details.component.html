@@ -49,9 +49,9 @@
                 </td>
               </tr>
             </tbody>
-            <tfoot>
+            <tfoot *ngIf="orderAmount">
               <th>Total</th>
-              <th>{{ orderWithProducts.orderTotalPrice | currency: 'USD' }}</th>
+              <th>{{ orderAmount | currency: 'USD' }}</th>
             </tfoot>
           </table>
         </div>

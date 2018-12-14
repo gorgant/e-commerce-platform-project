@@ -11,6 +11,7 @@ import { MyOrdersComponent } from './components/my-orders/my-orders.component';
 import { ShoppingCartSummaryComponent } from './components/shopping-cart-summary/shopping-cart-summary.component';
 import { ShippingFormComponent } from './components/shipping-form/shipping-form.component';
 import { ProductFilterComponent } from './components/products/product-filter/product-filter.component';
+import { ViewOrderComponent } from './components/view-order/view-order.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { ProductFilterComponent } from './components/products/product-filter/pro
     ProductFilterComponent,
     ShoppingCartSummaryComponent,
     ShippingFormComponent,
+    ViewOrderComponent,
   ],
   imports: [
     CommonModule,

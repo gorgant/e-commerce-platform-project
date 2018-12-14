@@ -7,6 +7,8 @@ export enum ActionTypes {
   ORDER_LOADED = '[Order API] Order Loaded',
   ALL_ORDERS_REQUESTED = '[Orders Page] All Orders Requested',
   ALL_ORDERS_LOADED = '[Order API] All Orders Loaded',
+  CUSTOMER_ORDERS_REQUESTED = '[My Orders] Customer Orders Requested',
+  CUSTOMER_ORDERS_LOADED = '[Order API] Customer Orders Loaded',
   UPDATE_ORDER_REQUESTED = '[Admin Orders] Order Update Requested',
   UPDATE_ORDER_COMPLETE = '[Orders API] Order Updated',
   LOAD_ERROR_DETECTED = '[Orders API] Error loading',
@@ -34,6 +36,18 @@ export class AllOrdersRequested implements Action {
 
 export class AllOrdersLoaded implements Action {
   readonly type = ActionTypes.ALL_ORDERS_LOADED;
+
+  constructor(public payload: {orders: Order[]}) {}
+}
+
+export class CustomerOrdersRequested implements Action {
+  readonly type = ActionTypes.CUSTOMER_ORDERS_REQUESTED;
+
+  constructor(public payload: {customerId: string}) {}
+}
+
+export class CustomerOrdersLoaded implements Action {
+  readonly type = ActionTypes.CUSTOMER_ORDERS_LOADED;
 
   constructor(public payload: {orders: Order[]}) {}
 }
@@ -81,10 +95,12 @@ export class DeleteOrderComplete implements Action {
 }
 
 export type Actions =
-  AllOrdersRequested |
-  AllOrdersLoaded |
   OrderRequested |
   OrderLoaded |
+  AllOrdersRequested |
+  AllOrdersLoaded |
+  CustomerOrdersRequested |
+  CustomerOrdersLoaded |
   LoadErrorDetected |
   UpdateOrderRequested |
   UpdateOrderComplete |

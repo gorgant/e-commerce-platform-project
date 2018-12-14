@@ -27,6 +27,21 @@ export function featureReducer(state = initialState, action: Actions): State {
         }
       );
 
+    case ActionTypes.CUSTOMER_ORDERS_REQUESTED:
+      return {
+        ...state,
+        ordersLoading: true
+      };
+
+    case ActionTypes.CUSTOMER_ORDERS_LOADED:
+      return featureAdapter.addAll(
+        action.payload.orders,
+        {
+          ...state,
+          ordersLoading: false
+        }
+      );
+
     case ActionTypes.LOAD_ERROR_DETECTED:
       return {
         ...state,

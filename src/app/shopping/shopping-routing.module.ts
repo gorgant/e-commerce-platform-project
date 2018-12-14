@@ -7,6 +7,7 @@ import { MyOrdersComponent } from './components/my-orders/my-orders.component';
 import { AuthGuardService } from '../shared/services/route-guards/auth-guard.service';
 import { CheckOutComponent } from './components/check-out/check-out.component';
 import { OrderDetailsResolver } from '../shared/services/resolvers/order-details.resolver';
+import { ViewOrderComponent } from './components/view-order/view-order.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,11 @@ const routes: Routes = [
   {
     path: 'my-orders',
     component: MyOrdersComponent,
+    canActivate: [AuthGuardService]
+  },
+  {
+    path: 'view-order/:id',
+    component: ViewOrderComponent,
     canActivate: [AuthGuardService]
   },
   {

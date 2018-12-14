@@ -58,6 +58,30 @@ export class OrderStoreEffects {
   );
 
   @Effect()
+  loadCustomerOrdersEffect$ = this.actions$.pipe(
+    ofType<featureActions.CustomerOrdersRequested>(
+      featureActions.ActionTypes.CUSTOMER_ORDERS_REQUESTED
+    ),
+    // This combines the previous observable with the current one
+    withLatestFrom(this.store$.select(featureSelectors.selectOrdersLoading)),
+    // Ingest both observable values and filter out the observable and only trigger if the
+    // courses haven't been loaded (only true makes it through)
+    filter(([action, ordersLoading]) => ordersLoading),
+    // startWith(new featureActions.CustomerOrdersRequested()),
+    // Call api for data
+    switchMap(([action, ordersLoading]) => {
+      const customerId: string = action.payload.customerId;
+      return this.orderService.getCustomerOrders(customerId).pipe(
+        // Take results and trigger an action
+        map(orders => new featureActions.CustomerOrdersLoaded({orders})),
+        catchError(error =>
+          of(new featureActions.LoadErrorDetected({ error }))
+        )
+      );
+    }),
+  );
+
+  @Effect()
   updateOrderEffect$: Observable<Action> = this.actions$.pipe(
     ofType<featureActions.UpdateOrderRequested>(
       featureActions.ActionTypes.UPDATE_ORDER_REQUESTED

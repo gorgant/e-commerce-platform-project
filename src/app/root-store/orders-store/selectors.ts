@@ -26,23 +26,24 @@ export const selectOrdersLoading: MemoizedSelector<object, boolean> = createSele
   ordersState => ordersState.ordersLoading
 );
 
-export const selectOrdersByUser: (userId: string) => MemoizedSelector<object, Order[]> = (userId: string) => createSelector(
-  selectAllOrders,
-  allOrders => allOrders.filter(order => order.userId === userId)
-);
+// export const selectOrdersByUser: (userId: string) => MemoizedSelector<object, Order[]> = (userId: string) => createSelector(
+//   selectAllOrders,
+//   allOrders => allOrders.filter(order => order.userId === userId)
+// );
 
-export const selectOrdersByStatus: (orderStatusId: string) => MemoizedSelector<object, Order[]> = (orderStatusId: string) => createSelector(
-  selectAllOrders,
-  allOrders => {
-    // If no category selected, return all order statuses (which is set in the admin-orders component)
-    if (orderStatusId === 'allOrderStatuses') {
-      return allOrders;
-    } else {
-      return allOrders
-        .filter(order => order.orderStatusId === orderStatusId);
-    }
-  }
-);
+// tslint:disable-next-line:max-line-length
+// export const selectOrdersByStatus: (orderStatusId: string) => MemoizedSelector<object, Order[]> = (orderStatusId: string) => createSelector(
+//   selectAllOrders,
+//   allOrders => {
+//     // If no category selected, return all order statuses (which is set in the admin-orders component)
+//     if (orderStatusId === 'allOrderStatuses') {
+//       return allOrders;
+//     } else {
+//       return allOrders
+//         .filter(order => order.orderStatusId === orderStatusId);
+//     }
+//   }
+// );
 
 export const selectOrderError: MemoizedSelector<object, any> = createSelector(
   selectOrdersState,

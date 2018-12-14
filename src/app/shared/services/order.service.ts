@@ -12,8 +12,6 @@ export class OrderService {
   private ordersCollection: AngularFirestoreCollection<Order>;
   orders$: Observable<Order[]>;
 
-  filteredOrderList$: Observable<Order[]>;
-
   constructor(private readonly afs: AngularFirestore) {
   }
 
@@ -26,7 +24,12 @@ export class OrderService {
   getOrders(): Observable<Order[]> {
     this.ordersCollection = this.afs.collection<Order>('orders');
     this.orders$ = this.ordersCollection.valueChanges();
-    this.filteredOrderList$ = this.orders$;
+    return this.orders$;
+  }
+
+  getCustomerOrders(customerId: string): Observable<Order[]> {
+    this.ordersCollection = this.afs.collection<Order>('orders', ref => ref.where('userId', '==', customerId));
+    this.orders$ = this.ordersCollection.valueChanges();
     return this.orders$;
   }
 
