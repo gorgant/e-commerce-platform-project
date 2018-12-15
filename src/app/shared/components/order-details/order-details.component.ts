@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Order } from '../../models/order';
 import { Store } from '@ngrx/store';
 import { RootStoreState, ProductsStoreSelectors, AuthStoreSelectors, OrdersStoreSelectors, OrdersStoreActions } from 'src/app/root-store';
-import { take, tap, map } from 'rxjs/operators';
+import { take, tap, map, filter, first } from 'rxjs/operators';
 import { OrderItem } from '../../models/order-item';
 import { ActivatedRoute } from '@angular/router';
 import { AppUser } from '../../models/app-user';
@@ -44,6 +44,15 @@ export class OrderDetailsComponent implements OnInit {
     this.order$ = this.store$.select(
       OrdersStoreSelectors.selectOrderById(orderId)
     ).pipe(
+      tap(order => {
+        if (!order) {
+          this.store$.dispatch(new OrdersStoreActions.OrderRequested({orderId}));
+        }
+      }),
+      // Filter out any 'undefined' results if it's not in the store so those don't get passed to the router
+      filter(order => !!order),
+      // Return the first result, otherwise this router operation never resolves
+      first(),
       map(order => {
         return this.mapProductsToOrderItems(order);
       }),

@@ -32,13 +32,13 @@ const routes: Routes = [
     }
   },
   {
-    path: 'my-orders',
-    component: MyOrdersComponent,
+    path: 'my-orders/:id',
+    component: ViewOrderComponent,
     canActivate: [AuthGuardService]
   },
   {
-    path: 'view-order/:id',
-    component: ViewOrderComponent,
+    path: 'my-orders',
+    component: MyOrdersComponent,
     canActivate: [AuthGuardService]
   },
   {
